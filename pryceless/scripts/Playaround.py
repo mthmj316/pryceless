@@ -15,7 +15,6 @@ def main():
     '''
     os.chdir(PYTHON_SANDBOX_DIR)
     
-    
     '''
         Create dir=new_folder
     '''
