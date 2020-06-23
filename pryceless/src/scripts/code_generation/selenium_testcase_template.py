@@ -7,7 +7,23 @@ from string import Template
 
 ASSERT_EQUALS_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/assert-equals.template'
 ASSERT_NOTNULL_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/assert-notnull.template'
+ASSERT_NULL_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/assert-null.template'
+TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/tag-under-test-var-assignment.template'
 
+'''
+   Creates the code for the tag under test variable assignment:
+   e.g: final WebElement tag = DRIVER.findElement(By.id("login_form"));
+'''
+def create_tag_under_test_var_assignment(tag_id):
+    _template = get_template(TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE)
+    return Template(_template).substitute(tag_id=tag_id)
+
+'''
+    Creates the assertNull method call: assertNull(null);
+'''
+def create_assert_null(actual_value):
+    _template = get_template(ASSERT_NULL_TEMPLATE)
+    return Template(_template).substitute(actual=actual_value)
 
 '''
     Replaces in the assert-notnull.template template all occurrences of the variables:

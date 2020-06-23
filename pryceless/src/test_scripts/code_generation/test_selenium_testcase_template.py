@@ -6,7 +6,8 @@ Created on 23.06.2020
 import unittest
 
 from scripts.code_generation.selenium_testcase_template import get_template,\
-    ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull
+    ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull,\
+    create_tag_under_test_var_assignment, create_assert_null
     
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
@@ -19,6 +20,42 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+    
+    '''
+       tests the selenium_testcase_template.create_tag_under_test_var_assignment() function
+       tag_id == login_form
+    '''
+    def test_create_tag_under_test_var_assignment(self):
+        expected = 'final WebElement tag = DRIVER.findElement(By.id("login_form"));\n'
+        actual = create_tag_under_test_var_assignment('login_form')
+        self.assertEqual(expected, actual)
+    
+    '''
+       tests the selenium_testcase_template.create_assert_null() function
+       testing replacement by string==space
+    '''
+    def test_create_assert_null_space(self):
+        expected = 'assertNull(" ");\n'
+        actual = create_assert_null('" "')
+        self.assertEqual(expected, actual)
+    
+    '''
+       tests the selenium_testcase_template.create_assert_null() function
+       testing replacement by string==<empty string>
+    '''
+    def test_create_assert_null_emptystring(self):
+        expected = 'assertNull("");\n'
+        actual = create_assert_null('""')
+        self.assertEqual(expected, actual)
+        
+    '''
+       tests the selenium_testcase_template.create_assert_null() function
+       testing replacement by string==null
+    '''
+    def test_create_assert_null_null(self):
+        expected = 'assertNull(null);\n'
+        actual = create_assert_null('null')
+        self.assertEqual(expected, actual)
     
     '''
        tests the selenium_testcase_template.create_assert_notnull() function
