@@ -44,7 +44,7 @@ def replace_var():
     
     print('file_content before substitution: ' + file_content)
     
-    file_content = Template(file_content).substitute(var='Hello world!')
+    file_content = Template(file_content).substitute(var__='Hello world!')
     
     print('file_content after substitution: ' + file_content)
     
@@ -60,7 +60,7 @@ def create_text_file():
     file_name = create_text_file_name()
     
     with open(file_name,'w') as file:
-        file.write('This just a text $var. file with one this var: $var.') 
+        file.write('This just a text $var__. file with one this var: $var__.') 
         
     print('Creating file %s' % file_name)
 
