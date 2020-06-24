@@ -5,10 +5,54 @@ Created on 22.06.2020
 '''
 from string import Template
 
-ASSERT_EQUALS_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/assert-equals.template'
-ASSERT_NOTNULL_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/assert-notnull.template'
-ASSERT_NULL_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/assert-null.template'
-TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE = '/home/mthoma/software-dev/code-generator/templates/tag-under-test-var-assignment.template'
+ASSERT_EQUALS_TEMPLATE = '../../templates/assert-equals.template'
+ASSERT_NOTNULL_TEMPLATE = '../../templates/assert-notnull.template'
+ASSERT_NULL_TEMPLATE = '../../templates/assert-null.template'
+ASSERT_THROWS_TEMPLATE = '../../templates/assert-throws.template'
+TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE = '../../templates/tag-under-test-var-assignment.template'
+SELENIUM_BY_XPATH_TEMPLATE = '../../templates/selenium_by_xpath.template'
+SELENIUM_BY_ID_TEMPLATE = '../../templates/selenium_by_id.template'
+SELENIUM_FIND_ELEMENT_TEMPLATE = '../../templates/selenium_find_element.template'
+SELENIUM_WEBELEMENT_DECLARATION_TEMPLATE = '../../templates/selenium_webelement_declaration.template'
+
+
+'''
+    Creates the following expression: WebElement var_name = var_assignment;
+'''
+def create_selenium_webelement_declaration(var_name, var_assignment):
+    _template = get_template(SELENIUM_WEBELEMENT_DECLARATION_TEMPLATE)
+    return Template(_template).substitute(var_name=var_name,\
+                                          var_assignment=var_assignment)
+
+'''
+    Creates the following expression: tag_var_name.findElement(by_expression)
+'''
+def create_selenium_find_element(tag_var_name, by_expression):
+    _template = get_template(SELENIUM_FIND_ELEMENT_TEMPLATE)
+    return Template(_template).substitute(tag_var_name=tag_var_name,\
+                                          by_expression=by_expression)
+
+'''
+    Creates the following expression: By.id(id))
+'''
+def create_selenium_by_id(identifier):
+    _template = get_template(SELENIUM_BY_ID_TEMPLATE)
+    return Template(_template).substitute(identifier=identifier)
+
+'''
+    Creates the following expression: By.xpath(xpath_expression))
+'''
+def create_selenium_by_xpath(xpath_expression):
+    _template = get_template(SELENIUM_BY_XPATH_TEMPLATE)
+    return Template(_template).substitute(xpath_expression=xpath_expression)
+
+'''
+    Creates the assertThrows method call: assertThrows(ExpectedException.class, executable);
+'''
+def create_assert_throws(expected_exception, executable):
+    _template = get_template(ASSERT_THROWS_TEMPLATE)
+    return Template(_template).substitute(expected_exception=expected_exception,\
+                                          executable=executable)
 
 '''
    Creates the code for the tag under test variable assignment:

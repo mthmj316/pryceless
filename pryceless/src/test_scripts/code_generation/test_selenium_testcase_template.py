@@ -7,7 +7,9 @@ import unittest
 
 from scripts.code_generation.selenium_testcase_template import get_template,\
     ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull,\
-    create_tag_under_test_var_assignment, create_assert_null
+    create_tag_under_test_var_assignment, create_assert_null,\
+    create_assert_throws, create_selenium_by_xpath, create_selenium_by_id,\
+    create_selenium_find_element, create_selenium_webelement_declaration
     
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
@@ -20,6 +22,46 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    '''
+       tests the selenium_testcase_template.create_selenium_webelement_declaration() function
+    '''
+    def test_create_selenium_webelement_declaration(self):
+        expected = 'WebElement otherTag = someTag.findElement(By.id("some id"));\n'
+        actual = create_selenium_webelement_declaration('otherTag', 'someTag.findElement(By.id("some id"))')
+        self.assertEqual(expected, actual)
+
+    '''
+       tests the selenium_testcase_template.create_selenium_find_element() function
+    '''
+    def test_create_selenium_find_element(self):
+        expected = 'someTag.findElement(By.id("some id"))\n'
+        actual = create_selenium_find_element('someTag', 'By.id("some id")')
+        self.assertEqual(expected, actual)
+
+    '''
+       tests the selenium_testcase_template.create_selenium_by_id() function
+    '''
+    def test_create_selenium_by_id(self):
+        expected = 'By.id("some id")\n'
+        actual = create_selenium_by_id('"some id"')
+        self.assertEqual(expected, actual)
+    
+    '''
+       tests the selenium_testcase_template.create_selenium_by_xpath() function
+    '''
+    def test_create_selenium_by_xpath(self):
+        expected = 'By.xpath("this is a xpath expression")\n'
+        actual = create_selenium_by_xpath('"this is a xpath expression"')
+        self.assertEqual(expected, actual)
+    
+    '''
+       tests the selenium_testcase_template.create_assert_throws() function
+    '''
+    def test_create_assert_throws(self):
+        expected = 'assertThrows(NullpointerException.class, () -> do something);\n'
+        actual = create_assert_throws('NullpointerException.class', '() -> do something')
+        self.assertEqual(expected, actual)
     
     '''
        tests the selenium_testcase_template.create_tag_under_test_var_assignment() function
