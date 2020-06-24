@@ -9,7 +9,9 @@ from scripts.code_generation.selenium_testcase_template import get_template,\
     ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull,\
     create_tag_under_test_var_assignment, create_assert_null,\
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id,\
-    create_selenium_find_element, create_selenium_webelement_declaration
+    create_selenium_find_element, create_selenium_webelement_declaration,\
+    create_unit_test_method
+
     
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
@@ -22,6 +24,14 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    '''
+       tests the selenium_testcase_template.create_create_unit_test_method() function
+    '''
+    def test_create_unit_test_method_single_line_content(self):
+        expected = '@Test\npublic void testHTMLLang(){\n\n\tthis is a single line content\n}'
+        actual = create_unit_test_method('HTMLLang', 'this is a single line content')
+        self.assertEqual(expected, actual)
 
     '''
        tests the selenium_testcase_template.create_selenium_webelement_declaration() function

@@ -14,7 +14,22 @@ SELENIUM_BY_XPATH_TEMPLATE = '../../templates/selenium_by_xpath.template'
 SELENIUM_BY_ID_TEMPLATE = '../../templates/selenium_by_id.template'
 SELENIUM_FIND_ELEMENT_TEMPLATE = '../../templates/selenium_find_element.template'
 SELENIUM_WEBELEMENT_DECLARATION_TEMPLATE = '../../templates/selenium_webelement_declaration.template'
+UNIT_TEST_METHOD_TEMPLATE = '../../templates/unit_test_method.template'
 
+'''
+    Creates junit method
+    
+    @Test
+    public void testwhat_is_tested(){
+
+        test_method_content
+    }
+'''
+def create_unit_test_method(what_is_tested, test_method_content):
+    _template = get_template(UNIT_TEST_METHOD_TEMPLATE)
+    return Template(_template).substitute(what_is_tested=what_is_tested,\
+                                          test_method_content=test_method_content)
+    
 
 '''
     Creates the following expression: WebElement var_name = var_assignment;
