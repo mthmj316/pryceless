@@ -15,6 +15,26 @@ SELENIUM_BY_ID_TEMPLATE = '../../templates/selenium_by_id.template'
 SELENIUM_FIND_ELEMENT_TEMPLATE = '../../templates/selenium_find_element.template'
 SELENIUM_WEBELEMENT_DECLARATION_TEMPLATE = '../../templates/selenium_webelement_declaration.template'
 UNIT_TEST_METHOD_TEMPLATE = '../../templates/unit_test_method.template'
+UNIT_PARAMETERIZED_TEST_METHOD_TEMPLATE = '../../templates/unit_parameterized_test_method.template'
+
+'''
+    Create parameterized test method.
+    The variable_dict dictionary must contain the following key-value-pairs:
+        parameter_sources     -> parameter source annotation(s)
+        what_is_tested        -> part of the method name which depicts the test case
+        parameters            -> list of the function parameters which
+        test_method_content   -> content of the method
+        
+        @ParameterizedTest
+        <parameter_sources>
+        public void test<what_is_tested>(<parameters>){
+
+            <test_method_content>
+        }
+'''
+def create_parameterized_test_method(variable_dict):
+    _template = get_template(UNIT_PARAMETERIZED_TEST_METHOD_TEMPLATE)
+    return Template(_template).substitute(variable_dict)
 
 '''
     Creates junit method

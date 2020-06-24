@@ -1,0 +1,6 @@
+@ParameterizedTest
+$parameter_sources
+public void test$what_is_tested($parameters){
+
+	$test_method_content
+}
