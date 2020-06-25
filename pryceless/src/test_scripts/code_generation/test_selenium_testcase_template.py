@@ -10,7 +10,8 @@ from scripts.code_generation.selenium_testcase_template import get_template,\
     create_tag_under_test_var_assignment, create_assert_null,\
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id,\
     create_selenium_find_element, create_selenium_webelement_declaration,\
-    create_unit_test_method, create_parameterized_test_method
+    create_unit_test_method, create_parameterized_test_method,\
+    create_method_parameter_list, create_annotation
 
     
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
@@ -24,6 +25,64 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+    
+    '''
+        test the selenium_testcase.create_annotation(annotation_name, annotation_parameters) function
+        With annotation parameters
+    '''
+    def test_create_annotation_with_para(self):
+        expected = '@some_annotation(para, para1)'
+        actual = create_annotation('some_annotation', 'para, para1')
+        self.assertEqual(expected, actual)
+    
+    '''
+        test the selenium_testcase.create_annotation(annotation_name, annotation_parameters) function
+        No annotation parameters
+    '''
+    def test_create_annotation_no_para(self):
+        expected = '@some_annotation()'
+        actual = create_annotation('some_annotation', '')
+        self.assertEqual(expected, actual)
+  
+    '''
+        test the selenium_testcase.create_method_parameter_list(parameter_dict)
+        Many parameter
+    '''
+    def test_create_method_parameter_list_many_para(self):
+        para_dic = {'name': 'String', 'age':'int', 'sex':'char', 'surname':'String'}
+        expected = 'String name, int age, char sex, String surname'
+        actual = create_method_parameter_list(para_dic)
+        self.assertEqual(expected, actual)
+      
+    '''
+        test the selenium_testcase.create_method_parameter_list(parameter_dict)
+        Two parameter
+    '''
+    def test_create_method_parameter_list_two_para(self):
+        para_dic = {'name': 'String', 'age':'int'}
+        expected = 'String name, int age'
+        actual = create_method_parameter_list(para_dic)
+        self.assertEqual(expected, actual)
+   
+    '''
+        test the selenium_testcase.create_method_parameter_list(parameter_dict)
+        No parameter
+    '''
+    def test_create_method_parameter_list_no_para(self):
+        para_dic = {}
+        expected = ''
+        actual = create_method_parameter_list(para_dic)
+        self.assertEqual(expected, actual)
+    
+    '''
+        test the selenium_testcase.create_method_parameter_list(parameter_dict)
+        One parameter
+    '''
+    def test_create_method_parameter_list_one_para(self):
+        para_dic = {'name': 'String'}
+        expected = 'String name'
+        actual = create_method_parameter_list(para_dic)
+        self.assertEqual(expected, actual)
     
     '''
         test the selenium_testcase.create_parameterized_test_method(variable_dict)
