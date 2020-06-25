@@ -102,8 +102,8 @@ class Test(unittest.TestCase):
        tests the selenium_testcase_template.create_create_unit_test_method() function
     '''
     def test_create_unit_test_method_single_line_content(self):
-        expected = '@Test\npublic void testHTMLLang(){\n\n\tthis is a single line content\n}'
-        actual = create_unit_test_method('HTMLLang', 'this is a single line content')
+        expected = '@Test\npublic void testHTMLLang(){\n\tthis is a single line content\n}'
+        actual = create_unit_test_method('HTMLLang', '\tthis is a single line content')
         self.assertEqual(expected, actual)
 
     '''
@@ -151,7 +151,7 @@ class Test(unittest.TestCase):
        tag_id == login_form
     '''
     def test_create_tag_under_test_var_assignment(self):
-        expected = 'final WebElement tag = DRIVER.findElement(By.id("login_form"));\n'
+        expected = 'final WebElement tag = DRIVER.findElement(By.id("login_form"));'
         actual = create_tag_under_test_var_assignment('login_form')
         self.assertEqual(expected, actual)
     
@@ -214,7 +214,7 @@ class Test(unittest.TestCase):
         testing replacement by whitespaces within double quotes
     '''      
     def test_create_assert_equals_semikolon_whitespace(self):
-        expected = 'assertEquals( , ,"wrong iam-a-attribute");\n'
+        expected = 'assertEquals( , ,"wrong iam-a-attribute");'
         actual = create_assert_equals(' ', '', 'iam-a-attribute')
         self.assertEqual(expected, actual, WRONG_ASSERT_EQUALS)
 
@@ -223,7 +223,7 @@ class Test(unittest.TestCase):
         testing replacement by whitespaces
     '''   
     def test_create_assert_equals_whitespace(self):
-        expected = 'assertEquals("", " ","wrong iam-a-attribute");\n'
+        expected = 'assertEquals("", " ","wrong iam-a-attribute");'
         actual = create_assert_equals('""', '" "', 'iam-a-attribute')
         self.assertEqual(expected, actual, WRONG_ASSERT_EQUALS)
 
@@ -232,7 +232,7 @@ class Test(unittest.TestCase):
         testing replacement by strings which are not empty
     '''
     def test_create_assert_equals(self):
-        expected = 'assertEquals(that is what is expected, that is what is actually is,"wrong iam-a-attribute");\n'
+        expected = 'assertEquals(that is what is expected, that is what is actually is,"wrong iam-a-attribute");'
         actual = create_assert_equals('that is what is expected', \
                                       'that is what is actually is', \
                                       'iam-a-attribute')
@@ -243,7 +243,7 @@ class Test(unittest.TestCase):
     '''
     def test_get_template(self):
         template_content = get_template(ASSERT_EQUALS_TEMPLATE)
-        self.assertEqual('assertEquals($expected, $actual,"wrong $attribute");\n', \
+        self.assertEqual('assertEquals($expected, $actual,"wrong $attribute");', \
                          template_content, 'wrong template content')
 
 

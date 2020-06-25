@@ -1,5 +1,4 @@
 @Test
 public void test$what_is_tested(){
-
-	$test_method_content
+$test_method_content
 }
