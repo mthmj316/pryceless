@@ -5,10 +5,24 @@ Created on 25.06.2020
 '''
 import unittest
 from scripts.code_generation.selenium_testcase_creator import convert_tag_id_to_name_in_method,\
-    create_unit_test_tag_name
+    create_unit_test_tag_name, create_unit_test_parent
 
 
 class Test(unittest.TestCase):
+    
+    def test_create_unit_test_parent(self):
+        expected = ('/**\n* Test if the tag with id==main_header has the parent with the id==main_container.\n*/'
+                    '\n@Test'
+                    '\npublic void testMainHeaderParent(){'
+                    '\n'
+                    '\n\tfinal WebElement tag = DRIVER.findElement(By.id("main_header"));'
+                    '\n\tfinal WebElement parent = tag.findElement(By.xpath("./.."));'
+                    '\n\tassertEquals("main_container", parent.getAttribute("id"),"wrong parent");'
+                    '\n}'
+                    )
+        actual = create_unit_test_parent('main_header', 'main_container')
+        self.maxDiff = None
+        self.assertEqual(expected, actual)
     
     def test_create_unit_test_tag_name(self):
         expected = ('/**\n* Test if the tag with id==main_center_container has the tag name==div.\n*/'

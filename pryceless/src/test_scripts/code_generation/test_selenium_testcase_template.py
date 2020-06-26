@@ -110,7 +110,7 @@ class Test(unittest.TestCase):
        tests the selenium_testcase_template.create_selenium_webelement_declaration() function
     '''
     def test_create_selenium_webelement_declaration(self):
-        expected = 'WebElement otherTag = someTag.findElement(By.id("some id"));\n'
+        expected = 'final WebElement otherTag = someTag.findElement(By.id("some id"));'
         actual = create_selenium_webelement_declaration('otherTag', 'someTag.findElement(By.id("some id"))')
         self.assertEqual(expected, actual)
 
@@ -118,7 +118,7 @@ class Test(unittest.TestCase):
        tests the selenium_testcase_template.create_selenium_find_element() function
     '''
     def test_create_selenium_find_element(self):
-        expected = 'someTag.findElement(By.id("some id"))\n'
+        expected = 'someTag.findElement(By.id("some id"))'
         actual = create_selenium_find_element('someTag', 'By.id("some id")')
         self.assertEqual(expected, actual)
 
@@ -126,7 +126,7 @@ class Test(unittest.TestCase):
        tests the selenium_testcase_template.create_selenium_by_id() function
     '''
     def test_create_selenium_by_id(self):
-        expected = 'By.id("some id")\n'
+        expected = 'By.id("some id")'
         actual = create_selenium_by_id('"some id"')
         self.assertEqual(expected, actual)
     
@@ -134,7 +134,7 @@ class Test(unittest.TestCase):
        tests the selenium_testcase_template.create_selenium_by_xpath() function
     '''
     def test_create_selenium_by_xpath(self):
-        expected = 'By.xpath("this is a xpath expression")\n'
+        expected = 'By.xpath("this is a xpath expression")'
         actual = create_selenium_by_xpath('"this is a xpath expression"')
         self.assertEqual(expected, actual)
     
