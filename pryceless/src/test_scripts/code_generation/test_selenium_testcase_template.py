@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
                     'test_method_content':'assert(name,this.getName());'
         }
         
-        expected = '@ParameterizedTest\n@annotation\npublic void testARealyCoolTest(String name){\n\n\tassert(name,this.getName());\n}'
+        expected = '@ParameterizedTest\n@annotation\npublic void testARealyCoolTest(String name){\n\tassert(name,this.getName());\n}'
         actual = create_parameterized_test_method(var_dict)
         self.assertEqual(expected, actual)
 
@@ -142,7 +142,7 @@ class Test(unittest.TestCase):
        tests the selenium_testcase_template.create_assert_throws() function
     '''
     def test_create_assert_throws(self):
-        expected = 'assertThrows(NullpointerException.class, () -> do something);\n'
+        expected = 'assertThrows(NullpointerException.class, () -> do something);'
         actual = create_assert_throws('NullpointerException.class', '() -> do something')
         self.assertEqual(expected, actual)
     

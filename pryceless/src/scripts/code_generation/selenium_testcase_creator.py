@@ -28,7 +28,7 @@ from scripts.code_generation.selenium_testcase_template import create_tag_under_
                     -> if none then the test will be 
 '''
 def create_unit_test_siblings(tag_id, predecessor_id, successor_id):
-    code = ['']
+    code = []
     code.append(create_tag_under_test_var_assignment(tag_id))
     code.append('if(expectedSiblingId == null) {')
     code.append(__create_unit_test_no_sibling_assertion())
@@ -54,11 +54,11 @@ def __create_unit_test_sibling_csv_source(predecessor_id, successor_id):
         
 '''
 def __create_unit_test_sibling():
-    code = ['']
-    code.append(create_selenium_webelement_declaration('sibling', create_selenium_find_element('tag', create_selenium_by_xpath('xpath'))))
+    code = []
+    code.append('\t' + create_selenium_webelement_declaration('sibling', create_selenium_find_element('tag', create_selenium_by_xpath('xpath'))))
     code.append(create_assert_equals('expectedSiblingId', SELENIUM_GET_ATTRIBUTE %('sibling', 'id'), 'sibling'))
     
-    return '\n\t'.join(code) 
+    return '\n\t\t'.join(code) 
 
 '''
     Creates the asserThrows expression for the case when no sibling is expected
@@ -69,7 +69,7 @@ def __create_unit_test_no_sibling_assertion():
     by_xpath = create_selenium_by_xpath('xpath')
     find_by = create_selenium_find_element('tag', by_xpath)
     
-    return '\t' + create_assert_throws(NO_SUCH_ELEMENT_EXCEPTION_CLASS, find_by)
+    return '\t' + create_assert_throws(NO_SUCH_ELEMENT_EXCEPTION_CLASS, '() -> ' + find_by)
 
 '''
     Creates the unit test method for testing the parent of an html tag.

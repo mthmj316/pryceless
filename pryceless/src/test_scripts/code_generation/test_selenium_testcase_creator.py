@@ -7,21 +7,28 @@ import unittest
 from scripts.code_generation.selenium_testcase_creator import convert_tag_id_to_name_in_method,\
     create_unit_test_tag_name, create_unit_test_parent,\
     create_unit_test_siblings
+from test_scripts.code_generation.test_constants import SIBLING_EXPECTED_RESULT,\
+    NO_PRECIDING_SIBLING_EXPECTED_RESULT, NO_FOLLOWING_SIBLING_EXPECTED_RESULT,\
+    NO_SIBLING_EXPECTED_RESULT
+    
 
-SIBLING_EXPECTED_RESULT = ('@ParameterizedTest\n'
-    '@CsvSource({"login_error_message,preceding-sibling::*[1]", "login_name,follwoing-sibling::*[1]"})\n'
-    'public void testLoginPasswordSibling(final String expectedSiblingId, final String xpath){\n'
-    '\tfinal WebElement tag = DRIVER.findElement(By.id("login_password"));\n'
-    '\tif(expectedSiblingId == null) {\n'
-    '\t\tassertThrows(org.openqa.selenium.NoSuchElementException.class, () -> tag.findElement(By.xpath(xpath)));\n'     
-    '\t} else {\n'
-    '\t\tfinal WebElement sibling = tag.findElement(By.xpath(xpath));\n'
-    '\t\tassertEquals(expectedSiblingId, sibling.getAttribute("id"), "wrong sibling");\n'
-    '\t}\n'
-    '}'
-    )
 
 class Test(unittest.TestCase):
+    
+    def test_create_unit_test_no_siblings(self):
+        actual = create_unit_test_siblings('login_password', '', '')
+        self.maxDiff = None
+        self.assertEqual(NO_SIBLING_EXPECTED_RESULT, actual)
+    
+    def test_create_unit_test_siblings_no_following(self):
+        actual = create_unit_test_siblings('login_password', 'login_error_message', '')
+        self.maxDiff = None
+        self.assertEqual(NO_FOLLOWING_SIBLING_EXPECTED_RESULT, actual)
+    
+    def test_create_unit_test_siblings_no_preceding(self):
+        actual = create_unit_test_siblings('login_password', '', 'login_name')
+        self.maxDiff = None
+        self.assertEqual(NO_PRECIDING_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings(self):
         actual = create_unit_test_siblings('login_password', 'login_error_message', 'login_name')
