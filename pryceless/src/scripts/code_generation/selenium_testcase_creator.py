@@ -7,18 +7,14 @@ The following test case can be created by this script:
 @author: mthoma
 '''
 
-JAVA_DOC_TEST_TAG_NAME = '/**\n* Test if the tag with id==%s has the tag name==%s.\n*/'
-JAVA_DOC_TEST_PARENT = '/**\n* Test if the tag with id==%s has the parent with the id==%s.\n*/'
-SELENIUM_GET_ATTRIBUTE = '%s.getAttribute("%s")'
-SIBLING_CSV_SOURCE_ANNOTATION = '@CsvSource({"%s,preceding-sibling::*[1]", "%s,following-sibling::*[1]"})'
-
-NO_SUCH_ELEMENT_EXCEPTION_CLASS = 'org.openqa.selenium.NoSuchElementException.class'
-
 from scripts.code_generation.selenium_testcase_template import create_tag_under_test_var_assignment,\
     create_unit_test_method, create_assert_equals,\
     create_selenium_webelement_declaration, create_selenium_find_element,\
     create_selenium_by_xpath, create_assert_throws,\
     create_parameterized_test_method
+from scripts.code_generation.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION,\
+    SELENIUM_GET_ATTRIBUTE, NO_SUCH_ELEMENT_EXCEPTION_CLASS,\
+    JAVA_DOC_TEST_PARENT, JAVA_DOC_TEST_TAG_NAME, JAVA_DOC_TEST_SIBLINGS
 
 '''
     Creates the test methods for testing the siblings of the html tag with id==tag_id
@@ -41,7 +37,11 @@ def create_unit_test_siblings(tag_id, predecessor_id, successor_id):
                      'parameters': 'final String expectedSiblingId, final String xpath',
                      'test_method_content': '\n\t'.join(code)}
     
-    return create_parameterized_test_method(variable_dict)
+    method = []
+    method.append(JAVA_DOC_TEST_SIBLINGS %(tag_id, predecessor_id, successor_id))
+    method.append(create_parameterized_test_method(variable_dict))
+    
+    return '\n'.join(method)
 
 def __create_unit_test_sibling_csv_source(predecessor_id, successor_id):
     return SIBLING_CSV_SOURCE_ANNOTATION %(predecessor_id, successor_id)
