@@ -12,6 +12,10 @@ JAVA_DOC_TEST_SIBLINGS = ('/**\n'
                           '* Hint if id==<empty> the corresponding sibling doesn\'t exists.\n'
                           '*/'
                           )
+JAVA_DOC_TEST_ATTRIBUTES = ('/**\n'
+                            '* Test of the attributes for the tag with id==%s\n'
+                            '*/'
+                            )
 
 SELENIUM_GET_ATTRIBUTE = '%s.getAttribute("%s")'
 SIBLING_CSV_SOURCE_ANNOTATION = '@CsvSource({"%s,preceding-sibling::*[1]", "%s,following-sibling::*[1]"})'

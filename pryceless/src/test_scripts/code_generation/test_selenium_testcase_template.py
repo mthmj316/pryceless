@@ -11,7 +11,7 @@ from scripts.code_generation.selenium_testcase_template import get_template,\
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id,\
     create_selenium_find_element, create_selenium_webelement_declaration,\
     create_unit_test_method, create_parameterized_test_method,\
-    create_method_parameter_list, create_annotation
+    create_method_parameter_list, create_annotation, create_csvsource_annotation
 
     
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
@@ -25,6 +25,31 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+    
+    def test_create_csvsource_annotation_no_param(self):
+        expected = '@CsvSource()'
+        parameter_dictionary = {
+        }
+        actual = create_csvsource_annotation(parameter_dictionary)
+        self.assertEqual(expected, actual)
+    
+    def test_create_csvsource_annotation_one_param(self):
+        expected = '@CsvSource("key_1,value_1")'
+        parameter_dictionary = {
+            'key_1':'value_1'
+        }
+        actual = create_csvsource_annotation(parameter_dictionary)
+        self.assertEqual(expected, actual)
+    
+    def test_create_csvsource_annotation_many_param(self):
+        expected = '@CsvSource("key_1,value_1","key_2,value_2","key_3,value_3")'
+        parameter_dictionary = {
+            'key_1':'value_1',
+            'key_2':'value_2',
+            'key_3':'value_3'
+        }
+        actual = create_csvsource_annotation(parameter_dictionary)
+        self.assertEqual(expected, actual)
     
     '''
         test the selenium_testcase.create_annotation(annotation_name, annotation_parameters) function
