@@ -3,6 +3,9 @@ Created on 25.06.2020
 
 The following test case can be created by this script:
     - test tag name
+    - test parent tag
+    - test attributes of a tag
+    - test css ruleset of a tag
 
 @author: mthoma
 '''
