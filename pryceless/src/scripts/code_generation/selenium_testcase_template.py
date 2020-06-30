@@ -35,7 +35,7 @@ def create_csvsource_annotation(parameter_dictionary):
     for key,value in parameter_dictionary.items():
         parameter_list.append(CSV_SOURCE_PARAMETER %(key,value))
         
-    return create_annotation('CsvSource', ','.join(parameter_list)) 
+    return create_annotation('CsvSource', '{' + ','.join(parameter_list) + '}') 
 
 '''
     Creates an annotation

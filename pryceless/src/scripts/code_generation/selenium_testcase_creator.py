@@ -15,12 +15,35 @@ from scripts.code_generation.selenium_testcase_template import create_tag_under_
 from scripts.code_generation.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION,\
     SELENIUM_GET_ATTRIBUTE, NO_SUCH_ELEMENT_EXCEPTION_CLASS,\
     JAVA_DOC_TEST_PARENT, JAVA_DOC_TEST_TAG_NAME, JAVA_DOC_TEST_SIBLINGS,\
-    JAVA_DOC_TEST_ATTRIBUTES
+    JAVA_DOC_TEST_ATTRIBUTES, SELENIUM_GET_VARIABLE_ATTRIBUTE,\
+    JUNIT_ASSERT_EQUALS, SELENIUM_GET_CSS_VALUE, JAVA_DOC_TEST_CSS_RULES
 
+'''
+    Creates a parameterized css rule unit test method
+'''
+def create_unit_test_css_rule(tag_id, css_rule_directory):
+    code = []
+    code.append(create_tag_under_test_var_assignment(tag_id))
+    code.append(JUNIT_ASSERT_EQUALS %('expectedValue', SELENIUM_GET_CSS_VALUE %('tag', 'cssRuleName'), '"wrong " + cssRuleName'))
+    
+    variable_dict = {'parameter_sources':create_csvsource_annotation(css_rule_directory),
+                     'what_is_tested': convert_tag_id_to_name_in_method(tag_id) + 'CssRule',
+                     'parameters': 'final String cssRuleName, final String expectedValue',
+                     'test_method_content': '\n\t'.join(code)}
+    
+    method = []
+    method.append(JAVA_DOC_TEST_CSS_RULES %(tag_id))
+    method.append(create_parameterized_test_method(variable_dict))
+    
+    return '\n'.join(method)
+
+'''
+    Creates a parameterized attribute unit test method
+'''
 def create_unit_test_attribute(tag_id, attribute_directory):
     code = []
     code.append(create_tag_under_test_var_assignment(tag_id))
-    code.append(create_assert_equals('expectedValue', SELENIUM_GET_ATTRIBUTE %('tag', tag_id), 'attributeName'))
+    code.append(JUNIT_ASSERT_EQUALS %('expectedValue', SELENIUM_GET_VARIABLE_ATTRIBUTE %('tag', 'attributeName'), '"wrong " + attributeName'))
     
     variable_dict = {'parameter_sources':create_csvsource_annotation(attribute_directory),
                      'what_is_tested': convert_tag_id_to_name_in_method(tag_id) + 'Attributes',

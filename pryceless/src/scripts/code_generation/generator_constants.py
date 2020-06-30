@@ -17,7 +17,16 @@ JAVA_DOC_TEST_ATTRIBUTES = ('/**\n'
                             '*/'
                             )
 
+JAVA_DOC_TEST_CSS_RULES = ('/**\n'
+                            '* Test of the css rules for the tag with id==%s\n'
+                            '*/'
+                            )
+
 SELENIUM_GET_ATTRIBUTE = '%s.getAttribute("%s")'
+SELENIUM_GET_VARIABLE_ATTRIBUTE = '%s.getAttribute(%s)'
+SELENIUM_GET_CSS_VALUE = '%s.getCssValue(%s)'
 SIBLING_CSV_SOURCE_ANNOTATION = '@CsvSource({"%s,preceding-sibling::*[1]", "%s,following-sibling::*[1]"})'
+
+JUNIT_ASSERT_EQUALS = 'assertEquals(%s, %s, %s);'
 
 NO_SUCH_ELEMENT_EXCEPTION_CLASS = 'org.openqa.selenium.NoSuchElementException.class'

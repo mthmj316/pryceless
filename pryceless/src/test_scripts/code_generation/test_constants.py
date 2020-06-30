@@ -1,8 +1,55 @@
+
 '''
 Created on 29.06.2020
 
 @author: mthoma
 '''
+
+
+MULTIPLE_CSS_RULE_TEST = ('/**\n'
+                            '* Test of the css rules for the tag with id==login_name\n'
+                            '*/\n'
+                            '@ParameterizedTest\n'
+                            '@CsvSource({"color,#323454","font,new-times-roman","stressed,bold"})\n'
+                            'public void testLoginNameCssRule(final String cssRuleName, final String expectedValue){\n'
+                            '\tfinal WebElement tag = DRIVER.findElement(By.id("login_name"));\n'
+                            '\tassertEquals(expectedValue, tag.getCssValue(cssRuleName), "wrong " + cssRuleName);\n'                            
+                            '}'
+                            )
+
+SINGLE_CSS_RULE_TEST = ('/**\n'
+                            '* Test of the css rules for the tag with id==login_name\n'
+                            '*/\n'
+                            '@ParameterizedTest\n'
+                            '@CsvSource({"color,#323454"})\n'
+                            'public void testLoginNameCssRule(final String cssRuleName, final String expectedValue){\n'
+                            '\tfinal WebElement tag = DRIVER.findElement(By.id("login_name"));\n'
+                            '\tassertEquals(expectedValue, tag.getCssValue(cssRuleName), "wrong " + cssRuleName);\n'                            
+                            '}'
+                            )
+
+MULTIPLE_TEST_ATTRIBUTES = ('/**\n'
+                            '* Test of the attributes for the tag with id==login_name\n'
+                            '*/\n'
+                            '@ParameterizedTest\n'
+                            '@CsvSource({"placeholder,User name","value,Hello","class,cls_login_form"})\n'
+                            'public void testLoginNameAttributes(final String attributeName, final String expectedValue){\n'
+                            '\tfinal WebElement tag = DRIVER.findElement(By.id("login_name"));\n'
+                            '\tassertEquals(expectedValue, tag.getAttribute(attributeName), "wrong " + attributeName);\n'                            
+                            '}'
+                            )
+
+SINGLE_TEST_ATTRIBUTES = ('/**\n'
+                            '* Test of the attributes for the tag with id==login_name\n'
+                            '*/\n'
+                            '@ParameterizedTest\n'
+                            '@CsvSource({"placeholder,User name"})\n'
+                            'public void testLoginNameAttributes(final String attributeName, final String expectedValue){\n'
+                            '\tfinal WebElement tag = DRIVER.findElement(By.id("login_name"));\n'
+                            '\tassertEquals(expectedValue, tag.getAttribute(attributeName), "wrong " + attributeName);\n'                            
+                            '}'
+                            )
+
 NO_PRECIDING_SIBLING_EXPECTED_RESULT = (
     '/**\n'
     '* Test if the siblings of the tag with id==login_password.\n'

@@ -6,14 +6,44 @@ Created on 25.06.2020
 import unittest
 from scripts.code_generation.selenium_testcase_creator import convert_tag_id_to_name_in_method,\
     create_unit_test_tag_name, create_unit_test_parent,\
-    create_unit_test_siblings
+    create_unit_test_siblings, create_unit_test_attribute,\
+    create_unit_test_css_rule
 from test_scripts.code_generation.test_constants import SIBLING_EXPECTED_RESULT,\
     NO_PRECIDING_SIBLING_EXPECTED_RESULT, NO_FOLLOWING_SIBLING_EXPECTED_RESULT,\
-    NO_SIBLING_EXPECTED_RESULT
+    NO_SIBLING_EXPECTED_RESULT, SINGLE_TEST_ATTRIBUTES, MULTIPLE_TEST_ATTRIBUTES,\
+    SINGLE_CSS_RULE_TEST, MULTIPLE_CSS_RULE_TEST
     
 
 
 class Test(unittest.TestCase):
+
+    def test_create_unit_test_css_rule_multiple_css_rule(self):
+        attribute_directory = {'color':'#323454',
+                               'font':'new-times-roman',
+                               'stressed':'bold'}
+        actual = create_unit_test_css_rule('login_name', attribute_directory)
+        self.maxDiff = None
+        self.assertEqual(MULTIPLE_CSS_RULE_TEST, actual)
+    
+    def test_create_unit_test_css_rule_single_css_rule(self):
+        attribute_directory = {'color':'#323454'}
+        actual = create_unit_test_css_rule('login_name', attribute_directory)
+        self.maxDiff = None
+        self.assertEqual(SINGLE_CSS_RULE_TEST, actual)
+
+    def test_create_unit_test_attribute_multiple_attr(self):
+        attribute_directory = {'placeholder':'User name',
+                               'value':'Hello',
+                               'class':'cls_login_form'}
+        actual = create_unit_test_attribute('login_name', attribute_directory)
+        self.maxDiff = None
+        self.assertEqual(MULTIPLE_TEST_ATTRIBUTES, actual)
+    
+    def test_create_unit_test_attribute_single_attr(self):
+        attribute_directory = {'placeholder':'User name'}
+        actual = create_unit_test_attribute('login_name', attribute_directory)
+        self.maxDiff = None
+        self.assertEqual(SINGLE_TEST_ATTRIBUTES, actual)
     
     def test_create_unit_test_no_siblings(self):
         actual = create_unit_test_siblings('login_password', '', '')
