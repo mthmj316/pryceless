@@ -21,10 +21,11 @@ from scripts.code_generation.generator_constants import SIBLING_CSV_SOURCE_ANNOT
     JAVA_DOC_TEST_ATTRIBUTES, SELENIUM_GET_VARIABLE_ATTRIBUTE,\
     JUNIT_ASSERT_EQUALS, SELENIUM_GET_CSS_VALUE, JAVA_DOC_TEST_CSS_RULES
 
-'''
-    Creates a parameterized css rule unit test method
-'''
+
 def create_unit_test_css_rule(tag_id, css_rule_directory):
+    '''
+        Creates a parameterized css rule unit test method
+    '''
     code = []
     code.append(create_tag_under_test_var_assignment(tag_id))
     code.append(JUNIT_ASSERT_EQUALS %('expectedValue', SELENIUM_GET_CSS_VALUE %('tag', 'cssRuleName'), '"wrong " + cssRuleName'))
