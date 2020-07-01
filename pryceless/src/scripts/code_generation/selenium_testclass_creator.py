@@ -18,6 +18,9 @@ class SeleniumTestClassCreator(object):
         
     
     def create(self):
+        '''
+            Starts the creation of the test class
+        '''
         pass
     
     @property
