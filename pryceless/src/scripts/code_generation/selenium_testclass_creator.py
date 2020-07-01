@@ -3,6 +3,7 @@ Created on 30.06.2020
 
 @author: mthoma
 '''
+from scripts.code_generation.selenium_testcase_template import create_selenium_test_class
 
 class SeleniumTestClassCreator(object):
     '''
@@ -15,13 +16,16 @@ class SeleniumTestClassCreator(object):
             
         '''
         self._html_page = html_page
-        
     
     def create(self):
         '''
             Starts the creation of the test class
         '''
-        pass
+        url = self._html_page.url()
+        test_cases = ''
+        
+        return create_selenium_test_class(url, test_cases)
+        
     
     @property
     def html_page(self):

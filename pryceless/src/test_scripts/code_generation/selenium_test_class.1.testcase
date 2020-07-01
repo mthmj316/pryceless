@@ -30,7 +30,7 @@ public class LoginPageUITest {
 	
 	private static final String WEB_DRIVER_FIRRFOX = "webdriver.gecko.driver";
 	private static final String WEB_DRIVER_FIREFOX_LOCATION = "/home/mthoma/selenium/geckodriver";
-	private static final String HTTP_ADDRESS = "$http_address";
+	private static final String HTTP_ADDRESS = "https://some.super.webpage:8080";
 	private static final WebDriver DRIVER = getDriver(); 
 	
 	@BeforeAll
@@ -59,7 +59,7 @@ public class LoginPageUITest {
 	// ##########################################################################################################
 	// ##########################################################################################################	
 	
-	$test_cases
+	//Das ist nur ein Test.
 	
 	// ##########################################################################################################
 	// ##########################################################################################################

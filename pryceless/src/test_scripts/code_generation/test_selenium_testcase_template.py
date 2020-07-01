@@ -3,17 +3,21 @@ Created on 23.06.2020
 
 @author: mthoma
 '''
+
 import unittest
 
-from scripts.code_generation.selenium_testcase_template import get_template,\
-    ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull,\
-    create_tag_under_test_var_assignment, create_assert_null,\
-    create_assert_throws, create_selenium_by_xpath, create_selenium_by_id,\
-    create_selenium_find_element, create_selenium_webelement_declaration,\
-    create_unit_test_method, create_parameterized_test_method,\
-    create_method_parameter_list, create_annotation, create_csvsource_annotation
+from scripts.code_generation.selenium_testcase_template import get_template, \
+    ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull, \
+    create_tag_under_test_var_assignment, create_assert_null, \
+    create_assert_throws, create_selenium_by_xpath, create_selenium_by_id, \
+    create_selenium_find_element, create_selenium_webelement_declaration, \
+    create_unit_test_method, create_parameterized_test_method, \
+    create_method_parameter_list, create_annotation, create_csvsource_annotation,\
+    create_selenium_test_class
 
-    
+
+SELENIUM_TEST_CLASS_1_TESTCASE = '../../test_scripts/code_generation/selenium_test_class.1.testcase'
+
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
 class Test(unittest.TestCase):
@@ -25,6 +29,13 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    
+    def test_create_selenium_test_class(self):
+        expected = get_template(SELENIUM_TEST_CLASS_1_TESTCASE)
+        actual = create_selenium_test_class('https://some.super.webpage:8080', '//Das ist nur ein Test.')
+        self.maxDiff = None
+        self.assertEqual(expected, actual)
     
     def test_create_csvsource_annotation_no_param(self):
         expected = '@CsvSource()'
@@ -34,7 +45,7 @@ class Test(unittest.TestCase):
         self.assertEqual(expected, actual)
     
     def test_create_csvsource_annotation_one_param(self):
-        expected = '@CsvSource("key_1,value_1")'
+        expected = '@CsvSource({"key_1,value_1"})'
         parameter_dictionary = {
             'key_1':'value_1'
         }
@@ -42,7 +53,7 @@ class Test(unittest.TestCase):
         self.assertEqual(expected, actual)
     
     def test_create_csvsource_annotation_many_param(self):
-        expected = '@CsvSource("key_1,value_1","key_2,value_2","key_3,value_3")'
+        expected = '@CsvSource({"key_1,value_1","key_2,value_2","key_3,value_3"})'
         parameter_dictionary = {
             'key_1':'value_1',
             'key_2':'value_2',
@@ -271,6 +282,6 @@ class Test(unittest.TestCase):
         self.assertEqual('assertEquals($expected, $actual,"wrong $attribute");', \
                          template_content, 'wrong template content')
 
-
+    
 if __name__ == "__main__":
     unittest.main()

@@ -17,16 +17,25 @@ SELENIUM_WEBELEMENT_DECLARATION_TEMPLATE = '../../templates/selenium_webelement_
 UNIT_TEST_METHOD_TEMPLATE = '../../templates/unit_test_method.template'
 UNIT_PARAMETERIZED_TEST_METHOD_TEMPLATE = '../../templates/unit_parameterized_test_method.template'
 ANNOTATION_TEMPLATE = '../../templates/annotation.template'
+SELENIUM_TES_CLASS__TEMPALTE = '../../templates/selenium_test_class.template'
 
 CSV_SOURCE_PARAMETER = '"%s,%s"'
 
-'''
+def create_selenium_test_class(http_address, test_cases):
+    '''
+    Creates a test class
+    test_cases: the code of the test cases as string
+    '''
+    _template = get_template(SELENIUM_TES_CLASS__TEMPALTE)
+    return Template(_template).substitute(http_address=http_address, test_cases=test_cases)
+
+def create_csvsource_annotation(parameter_dictionary):
+    '''
     Creates a CsvSource annotation as follows.
     @CsvSource({"parameter_dictionary.key,parameter_dictionary.value" ...)
     example
     @CsvSource({"display,table","position,absolute","top,0px","left,0px"})
-'''
-def create_csvsource_annotation(parameter_dictionary):
+    ''' 
     if len(parameter_dictionary) == 0:
         return create_annotation('CsvSource', '')
     
