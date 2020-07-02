@@ -25,7 +25,7 @@ class HTMLElement(object):
     
     @property
     def element_id(self):
-        self._element_id
+        return self._element_id
         
     @element_id.setter
     def element_id(self, value):
@@ -37,7 +37,7 @@ class HTMLElement(object):
         
     @property
     def element_name(self):
-        self._element_name
+        return self._element_name
         
     @element_name.setter
     def element_name(self, value):
@@ -49,7 +49,7 @@ class HTMLElement(object):
         
     @property
     def parent_id(self):
-        self._parent_id
+        return self._parent_id
         
     @parent_id.setter
     def parent_id(self, value):
@@ -61,7 +61,7 @@ class HTMLElement(object):
         
     @property
     def predecessor_id(self):
-        self._predecessor_id
+        return self._predecessor_id
         
     @predecessor_id.setter
     def predecessor_id(self, value):
@@ -73,7 +73,7 @@ class HTMLElement(object):
 
     @property
     def successor_id(self):
-        self._successor_id
+        return self._successor_id
         
     @successor_id.setter
     def successor_id(self, value):
@@ -85,7 +85,7 @@ class HTMLElement(object):
     
     @property
     def css_rule(self):
-        self._css_rule
+        return self._css_rule
         
     @css_rule.setter
     def css_rule(self, value):
@@ -96,7 +96,7 @@ class HTMLElement(object):
     
     @property
     def attribute(self):
-        self._attribute
+        return self._attribute
         
     @attribute.setter
     def attribute(self, value):

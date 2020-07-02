@@ -19,7 +19,7 @@ class HTMLPage(object):
     
     @property
     def page_name(self):
-        self._page_name
+        return self._page_name
         
     @page_name.setter
     def page_name(self, value):
@@ -31,7 +31,7 @@ class HTMLPage(object):
         
     @property
     def url(self):
-        self._url
+        return self._url
         
     @url.setter
     def url(self, value):
@@ -43,7 +43,7 @@ class HTMLPage(object):
     
     @property
     def html_elements(self):
-        self._html_elements
+        return self._html_elements
         
     @html_element.setter
     def html_element(self, value):
