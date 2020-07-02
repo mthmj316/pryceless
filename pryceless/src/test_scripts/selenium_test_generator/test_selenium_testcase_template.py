@@ -6,7 +6,7 @@ Created on 23.06.2020
 
 import unittest
 
-from scripts.code_generation.selenium_testcase_template import get_template, \
+from scripts.selenium_test_generator.selenium_testcase_template import get_template, \
     ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull, \
     create_tag_under_test_var_assignment, create_assert_null, \
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id, \
@@ -16,7 +16,7 @@ from scripts.code_generation.selenium_testcase_template import get_template, \
     create_selenium_test_class
 
 
-SELENIUM_TEST_CLASS_1_TESTCASE = '../../test_scripts/code_generation/selenium_test_class.1.testcase'
+SELENIUM_TEST_CLASS_1_TESTCASE = '../../test_scripts/selenium_test_generator/selenium_test_class.1.testcase'
 
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
