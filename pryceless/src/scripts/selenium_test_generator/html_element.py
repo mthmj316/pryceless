@@ -20,8 +20,8 @@ class HTMLElement(object):
         self._parent_id
         self._predecessor_id
         self._successor_id
-        self._css_rule = {}
-        self._attribute = {}
+        self._css_rules = {}
+        self._attributes = {}
     
     @property
     def element_id(self):
@@ -84,23 +84,23 @@ class HTMLElement(object):
         del self._successor_id
     
     @property
-    def css_rule(self):
-        return self._css_rule
+    def css_rules(self):
+        return self._css_rules
         
-    @css_rule.setter
-    def css_rule(self, value):
-        self._css_rule = value
+    @css_rules.setter
+    def css_rules(self, value):
+        self._css_rules = value
     
     def add_css_rule(self, property_name, property_value):
-        self._css_rule[property_name] = property_value
+        self._css_rules[property_name] = property_value
     
     @property
-    def attribute(self):
-        return self._attribute
+    def attributes(self):
+        return self._attributes
         
-    @attribute.setter
-    def attribute(self, value):
-        self._attribute = value
+    @attributes.setter
+    def attributes(self, value):
+        self._attributes = value
     
     def add_attribute(self, attribute_name, attribute_value):
-        self._attribute[attribute_name] = attribute_value    
+        self._attributes[attribute_name] = attribute_value    

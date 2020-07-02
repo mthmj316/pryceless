@@ -4,15 +4,15 @@ Created on 25.06.2020
 @author: mthoma
 '''
 import unittest
-from scripts.code_generation.selenium_testcase_creator import convert_tag_id_to_name_in_method,\
+from scripts.selenium_test_generator.selenium_testcase_creator import convert_tag_id_to_name_in_method,\
     create_unit_test_tag_name, create_unit_test_parent,\
     create_unit_test_siblings, create_unit_test_attribute,\
     create_unit_test_css_rule
-from test_scripts.code_generation.test_constants import SIBLING_EXPECTED_RESULT,\
+
+from test_scripts.selenium_test_generator.test_constants import SIBLING_EXPECTED_RESULT,\
     NO_PRECIDING_SIBLING_EXPECTED_RESULT, NO_FOLLOWING_SIBLING_EXPECTED_RESULT,\
     NO_SIBLING_EXPECTED_RESULT, SINGLE_TEST_ATTRIBUTES, MULTIPLE_TEST_ATTRIBUTES,\
-    SINGLE_CSS_RULE_TEST, MULTIPLE_CSS_RULE_TEST
-    
+    SINGLE_CSS_RULE_TEST, MULTIPLE_CSS_RULE_TEST 
 
 
 class Test(unittest.TestCase):

@@ -10,12 +10,12 @@ The following test case can be created by this script:
 @author: mthoma
 '''
 
-from scripts.code_generation.selenium_testcase_template import create_tag_under_test_var_assignment,\
+from scripts.selenium_test_generator.selenium_testcase_template import create_tag_under_test_var_assignment,\
     create_unit_test_method, create_assert_equals,\
     create_selenium_webelement_declaration, create_selenium_find_element,\
     create_selenium_by_xpath, create_assert_throws,\
     create_parameterized_test_method, create_csvsource_annotation
-from scripts.code_generation.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION,\
+from scripts.selenium_test_generator.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION,\
     SELENIUM_GET_ATTRIBUTE, NO_SUCH_ELEMENT_EXCEPTION_CLASS,\
     JAVA_DOC_TEST_PARENT, JAVA_DOC_TEST_TAG_NAME, JAVA_DOC_TEST_SIBLINGS,\
     JAVA_DOC_TEST_ATTRIBUTES, SELENIUM_GET_VARIABLE_ATTRIBUTE,\
