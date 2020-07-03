@@ -3,13 +3,17 @@ Created on 22.06.2020
 
 @author: mthoma
 '''
+
+import importlib.resources as pkg_resources
+
 from string import Template
+from os.path import os
 
 ASSERT_EQUALS_TEMPLATE = '../../templates/assert-equals.template'
 ASSERT_NOTNULL_TEMPLATE = '../../templates/assert-notnull.template'
 ASSERT_NULL_TEMPLATE = '../../templates/assert-null.template'
 ASSERT_THROWS_TEMPLATE = '../../templates/assert-throws.template'
-TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE = '../../templates/tag-under-test-var-assignment.template'
+TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE = 'tag-under-test-var-assignment.template'
 SELENIUM_BY_XPATH_TEMPLATE = '../../templates/selenium_by_xpath.template'
 SELENIUM_BY_ID_TEMPLATE = '../../templates/selenium_by_id.template'
 SELENIUM_FIND_ELEMENT_TEMPLATE = '../../templates/selenium_find_element.template'
@@ -150,7 +154,11 @@ def create_assert_throws(expected_exception, executable):
    e.g: final WebElement tag = DRIVER.findElement(By.id("login_form"));
 '''
 def create_tag_under_test_var_assignment(tag_id):
+    template = pkg_resources.read_text(__package__, TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE)
+
     _template = get_template(TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE)
+    
+    
     return Template(_template).substitute(tag_id=tag_id)
 
 '''
@@ -184,6 +192,7 @@ def create_assert_equals(expected_value, actual_value, attribute_name):
         template_name: fully qualified name of the template
 '''
 def get_template(template_name):
+ #   print(os.getcwd())
     with open(template_name, 'r') as file:
         return file.read()
     
