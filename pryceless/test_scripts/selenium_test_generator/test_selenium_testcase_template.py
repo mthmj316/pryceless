@@ -3,10 +3,10 @@ Created on 23.06.2020
 
 @author: mthoma
 '''
-
+import importlib.resources as pkg_resources
 import unittest
 
-from scripts.selenium_test_generator.selenium_testcase_template import get_template, \
+from scripts.selenium_test_generator.selenium_testcase_template import \
     ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull, \
     create_tag_under_test_var_assignment, create_assert_null, \
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id, \
@@ -14,9 +14,11 @@ from scripts.selenium_test_generator.selenium_testcase_template import get_templ
     create_unit_test_method, create_parameterized_test_method, \
     create_method_parameter_list, create_annotation, create_csvsource_annotation,\
     create_selenium_test_class
+from scripts import selenium_test_generator
+import templates
 
 
-SELENIUM_TEST_CLASS_1_TESTCASE = '../../test_scripts/selenium_test_generator/selenium_test_class.1.testcase'
+SELENIUM_TEST_CLASS_1_TESTCASE = 'selenium_test_class.1.testcase'
 
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
@@ -32,8 +34,10 @@ class Test(unittest.TestCase):
 
     
     def test_create_selenium_test_class(self):
-        expected = get_template(SELENIUM_TEST_CLASS_1_TESTCASE)
-        actual = create_selenium_test_class('https://some.super.webpage:8080', '//Das ist nur ein Test.')
+        with open(SELENIUM_TEST_CLASS_1_TESTCASE, 'r') as file:
+            expected = file.read()
+        actual = create_selenium_test_class('https://some.super.webpage:8080',\
+                                            '//Das ist nur ein Test.')
         self.maxDiff = None
         self.assertEqual(expected, actual)
     
@@ -278,7 +282,7 @@ class Test(unittest.TestCase):
         tests the selenium_testcase_template.get_template() function
     '''
     def test_get_template(self):
-        template_content = get_template(ASSERT_EQUALS_TEMPLATE)
+        template_content = pkg_resources.read_text(templates, ASSERT_EQUALS_TEMPLATE)
         self.assertEqual('assertEquals($expected, $actual,"wrong $attribute");', \
                          template_content, 'wrong template content')
 
