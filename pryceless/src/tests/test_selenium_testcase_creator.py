@@ -4,9 +4,9 @@ Created on 25.06.2020
 @author: mthoma
 '''
 import unittest
-from scripts.selenium_testcase_creator import create_unit_test_css_rule,\
-    create_unit_test_attribute, create_unit_test_siblings,\
-    create_unit_test_parent, create_unit_test_tag_name,\
+from scripts.selenium_testcase_creator import create_unittest_css_rule,\
+    create_unittest_attribute, create_unittest_siblings,\
+    create_unittest_parent, create_unittest_tag_name,\
     convert_tag_id_to_name_in_method
 
 from tests.prycelesstest_constants import MULTIPLE_CSS_RULE_TEST,\
@@ -21,13 +21,13 @@ class Test(unittest.TestCase):
         attribute_directory = {'color':'#323454',
                                'font':'new-times-roman',
                                'stressed':'bold'}
-        actual = create_unit_test_css_rule('login_name', attribute_directory)
+        actual = create_unittest_css_rule('login_name', attribute_directory)
         self.maxDiff = None
         self.assertEqual(MULTIPLE_CSS_RULE_TEST, actual)
     
     def test_create_unit_test_css_rule_single_css_rule(self):
         attribute_directory = {'color':'#323454'}
-        actual = create_unit_test_css_rule('login_name', attribute_directory)
+        actual = create_unittest_css_rule('login_name', attribute_directory)
         self.maxDiff = None
         self.assertEqual(SINGLE_CSS_RULE_TEST, actual)
 
@@ -35,33 +35,33 @@ class Test(unittest.TestCase):
         attribute_directory = {'placeholder':'User name',
                                'value':'Hello',
                                'class':'cls_login_form'}
-        actual = create_unit_test_attribute('login_name', attribute_directory)
+        actual = create_unittest_attribute('login_name', attribute_directory)
         self.maxDiff = None
         self.assertEqual(MULTIPLE_TEST_ATTRIBUTES, actual)
     
     def test_create_unit_test_attribute_single_attr(self):
         attribute_directory = {'placeholder':'User name'}
-        actual = create_unit_test_attribute('login_name', attribute_directory)
+        actual = create_unittest_attribute('login_name', attribute_directory)
         self.maxDiff = None
         self.assertEqual(SINGLE_TEST_ATTRIBUTES, actual)
     
     def test_create_unit_test_no_siblings(self):
-        actual = create_unit_test_siblings('login_password', '', '')
+        actual = create_unittest_siblings('login_password', '', '')
         self.maxDiff = None
         self.assertEqual(NO_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings_no_following(self):
-        actual = create_unit_test_siblings('login_password', 'login_error_message', '')
+        actual = create_unittest_siblings('login_password', 'login_error_message', '')
         self.maxDiff = None
         self.assertEqual(NO_FOLLOWING_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings_no_preceding(self):
-        actual = create_unit_test_siblings('login_password', '', 'login_name')
+        actual = create_unittest_siblings('login_password', '', 'login_name')
         self.maxDiff = None
         self.assertEqual(NO_PRECIDING_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings(self):
-        actual = create_unit_test_siblings('login_password', 'login_error_message', 'login_name')
+        actual = create_unittest_siblings('login_password', 'login_error_message', 'login_name')
         self.maxDiff = None
         self.assertEqual(SIBLING_EXPECTED_RESULT, actual)
     
@@ -75,7 +75,7 @@ class Test(unittest.TestCase):
                     '\n\tassertEquals("main_container", parent.getAttribute("id"),"wrong parent");'
                     '\n}'
                     )
-        actual = create_unit_test_parent('main_header', 'main_container')
+        actual = create_unittest_parent('main_header', 'main_container')
         self.assertEqual(expected, actual)
     
     def test_create_unit_test_tag_name(self):
@@ -87,7 +87,7 @@ class Test(unittest.TestCase):
                     '\n\tassertEquals("div", tag.getTagName(),"wrong tag name");'
                     '\n}'
                     )
-        actual = create_unit_test_tag_name('main_center_container', 'div')
+        actual = create_unittest_tag_name('main_center_container', 'div')
         self.assertEqual(expected, actual)
     
     def test_convert_tag_id_to_name_in_method_trailing_underscore(self):

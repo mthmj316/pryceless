@@ -3,13 +3,9 @@ Created on 22.06.2020
 
 @author: mthoma
 '''
-#import importlib.resources as pkg_resources
-from importlib import import_module
 
 from string import Template
-import templates
 import os
-from os.path import os
 
 ASSERT_EQUALS_TEMPLATE = 'assert-equals.template'
 ASSERT_NOTNULL_TEMPLATE = 'assert-notnull.template'
@@ -27,7 +23,7 @@ SELENIUM_TES_CLASS__TEMPALTE = 'selenium_test_class.template'
 
 CSV_SOURCE_PARAMETER = '"%s,%s"'
 
-def create_selenium_test_class(http_address, test_cases):
+def create_selenium_unittest_class(http_address, test_cases):
     '''
     Creates a test class
     test_cases: the code of the test cases as string
@@ -92,7 +88,7 @@ def create_method_parameter_list(parameter_dict):
             <test_method_content>
         }
 '''
-def create_parameterized_test_method(variable_dict):
+def create_parameterized_unittest_method(variable_dict):
     return get_template(UNIT_PARAMETERIZED_TEST_METHOD_TEMPLATE).substitute(variable_dict)
 
 '''
@@ -104,7 +100,7 @@ def create_parameterized_test_method(variable_dict):
         test_method_content
     }
 '''
-def create_unit_test_method(what_is_tested, test_method_content):
+def create_unittest_method(what_is_tested, test_method_content):
     return get_template(UNIT_TEST_METHOD_TEMPLATE).substitute(what_is_tested=what_is_tested,\
                                           test_method_content=test_method_content)
     
@@ -146,7 +142,7 @@ def create_assert_throws(expected_exception, executable):
    Creates the code for the tag under test variable assignment:
    e.g: final WebElement tag = DRIVER.findElement(By.id("login_form"));
 '''
-def create_tag_under_test_var_assignment(tag_id):
+def create_tag_under_unittest_var_assignment(tag_id):
     return get_template(TAG_UNDER_TEST_VAR_ASSIGNMENT_TEMPLATE).substitute(tag_id=tag_id)
 
 '''

@@ -8,12 +8,12 @@ import unittest
 
 from scripts.selenium_testcase_template import \
     create_assert_equals, create_assert_notnull, \
-    create_tag_under_test_var_assignment, create_assert_null, \
+    create_tag_under_unittest_var_assignment, create_assert_null, \
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id, \
     create_selenium_find_element, create_selenium_webelement_declaration, \
-    create_unit_test_method, create_parameterized_test_method, \
+    create_unittest_method, create_parameterized_unittest_method, \
     create_method_parameter_list, create_annotation, create_csvsource_annotation, \
-    create_selenium_test_class
+    create_selenium_unittest_class
 import os
 
 
@@ -35,12 +35,10 @@ class Test(unittest.TestCase):
     
     def test_create_selenium_test_class(self):
         path_to_templates = os.path.join(os.path.dirname(os.path.abspath(__file__)), SELENIUM_TEST_CLASS_1_TESTCASE)
-       
-        print(path_to_templates)
-       
+            
         with open(path_to_templates, 'r') as file:
             expected = file.read()
-        actual = create_selenium_test_class('https://some.super.webpage:8080',\
+        actual = create_selenium_unittest_class('https://some.super.webpage:8080',\
                                             '//Das ist nur ein Test.')
         self.maxDiff = None
         self.assertEqual(expected, actual)
@@ -139,7 +137,7 @@ class Test(unittest.TestCase):
         }
         
         expected = '@ParameterizedTest\n@annotation\npublic void testARealyCoolTest(String name){\n\tassert(name,this.getName());\n}'
-        actual = create_parameterized_test_method(var_dict)
+        actual = create_parameterized_unittest_method(var_dict)
         self.assertEqual(expected, actual)
 
     '''
@@ -147,7 +145,7 @@ class Test(unittest.TestCase):
     '''
     def test_create_unit_test_method_single_line_content(self):
         expected = '@Test\npublic void testHTMLLang(){\n\tthis is a single line content\n}'
-        actual = create_unit_test_method('HTMLLang', '\tthis is a single line content')
+        actual = create_unittest_method('HTMLLang', '\tthis is a single line content')
         self.assertEqual(expected, actual)
 
     '''
@@ -196,7 +194,7 @@ class Test(unittest.TestCase):
     '''
     def test_create_tag_under_test_var_assignment(self):
         expected = 'final WebElement tag = DRIVER.findElement(By.id("login_form"));'
-        actual = create_tag_under_test_var_assignment('login_form')
+        actual = create_tag_under_unittest_var_assignment('login_form')
         self.assertEqual(expected, actual)
     
     '''
