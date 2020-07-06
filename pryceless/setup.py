@@ -6,6 +6,6 @@ setup(
     version="0.1",
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    package_data={'templates': ['*.template']},
+    package_data={'': ['*.template', '*.expected']},
     include_package_data=True,
 )
