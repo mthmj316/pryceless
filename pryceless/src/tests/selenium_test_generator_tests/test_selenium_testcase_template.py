@@ -7,15 +7,14 @@ Created on 23.06.2020
 import unittest
 
 from scripts.selenium_test_generator.selenium_testcase_template import \
-    ASSERT_EQUALS_TEMPLATE, create_assert_equals, create_assert_notnull, \
+    create_assert_equals, create_assert_notnull, \
     create_tag_under_test_var_assignment, create_assert_null, \
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id, \
     create_selenium_find_element, create_selenium_webelement_declaration, \
     create_unit_test_method, create_parameterized_test_method, \
-    create_method_parameter_list, create_annotation, create_csvsource_annotation,\
-    create_selenium_test_class, get_template
-from scripts import selenium_test_generator
-import templates
+    create_method_parameter_list, create_annotation, create_csvsource_annotation, \
+    create_selenium_test_class
+
 
 
 SELENIUM_TEST_CLASS_1_TESTCASE = 'selenium_class.1.expected'
