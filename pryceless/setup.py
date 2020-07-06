@@ -1,4 +1,5 @@
-from setuptools import setup, find_packages
+from setuptools.core import setup, find_packages
+
 
 setup(
     name='pryceless',
@@ -7,5 +8,6 @@ setup(
     packages=find_packages('src'),
     package_data={
         '': ['*.template']
-    }
+    },
+    test_suite='tests'
 )

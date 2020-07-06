@@ -3,7 +3,7 @@ Created on 23.06.2020
 
 @author: mthoma
 '''
-import importlib.resources as pkg_resources
+
 import unittest
 
 from scripts.selenium_test_generator.selenium_testcase_template import \
@@ -13,12 +13,12 @@ from scripts.selenium_test_generator.selenium_testcase_template import \
     create_selenium_find_element, create_selenium_webelement_declaration, \
     create_unit_test_method, create_parameterized_test_method, \
     create_method_parameter_list, create_annotation, create_csvsource_annotation,\
-    create_selenium_test_class
+    create_selenium_test_class, get_template
 from scripts import selenium_test_generator
 import templates
 
 
-SELENIUM_TEST_CLASS_1_TESTCASE = 'selenium_test_class.1.testcase'
+SELENIUM_TEST_CLASS_1_TESTCASE = 'selenium_class.1.expected'
 
 WRONG_ASSERT_EQUALS = 'wrong assertEquals'
 
@@ -280,11 +280,11 @@ class Test(unittest.TestCase):
 
     '''
         tests the selenium_testcase_template.get_template() function
-    '''
     def test_get_template(self):
-        template_content = pkg_resources.read_text(templates, ASSERT_EQUALS_TEMPLATE)
+        template_content = get_template(ASSERT_EQUALS_TEMPLATE)
         self.assertEqual('assertEquals($expected, $actual,"wrong $attribute");', \
                          template_content, 'wrong template content')
+    '''
 
     
 if __name__ == "__main__":

@@ -9,6 +9,9 @@ from scripts.selenium_test_generator.selenium_testcase_creator import create_uni
     create_unit_test_parent, create_unit_test_tag_name,\
     convert_tag_id_to_name_in_method
 
+import prycelesstest_constants
+
+
 class Test(unittest.TestCase):
 
     def test_create_unit_test_css_rule_multiple_css_rule(self):
@@ -17,13 +20,13 @@ class Test(unittest.TestCase):
                                'stressed':'bold'}
         actual = create_unit_test_css_rule('login_name', attribute_directory)
         self.maxDiff = None
-        self.assertEqual(MULTIPLE_CSS_RULE_TEST, actual)
+        self.assertEqual(prycelesstest_constants.MULTIPLE_CSS_RULE_TEST, actual)
     
     def test_create_unit_test_css_rule_single_css_rule(self):
         attribute_directory = {'color':'#323454'}
         actual = create_unit_test_css_rule('login_name', attribute_directory)
         self.maxDiff = None
-        self.assertEqual(SINGLE_CSS_RULE_TEST, actual)
+        self.assertEqual(prycelesstest_constants.SINGLE_CSS_RULE_TEST, actual)
 
     def test_create_unit_test_attribute_multiple_attr(self):
         attribute_directory = {'placeholder':'User name',
@@ -31,33 +34,33 @@ class Test(unittest.TestCase):
                                'class':'cls_login_form'}
         actual = create_unit_test_attribute('login_name', attribute_directory)
         self.maxDiff = None
-        self.assertEqual(MULTIPLE_TEST_ATTRIBUTES, actual)
+        self.assertEqual(prycelesstest_constants.MULTIPLE_TEST_ATTRIBUTES, actual)
     
     def test_create_unit_test_attribute_single_attr(self):
         attribute_directory = {'placeholder':'User name'}
         actual = create_unit_test_attribute('login_name', attribute_directory)
         self.maxDiff = None
-        self.assertEqual(SINGLE_TEST_ATTRIBUTES, actual)
+        self.assertEqual(prycelesstest_constants.SINGLE_TEST_ATTRIBUTES, actual)
     
     def test_create_unit_test_no_siblings(self):
         actual = create_unit_test_siblings('login_password', '', '')
         self.maxDiff = None
-        self.assertEqual(NO_SIBLING_EXPECTED_RESULT, actual)
+        self.assertEqual(prycelesstest_constants.NO_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings_no_following(self):
         actual = create_unit_test_siblings('login_password', 'login_error_message', '')
         self.maxDiff = None
-        self.assertEqual(NO_FOLLOWING_SIBLING_EXPECTED_RESULT, actual)
+        self.assertEqual(prycelesstest_constants.NO_FOLLOWING_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings_no_preceding(self):
         actual = create_unit_test_siblings('login_password', '', 'login_name')
         self.maxDiff = None
-        self.assertEqual(NO_PRECIDING_SIBLING_EXPECTED_RESULT, actual)
+        self.assertEqual(prycelesstest_constants.NO_PRECIDING_SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_siblings(self):
         actual = create_unit_test_siblings('login_password', 'login_error_message', 'login_name')
         self.maxDiff = None
-        self.assertEqual(SIBLING_EXPECTED_RESULT, actual)
+        self.assertEqual(prycelesstest_constants.SIBLING_EXPECTED_RESULT, actual)
     
     def test_create_unit_test_parent(self):
         expected = ('/**\n* Test if the tag with id==main_header has the parent with the id==main_container.\n*/'
