@@ -4,7 +4,7 @@ Created on 30.06.2020
 @author: mthoma
 '''
 
-class HTMLPage(object):
+class HTMLPage:
     '''
     classdocs
     '''

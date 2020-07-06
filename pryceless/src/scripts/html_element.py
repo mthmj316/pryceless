@@ -3,9 +3,8 @@ Created on 30.06.2020
 
 @author: mthoma
 '''
-from orca.scripts import self_voicing
 
-class HTMLElement(object):
+class HTMLElement:
     '''
     classdocs
     '''
