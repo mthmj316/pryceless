@@ -9,4 +9,6 @@ setup(
     package_data={
         '': ['*.template']
     },
+    package_data={'templates': ['*.template']},
+    include_package_data=True,
 )
