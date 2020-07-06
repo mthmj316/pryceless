@@ -3,8 +3,8 @@ Created on 30.06.2020
 
 @author: mthoma
 '''
-from scripts.selenium_test_generator.selenium_testcase_template import create_selenium_test_class
-from scripts.selenium_test_generator.selenium_testcase_creator import create_unit_test_tag_name,\
+from scripts.selenium_testcase_template import create_selenium_test_class
+from scripts.selenium_testcase_creator import create_unit_test_tag_name,\
     create_unit_test_parent, create_unit_test_siblings,\
     create_unit_test_attribute, create_unit_test_css_rule
 
