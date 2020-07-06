@@ -14,6 +14,7 @@ from scripts.selenium_testcase_template import \
     create_unit_test_method, create_parameterized_test_method, \
     create_method_parameter_list, create_annotation, create_csvsource_annotation, \
     create_selenium_test_class
+import os
 
 
 
@@ -33,7 +34,11 @@ class Test(unittest.TestCase):
 
     
     def test_create_selenium_test_class(self):
-        with open(SELENIUM_TEST_CLASS_1_TESTCASE, 'r') as file:
+        path_to_templates = os.path.join(os.path.dirname(os.path.abspath(__file__)), SELENIUM_TEST_CLASS_1_TESTCASE)
+       
+        print(path_to_templates)
+       
+        with open(path_to_templates, 'r') as file:
             expected = file.read()
         actual = create_selenium_test_class('https://some.super.webpage:8080',\
                                             '//Das ist nur ein Test.')
