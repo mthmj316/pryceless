@@ -9,7 +9,7 @@ from scripts.selenium_test_generator.selenium_testcase_creator import create_uni
     create_unit_test_parent, create_unit_test_tag_name,\
     convert_tag_id_to_name_in_method
 
-from tests.selenium_test_generator_test.prycelesstest_constants import MULTIPLE_CSS_RULE_TEST,\
+from tests.prycelesstest_constants import MULTIPLE_CSS_RULE_TEST,\
     SINGLE_CSS_RULE_TEST, MULTIPLE_TEST_ATTRIBUTES, SINGLE_TEST_ATTRIBUTES,\
     NO_SIBLING_EXPECTED_RESULT, NO_FOLLOWING_SIBLING_EXPECTED_RESULT,\
     NO_PRECIDING_SIBLING_EXPECTED_RESULT, SIBLING_EXPECTED_RESULT
