@@ -6,7 +6,7 @@ Created on 23.06.2020
 
 import unittest
 
-from scripts.selenium_test_generator.selenium_testcase_template import \
+from scripts.selenium_testcase_template import \
     create_assert_equals, create_assert_notnull, \
     create_tag_under_test_var_assignment, create_assert_null, \
     create_assert_throws, create_selenium_by_xpath, create_selenium_by_id, \
