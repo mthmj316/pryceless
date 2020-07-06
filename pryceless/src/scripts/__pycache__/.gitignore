@@ -1,2 +1,5 @@
 /__init__.cpython-39.pyc
 /__init__.cpython-36.pyc
+/generator_constants.cpython-36.pyc
+/selenium_testcase_creator.cpython-36.pyc
+/selenium_testcase_template.cpython-36.pyc
