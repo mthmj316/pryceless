@@ -9,5 +9,6 @@ setup(
     package_data={
         '': ['*.template']
     },
-    test_suite='tests'
+    test_suite='nose.collector',
+    tests_require=['nose'],
 )
