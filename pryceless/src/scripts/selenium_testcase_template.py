@@ -179,6 +179,8 @@ def create_assert_equals(expected_value, actual_value, attribute_name):
 '''    
 def get_template(template_name):
     print(os.getcwd())
-    with open('../templates/' + template_name, 'r') as file:
+    print(os.path.abspath('../templates/' + template_name))
+  #  with open('../templates/' + template_name, 'r') as file:
+    with open(os.path.abspath('../templates/' + template_name), 'r') as file:
         _template = file.read()
     return Template(_template)
