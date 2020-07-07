@@ -59,6 +59,16 @@ public class LoginPageUITest {
 	// ##########################################################################################################
 	// ##########################################################################################################	
 	
+   /**
+    * Test if the tag with id==html_id has the tag name==.
+    */
+	@Test
+	public void testHTMLTagName() {
+
+		WebElement tag = DRIVER.findElement(By.id("html_id"));
+		assertEquals("html", tag);
+	}
+	
 	/**
 	 * Test if the attribute lang == en
 	 */
@@ -72,19 +82,25 @@ public class LoginPageUITest {
 		//Expected language is en
 		assertEquals("en", actual);
 	}
+	
+   /**
+    * Test if the siblings of the tag with id==html_id.
+    * expected preceding sibling id==
+    * expected following sibling id==
+    * Hint if id==<empty> the corresponding sibling doesn't exists.
+    */
+	@ParameterizedTest
+	@CsvSource({",following-sibling::*[1]", ",preceding-sibling::*[1]"})
+	public void testHtmlSibling(final String expectedSiblingId, final String xpath) {
 
-	/**
-	 * Test if the tag with id HTML has the tag name HTML.
-	 */
-	@Test
-	public void testHTMLTagName() {
-
-		WebElement htmlTag = DRIVER.findElement(By.id("html"));
-
-		String actual = htmlTag.getTagName();
-
-		//Expected tage name is HTML
-		assertEquals("html", actual);
+		final WebElement tag = DRIVER.findElement(By.id("html_id"));
+		
+		if(expectedSiblingId == null) {
+			assertThrows(NoSuchElementException.class, () -> tag.findElement(By.xpath(xpath)));		
+		} else {
+			final WebElement sibling = tag.findElement(By.xpath(xpath));
+			assertEquals(expectedSiblingId, sibling.getAttribute("id"), "wrong sibling");
+		}
 	}
 	
 	// ##########################################################################################################

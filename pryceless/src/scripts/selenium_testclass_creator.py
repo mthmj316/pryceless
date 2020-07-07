@@ -24,10 +24,10 @@ class SeleniumTestClassCreator:
         '''
             Starts the creation of the test class and returns the formated code.
         '''
-        url = self._html_page.url()
+        url = self._html_page.url
         test_cases = []
         
-        for html_element in self._html_page.html_element():
+        for html_element in self._html_page.html_element:
             test_cases = test_cases + self.__create_html_element(html_element)
         
         return create_selenium_unittest_class(url, '\n\n'.join(test_cases))
@@ -37,15 +37,15 @@ class SeleniumTestClassCreator:
             Creates all test cases for the given html_element
         '''
         test_cases = []
-        test_cases.append(create_unittest_tag_name(html_element.element_id(), html_element.element_name()))
-        test_cases.append(create_unittest_parent(html_element.element_id(), html_element.parent_id()))
-        test_cases.append(create_unittest_siblings(html_element.element_id(),\
-                                                    html_element.predecessor_id(),\
-                                                    html_element.successor_id()))
-        test_cases.append(create_unittest_attribute(html_element.element_id(),\
-                                                     html_element.attributes()))
+        test_cases.append(create_unittest_tag_name(html_element.element_id, html_element.element_name))
+        test_cases.append(create_unittest_parent(html_element.element_id, html_element.parent_id))
+        test_cases.append(create_unittest_siblings(html_element.element_id,\
+                                                    html_element.predecessor_id,\
+                                                    html_element.successor_id))
+        test_cases.append(create_unittest_attribute(html_element.element_id,\
+                                                     html_element.attributes))
         test_cases.append(create_unittest_css_rule(html_element.element_id,\
-                                                    html_element.css_rules()))        
+                                                    html_element.css_rules))        
         
         return test_cases
     

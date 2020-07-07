@@ -26,6 +26,10 @@ def create_unittest_css_rule(tag_id, css_rule_directory):
     '''
         Creates a parameterized css rule unit test method
     '''
+    
+    if len(css_rule_directory) == 0:
+        return ''
+    
     code = []
     code.append(create_tag_under_unittest_var_assignment(tag_id))
     code.append(JUNIT_ASSERT_EQUALS %('expectedValue',\
@@ -48,6 +52,10 @@ def create_unittest_attribute(tag_id, attribute_directory):
     '''
         Creates a parameterized attribute unit test method
     '''
+    
+    if len(attribute_directory) == 0:
+        return ''
+    
     code = []
     code.append(create_tag_under_unittest_var_assignment(tag_id))
     code.append(JUNIT_ASSERT_EQUALS %('expectedValue',\
