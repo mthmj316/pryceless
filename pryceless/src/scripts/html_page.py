@@ -66,7 +66,7 @@ class HTMLPage:
         '''
         return self._html_elements
 
-    @html_element.setter
+    @html_elements.setter
     def html_element(self, value):
         '''
             html_elements setter

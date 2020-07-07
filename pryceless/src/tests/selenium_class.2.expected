@@ -1,0 +1,161 @@
+package de.mthoma.demowebapp.ui;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class LoginPageUITest {
+	
+	private static final String WEB_DRIVER_FIRRFOX = "webdriver.gecko.driver";
+	private static final String WEB_DRIVER_FIREFOX_LOCATION = "/home/mthoma/selenium/geckodriver";
+	private static final String HTTP_ADDRESS = "https://some.super.webpage:8080";
+	private static final WebDriver DRIVER = getDriver(); 
+	
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+
+		DRIVER.manage().window().maximize();
+		DRIVER.get(HTTP_ADDRESS);
+	}
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+		DRIVER.close();
+	}
+
+	@BeforeEach
+	void setUp() throws Exception {
+	}
+
+	@AfterEach
+	void tearDown() throws Exception {
+	}
+	
+	// ##########################################################################################################
+	// ##########################################################################################################
+	// TEST CASES START
+	// ##########################################################################################################
+	// ##########################################################################################################	
+	
+	/**
+	 * Test if the attribute lang == en
+	 */
+	@Test
+	public void testHTMLTagAttrLang() {
+
+		WebElement htmlTag = DRIVER.findElement(By.id("html"));
+
+		String actual = htmlTag.getAttribute("lang");
+
+		//Expected language is en
+		assertEquals("en", actual);
+	}
+
+	/**
+	 * Test if the tag with id HTML has the tag name HTML.
+	 */
+	@Test
+	public void testHTMLTagName() {
+
+		WebElement htmlTag = DRIVER.findElement(By.id("html"));
+
+		String actual = htmlTag.getTagName();
+
+		//Expected tage name is HTML
+		assertEquals("html", actual);
+	}
+	
+	// ##########################################################################################################
+	// ##########################################################################################################
+	// TEST CASES END
+	// ##########################################################################################################
+	// ##########################################################################################################
+	
+	// ##########################################################################################################
+	// ##########################################################################################################
+	// NO TEST CASES
+	// COMMON HELPER METHDOS
+	// ##########################################################################################################
+	// ##########################################################################################################	
+		
+	/*
+	 * Returns the window width.
+	 * @param driver {@link WebDriver}
+	 * @return int
+	 */
+	private static long getWindowWidth(final WebDriver driver) {
+		
+		final JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+		
+		long width = (long) javascriptExecutor.executeScript(
+				"return window.innerWidth;");
+		
+		return width;
+	}
+	
+	/*
+	 * Returns the window height.
+	 * @param driver {@link WebDriver}
+	 * @return int
+	 */
+	private static long getWindowHeight(final WebDriver driver) {
+		
+		final JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+		
+		long height = (long) javascriptExecutor.executeScript(
+				"return window.innerHeight;");
+		
+		return height;
+	}
+	
+	/*
+	 * Returns the web driver.
+	 * Before the driver is created it is checked if the web driver system property
+	 * is set, and if not it'll set it.
+	 */
+	private static WebDriver getDriver() {
+		
+		setWebDriverSystemProperty();
+		
+		return new FirefoxDriver();
+	}
+
+	/*
+	 * Sets the web driver system property if not already done.
+	 */
+	private static void setWebDriverSystemProperty() {
+		
+		if(!isWebDriverSystemPropertySet()) {
+			System.setProperty(WEB_DRIVER_FIRRFOX, WEB_DRIVER_FIREFOX_LOCATION);
+		}	
+	}
+
+	/*
+	 * Return true if the web driver system property is set.
+	 */
+	private static boolean isWebDriverSystemPropertySet() {
+		return WEB_DRIVER_FIREFOX_LOCATION.equals(System.getProperty(WEB_DRIVER_FIRRFOX));
+	}
+}
