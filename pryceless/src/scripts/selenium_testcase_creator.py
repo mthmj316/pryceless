@@ -28,7 +28,9 @@ def create_unittest_css_rule(tag_id, css_rule_directory):
     '''
     code = []
     code.append(create_tag_under_unittest_var_assignment(tag_id))
-    code.append(JUNIT_ASSERT_EQUALS %('expectedValue', SELENIUM_GET_CSS_VALUE %('tag', 'cssRuleName'), '"wrong " + cssRuleName'))
+    code.append(JUNIT_ASSERT_EQUALS %('expectedValue',\
+                                      SELENIUM_GET_CSS_VALUE %('tag', 'cssRuleName'),\
+                                      '"wrong " + cssRuleName'))
     
     variable_dict = {'parameter_sources':create_csvsource_annotation(css_rule_directory),
                      'what_is_tested': convert_tag_id_to_name_in_method(tag_id) + 'CssRule',
@@ -41,13 +43,16 @@ def create_unittest_css_rule(tag_id, css_rule_directory):
     
     return '\n'.join(method)
 
-'''
-    Creates a parameterized attribute unit test method
-'''
+
 def create_unittest_attribute(tag_id, attribute_directory):
+    '''
+        Creates a parameterized attribute unit test method
+    '''
     code = []
     code.append(create_tag_under_unittest_var_assignment(tag_id))
-    code.append(JUNIT_ASSERT_EQUALS %('expectedValue', SELENIUM_GET_VARIABLE_ATTRIBUTE %('tag', 'attributeName'), '"wrong " + attributeName'))
+    code.append(JUNIT_ASSERT_EQUALS %('expectedValue',\
+                                      SELENIUM_GET_VARIABLE_ATTRIBUTE %('tag', 'attributeName'),\
+                                      '"wrong " + attributeName'))
     
     variable_dict = {'parameter_sources':create_csvsource_annotation(attribute_directory),
                      'what_is_tested': convert_tag_id_to_name_in_method(tag_id) + 'Attributes',
@@ -60,14 +65,15 @@ def create_unittest_attribute(tag_id, attribute_directory):
     
     return '\n'.join(method)
 
-'''
+
+def create_unittest_siblings(tag_id, predecessor_id, successor_id):
+    '''
     Creates the test methods for testing the siblings of the html tag with id==tag_id
     If both predecessor_id and  successor_id is set then one unit test method will be created 
     tag_id -> html id of the tag for which the siblings are tested
     predecessor_id  -> id of the tag which must be directly before the tag under test
                     -> if none then the test will be 
-'''
-def create_unittest_siblings(tag_id, predecessor_id, successor_id):
+    '''
     code = []
     code.append(create_tag_under_unittest_var_assignment(tag_id))
     code.append('if(expectedSiblingId == null) {')
@@ -90,32 +96,39 @@ def create_unittest_siblings(tag_id, predecessor_id, successor_id):
 def __create_unittest_sibling_csv_source(predecessor_id, successor_id):
     return SIBLING_CSV_SOURCE_ANNOTATION %(predecessor_id, successor_id)
 
-'''
+
+def __create_unittest_sibling():
+    '''
     Creates the test for when a sibling is expected.
     example:
         final WebElement sibling = tag.findElement(By.xpath(xpath));
         assertEquals(expectedSiblingId, sibling.getAttribute("id"), "wrong sibling");
         
-'''
-def __create_unittest_sibling():
+    '''
     code = []
-    code.append('\t' + create_selenium_webelement_declaration('sibling', create_selenium_find_element('tag', create_selenium_by_xpath('xpath'))))
-    code.append(create_assert_equals('expectedSiblingId', SELENIUM_GET_ATTRIBUTE %('sibling', 'id'), 'sibling'))
+    code.append('\t' +\
+                create_selenium_webelement_declaration('sibling',\
+                                                              create_selenium_find_element('tag',\
+                                                                                           create_selenium_by_xpath('xpath'))))
+    code.append(create_assert_equals('expectedSiblingId',\
+                                     SELENIUM_GET_ATTRIBUTE %('sibling', 'id'), 'sibling'))
     
     return '\n\t\t'.join(code) 
 
-'''
+
+def __create_unittest_no_sibling_assertion():
+    '''
     Creates the asserThrows expression for the case when no sibling is expected
     examle:
         assertThrows(NoSuchElementException.class, () -> tag.findElement(By.xpath(xpath)));
-'''
-def __create_unittest_no_sibling_assertion():
+    '''
     by_xpath = create_selenium_by_xpath('xpath')
     find_by = create_selenium_find_element('tag', by_xpath)
     
     return '\t' + create_assert_throws(NO_SUCH_ELEMENT_EXCEPTION_CLASS, '() -> ' + find_by)
 
-'''
+def create_unittest_parent(tag_id, parent_tag_id):
+    '''
     Creates the unit test method for testing the parent of an html tag.
     example:
     /**
@@ -128,17 +141,17 @@ def __create_unittest_no_sibling_assertion():
         WebElement parentTag = tag.findElement(By.xpath("./.."));
         assertEquals("head", parentTag.getAttribute("id"), "wrong parent");
     }
-'''
-def create_unittest_parent(tag_id, parent_tag_id):
+    '''
     test_case_content = ['']
     test_case_content.append(create_tag_under_unittest_var_assignment(tag_id))
     
     parent_xpath_expr = create_selenium_by_xpath('"./.."');
-    parent_find_expr = create_selenium_find_element('tag',parent_xpath_expr)
-    parent_tag_var = create_selenium_webelement_declaration('parent',parent_find_expr)
-    
+    parent_find_expr = create_selenium_find_element('tag', parent_xpath_expr)
+    parent_tag_var = create_selenium_webelement_declaration('parent', parent_find_expr)
+
     test_case_content.append(parent_tag_var)
-    test_case_content.append(create_assert_equals('"%s"' %parent_tag_id, SELENIUM_GET_ATTRIBUTE %('parent', 'id'), 'parent'))
+    test_case_content.append(create_assert_equals('"%s"' %parent_tag_id,\
+                                                  SELENIUM_GET_ATTRIBUTE %('parent', 'id'), 'parent'))
     
     method_name = convert_tag_id_to_name_in_method(tag_id) + 'Parent'
     
@@ -146,8 +159,8 @@ def create_unittest_parent(tag_id, parent_tag_id):
     
     return '\n'.join([JAVA_DOC_TEST_PARENT %(tag_id, parent_tag_id), unit_test_method])
     
-
-'''
+def create_unittest_tag_name(tag_id, expected_tag_name):
+    '''
     Creates the unit test method for testing the html tag name
     example:
     /**
@@ -160,12 +173,10 @@ def create_unittest_parent(tag_id, parent_tag_id):
         assertEquals("title", tag.getTagName());
 
     }
-'''
-def create_unittest_tag_name(tag_id, expected_tag_name):
-    
+    '''
     test_case_content = ['']
     test_case_content.append(create_tag_under_unittest_var_assignment(tag_id))
-    test_case_content.append(create_assert_equals('"%s"' %(expected_tag_name),'tag.getTagName()', 'tag name'))
+    test_case_content.append(create_assert_equals('"%s"' %(expected_tag_name), 'tag.getTagName()', 'tag name'))
     
     method_name = convert_tag_id_to_name_in_method(tag_id) + 'TagName'
     
@@ -173,12 +184,11 @@ def create_unittest_tag_name(tag_id, expected_tag_name):
     
     return '\n'.join([JAVA_DOC_TEST_TAG_NAME %(tag_id, expected_tag_name), unit_test_method])
 
-'''
+def convert_tag_id_to_name_in_method(tag_id):
+    '''
     Converts the given tag_id to the name which is inserted in the test case method.
     link_main_theme --> LinkMainTheme
-'''
-def convert_tag_id_to_name_in_method(tag_id):
-    
+    '''
     wrk_name = tag_id.replace('_', ' ')    
     wrk_name = wrk_name.title()
     
