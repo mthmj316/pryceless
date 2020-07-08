@@ -30,4 +30,4 @@ SIBLING_CSV_SOURCE_ANNOTATION =\
 
 JUNIT_ASSERT_EQUALS = 'assertEquals(%s, %s, %s);'
 
-NO_SUCH_ELEMENT_EXCEPTION_CLASS = 'org.openqa.selenium.NoSuchElementException.class'
+NO_SUCH_ELEMENT_EXCEPTION_CLASS = 'NoSuchElementException.class'

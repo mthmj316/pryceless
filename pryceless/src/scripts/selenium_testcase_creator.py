@@ -150,6 +150,9 @@ def create_unittest_parent(tag_id, parent_tag_id):
         assertEquals("head", parentTag.getAttribute("id"), "wrong parent");
     }
     '''
+    if parent_tag_id == '':
+        return ''
+    
     test_case_content = ['']
     test_case_content.append(create_tag_under_unittest_var_assignment(tag_id))
     

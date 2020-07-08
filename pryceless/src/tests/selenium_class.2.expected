@@ -60,28 +60,16 @@ public class LoginPageUITest {
 	// ##########################################################################################################	
 	
    /**
-    * Test if the tag with id==html_id has the tag name==.
+    * Test if the tag with id==html_id has the tag name==html.
     */
 	@Test
-	public void testHTMLTagName() {
-
-		WebElement tag = DRIVER.findElement(By.id("html_id"));
-		assertEquals("html", tag);
+	public void testHtmlIdTagName(){
+	
+		final WebElement tag = DRIVER.findElement(By.id("html_id"));
+		assertEquals("html", tag.getTagName(),"wrong tag name");
 	}
 	
-	/**
-	 * Test if the attribute lang == en
-	 */
-	@Test
-	public void testHTMLTagAttrLang() {
-
-		WebElement htmlTag = DRIVER.findElement(By.id("html"));
-
-		String actual = htmlTag.getAttribute("lang");
-
-		//Expected language is en
-		assertEquals("en", actual);
-	}
+	
 	
    /**
     * Test if the siblings of the tag with id==html_id.
@@ -90,18 +78,28 @@ public class LoginPageUITest {
     * Hint if id==<empty> the corresponding sibling doesn't exists.
     */
 	@ParameterizedTest
-	@CsvSource({",following-sibling::*[1]", ",preceding-sibling::*[1]"})
-	public void testHtmlSibling(final String expectedSiblingId, final String xpath) {
-
+	@CsvSource({",preceding-sibling::*[1]", ",following-sibling::*[1]"})
+	public void testHtmlIdSibling(final String expectedSiblingId, final String xpath){
 		final WebElement tag = DRIVER.findElement(By.id("html_id"));
-		
 		if(expectedSiblingId == null) {
-			assertThrows(NoSuchElementException.class, () -> tag.findElement(By.xpath(xpath)));		
+			assertThrows(NoSuchElementException.class, () -> tag.findElement(By.xpath(xpath)));
 		} else {
 			final WebElement sibling = tag.findElement(By.xpath(xpath));
-			assertEquals(expectedSiblingId, sibling.getAttribute("id"), "wrong sibling");
+			assertEquals(expectedSiblingId, sibling.getAttribute("id"),"wrong sibling");
 		}
 	}
+	
+   /**
+    * Test of the attributes for the tag with id==html_id
+    */
+	@ParameterizedTest
+	@CsvSource({"lang,en"})
+	public void testHtmlIdAttributes(final String attributeName, final String expectedValue){
+		final WebElement tag = DRIVER.findElement(By.id("html_id"));
+		assertEquals(expectedValue, tag.getAttribute(attributeName), "wrong " + attributeName);
+	}
+	
+	
 	
 	// ##########################################################################################################
 	// ##########################################################################################################

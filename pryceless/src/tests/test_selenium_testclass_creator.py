@@ -8,6 +8,8 @@ import os
 from scripts.selenium_testclass_creator import SeleniumTestClassCreator
 from scripts.html_page import HTMLPage
 from scripts.html_element import HTMLElement
+from re import RegexFlag
+import re
 
 SELENIUM_TEST_CLASS_2_TESTCASE = 'selenium_class.2.expected'
 
@@ -23,6 +25,8 @@ class Test(unittest.TestCase):
         with open(path_to_templates, 'r') as file:
             expected = file.read()
         
+        expected = re.sub(r'(^[ \t]+|[ \t]+(?=:))', '', expected, flags=RegexFlag.M)
+        # print(expected)
         
         html_element = HTMLElement('html', 'html_id')
         html_element.add_attribute('lang', 'en')
@@ -33,7 +37,12 @@ class Test(unittest.TestCase):
         tccreator =  SeleniumTestClassCreator(page)
         
         self.maxDiff = None
-        self.assertEqual(expected, tccreator.create())
+        
+        actual = tccreator.create()
+        actual = re.sub(r'(^[ \t]+|[ \t]+(?=:))', '', actual, flags=RegexFlag.M)
+       # print(expected)
+        
+        self.assertEqual(expected, actual)
 
 
 if __name__ == "__main__":
