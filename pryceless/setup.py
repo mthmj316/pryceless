@@ -1,7 +1,8 @@
+'''
+    setup file
+'''
 from setuptools import setup
-'''
-setup file
-'''
+
 setup(
     name='pryceless',
     version="0.1",

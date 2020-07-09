@@ -205,7 +205,7 @@ def create_unittest_parent(tag_id, parent_tag_id):
     test_case_content = ['']
     test_case_content.append(create_tag_under_unittest_var_assignment(tag_id))
     
-    parent_xpath_expr = create_selenium_by_xpath('"./.."');
+    parent_xpath_expr = create_selenium_by_xpath('"./.."')
     parent_find_expr = create_selenium_find_element('tag', parent_xpath_expr)
     parent_tag_var = create_selenium_webelement_declaration('parent', parent_find_expr)
 
