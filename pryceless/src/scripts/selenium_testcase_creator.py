@@ -19,7 +19,8 @@ from scripts.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION,\
     SELENIUM_GET_ATTRIBUTE, NO_SUCH_ELEMENT_EXCEPTION_CLASS,\
     JAVA_DOC_TEST_PARENT, JAVA_DOC_TEST_TAG_NAME, JAVA_DOC_TEST_SIBLINGS,\
     JAVA_DOC_TEST_ATTRIBUTES, SELENIUM_GET_VARIABLE_ATTRIBUTE,\
-    JUNIT_ASSERT_EQUALS, SELENIUM_GET_CSS_VALUE, JAVA_DOC_TEST_CSS_RULES
+    JUNIT_ASSERT_EQUALS, SELENIUM_GET_CSS_VALUE, JAVA_DOC_TEST_CSS_RULES,\
+    JAVA_DOC_TEST_ATTRIBUTES_NO_VALUE, JUNIT_ASSERT_NOT_NULL
 
 
 def create_unittest_css_rule(tag_id, css_rule_directory):
@@ -50,7 +51,47 @@ def create_unittest_css_rule(tag_id, css_rule_directory):
 
 def create_unittest_attribute(tag_id, attribute_directory):
     '''
-        Creates a parameterized attribute unit test method
+    Case 1. attribute_directory contains no attribute without value:
+        see create_unittest_attribute(tag_id, attribute_directory)
+    Case 2. attribute_directory contains an attribute without value:
+        the generated test method contains an if clause which checks
+        if the value is set.
+         Value is set: assertEqual will be executed
+         Value is not set: assertNotNull will be executed
+    Case 3. attribute_directory is empty an empty string will be returned
+    '''
+    
+    # check if at least one attribute in attribute_directory without value.
+    # Such an attribute could be required    
+    for value in attribute_directory.values():
+        if value == '':
+            return __create_unittest_attribute_assert_eq_nn(tag_id, attribute_directory)
+    
+    return __create_unittest_attribute_asset_no_nn(tag_id, attribute_directory)
+        
+def __create_unittest_attribute_assert_eq_nn(tag_id, attribute_directory):
+    '''
+    Creates attribute unit test method with assertEqual and assertNotNull
+    '''
+            
+    code = []
+    code.append(create_tag_under_unittest_var_assignment(tag_id))
+    
+    get_tag_attribute =  SELENIUM_GET_VARIABLE_ATTRIBUTE %('tag', 'attributeName')
+    
+    code.append('if(expectedValue != null) {')
+    code.append(JUNIT_ASSERT_EQUALS %('expectedValue', get_tag_attribute, \
+                                      '"wrong " + attributeName'))
+    code.append('} else {')
+    code.append(JUNIT_ASSERT_NOT_NULL % (get_tag_attribute))
+    code.append('}')
+    
+    return __generate_unittest_attribute_code(tag_id, attribute_directory, \
+                                              code, JAVA_DOC_TEST_ATTRIBUTES_NO_VALUE)
+
+def __create_unittest_attribute_asset_no_nn(tag_id, attribute_directory):
+    '''
+        Creates a parameterized attribute unit test method withou assertNotNull
     '''
     
     if len(attribute_directory) == 0:
@@ -62,13 +103,21 @@ def create_unittest_attribute(tag_id, attribute_directory):
                                       SELENIUM_GET_VARIABLE_ATTRIBUTE %('tag', 'attributeName'),\
                                       '"wrong " + attributeName'))
     
+    return __generate_unittest_attribute_code(tag_id, attribute_directory, code, JAVA_DOC_TEST_ATTRIBUTES)
+    
+
+
+def __generate_unittest_attribute_code(tag_id, attribute_directory, code, java_doc):
+    '''
+    Generates the code for the attribute unit test.
+    '''
     variable_dict = {'parameter_sources':create_csvsource_annotation(attribute_directory),
                      'what_is_tested': convert_tag_id_to_name_in_method(tag_id) + 'Attributes',
                      'parameters': 'final String attributeName, final String expectedValue',
                      'test_method_content': '\n\t'.join(code)}
     
     method = []
-    method.append(JAVA_DOC_TEST_ATTRIBUTES %(tag_id))
+    method.append(java_doc %(tag_id))
     method.append(create_parameterized_unittest_method(variable_dict))
     
     return '\n'.join(method)

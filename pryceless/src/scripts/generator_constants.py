@@ -17,6 +17,13 @@ JAVA_DOC_TEST_ATTRIBUTES = ('/**\n'
                             '*/'
                             )
 
+JAVA_DOC_TEST_ATTRIBUTES_NO_VALUE = ('/**\n'
+                                     '* Test of the attributes for the tag with id==%s\n'
+                                     '* For each attribute with value assertEqual will be executed and\n'
+                                     '* for each attribute without value assertNotNull.\n'
+                                     '*/'
+                                     )
+
 JAVA_DOC_TEST_CSS_RULES = ('/**\n'
                            '* Test of the css rules for the tag with id==%s\n'
                            '*/'
@@ -29,5 +36,6 @@ SIBLING_CSV_SOURCE_ANNOTATION =\
 '@CsvSource({"%s,preceding-sibling::*[1]", "%s,following-sibling::*[1]"})'
 
 JUNIT_ASSERT_EQUALS = 'assertEquals(%s, %s, %s);'
+JUNIT_ASSERT_NOT_NULL = 'assertNotNull(%s);'
 
 NO_SUCH_ELEMENT_EXCEPTION_CLASS = 'NoSuchElementException.class'
