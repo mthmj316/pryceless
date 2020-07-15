@@ -79,6 +79,7 @@ class MainWindow(tk.Frame):
 
         # create the file object)
         file = tk.Menu(self.menu)
+        
 
         # adds a command to the menu option, calling it exit, and the
         # command it runs on event is client_exit
