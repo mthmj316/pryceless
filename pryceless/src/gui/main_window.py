@@ -7,6 +7,8 @@ import tkinter as tk
 import tkinter.filedialog as file_dialog
 import os
 from pathlib import Path
+from pip._internal import self_outdated_check
+from more_itertools.more import side_effect
        
     
     
@@ -25,8 +27,7 @@ class Statusbar(tk.Frame):
                                       textvariable=self.opened_file_var,
                                       font=('arial',10,'normal'))
         
-        self.opened_file_var.set('opened: ')        
-        self.opened_file_lbl.pack(fill=tk.X)        
+        self.opened_file_var.set('opened: ')       
         self.opened_file_lbl.grid(row=0, column=0)
         #self.opened_file_lbl.pack(fill=tk.X)
         
@@ -36,7 +37,7 @@ class Statusbar(tk.Frame):
                            textvariable=self.variable,
                            font=('arial',10,'normal'))
         
-        self.variable.set('Status Bar')  
+        self.variable.set('state')  
         self.label.grid(row=0, column=1)       
         #self.label.pack(fill=tk.X)
               
@@ -45,17 +46,28 @@ class Statusbar(tk.Frame):
     def set_status_text(self, text):
         self.opened_file_var.set('opened: ' + text)
 
+        
+
 
         
-class Main(tk.Frame):
+class MainInput(tk.Frame):
     '''
     classdocs
     '''
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, master):
         '''
         doc
         '''
-        pass
+        self.text_area = tk.Text(master=master)
+        self.text_area.pack(fill=tk.BOTH, expand=True)
+             
+    def set_input(self, value):
+        self.text_area.delete('1.0', tk.END)
+        self.text_area.insert(tk.END, value)  
+
+            
+    def get_input(self):
+        return self.text_area.get('1.0', tk.END)
 
 
 class MainWindow(tk.Frame):
@@ -76,30 +88,34 @@ class MainWindow(tk.Frame):
         self.create_file_menu()
         
         self.last_selected_dir = Path().home();
+        self.file_is_open = False
+
 
     
     def create_file_menu(self):
         # create the file top menu item
-        file = tk.Menu(self.menu)
+        self.file = tk.Menu(self.menu)
         
-        file.add_command(label="New", command=lambda: self.create_new())  
-        file.add_command(label="Open", command=lambda: self.open())        
+        self.file.add_command(label="New", command=lambda: self.create_new())  
+        self.file.add_command(label="Open", command=lambda: self.open())        
         
-        file.add_separator()
+        self.file.add_separator()
         
-        file.add_command(label="Generate", command=lambda: self.generate())
+        self.file.add_command(label="Generate", command=lambda: self.generate())
+        self.file.entryconfig("Generate", state=tk.DISABLED)
         
-        file.add_separator()
+        self.file.add_separator()
         
-        file.add_command(label="Save", command=lambda: self.save())
+        self.file.add_command(label="Save", command=lambda: self.save())
+        self.file.entryconfig("Save", state=tk.DISABLED)
         
-        file.add_separator()
+        self.file.add_separator()
         
         # add exit sub menu item
-        file.add_command(label="Exit", command=self.client_exit)
+        self.file.add_command(label="Exit", command=self.client_exit)
 
         #added "file" to our menu
-        self.menu.add_cascade(label="File", menu=file)
+        self.menu.add_cascade(label="File", menu=self.file)
             
 
     def client_exit(self):
@@ -110,8 +126,18 @@ class MainWindow(tk.Frame):
         pass
 
     def save(self):
-        filename =  file_dialog.asksaveasfilename(initialdir = self.last_selected_dir,title = 'Select file',filetypes = (('jpeg files','*.jpg'),('all files','*.*')))
-        print (filename)
+               
+        if self.file_is_open != True:
+            file_name =  file_dialog.asksaveasfilename(initialdir = self.last_selected_dir,title = 'Select file',filetypes = (('txt files','*.txt'), ('jpeg files','*.jpg'),('all files','*.*')))
+        else:
+            file_name = self.last_selected_dir
+        
+        if file_name:
+            self.last_selected_dir =  os.path.dirname(file_name)
+        
+            with open(file_name,'w') as file:
+                file.write(self.main_input.get_input()) 
+        
     
     def open(self):        
         #  file_name = file_dialog.askopenfilename(initialdir = '/',title = 'Select file',filetypes = (('jpeg files','*.jpg'),('all files','*.*')))
@@ -121,11 +147,21 @@ class MainWindow(tk.Frame):
         if file_name:
             self.last_selected_dir = os.path.dirname(file_name)
             self.statusbar.set_status_text(file_name)
+            with open(file_name, 'r') as file:
+                self.main_input.set_input(file.read())
         
     
     def create_new(self):
-        pass
-        
+        self.__create_main_input()
+    
+    def __create_main_input(self):
+        if(hasattr(self, 'main_input')):
+            self.main_input.set_input('')
+        else:
+            self.main_input = MainInput(self)
+            
+        self.file.entryconfig("Generate", state=tk.NORMAL)
+        self.file.entryconfig("Save", state=tk.NORMAL)
 
 
 if __name__ == "__main__":
