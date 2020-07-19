@@ -9,6 +9,9 @@ from pathlib import Path
 import tkinter as tk
 import tkinter.filedialog as file_dialog
 import tkinter.messagebox as msg_box
+from gui.list_creator import create_html_list_box
+from more_itertools.more import side_effect
+from gui import list_creator
 
 
 class Statusbar(tk.Frame):
@@ -61,6 +64,7 @@ class MainInput(tk.Frame):
         '''
         doc
         '''
+        tk.Frame.__init__(self, master)
         self.text_area = tk.Text(master=master)
         self.text_area.pack(fill=tk.BOTH, expand=True)
              
@@ -72,6 +76,32 @@ class MainInput(tk.Frame):
     def get_input(self):
         return self.text_area.get('1.0', tk.END)
 
+class TagOverview(tk.Frame):
+    '''
+    classdocs
+    '''
+    def on_html_tag_selected(self, evt):
+        # Note here that Tkinter passes an event object to onselect()
+        w = evt.widget
+        index = w.curselection()[0]
+        value = w.get(index)
+        self.description.config(state=tk.NORMAL)
+        self.description.delete('1.0', tk.END)
+        self.description.insert(tk.END, list_creator.get_tag_description(value))
+        self.description.config(state=tk.DISABLED) 
+    
+    def __init__(self, master):
+        '''
+        doc
+        '''
+        tk.Frame.__init__(self, master)
+        html_overvew_lbx = create_html_list_box(self)
+        html_overvew_lbx.pack(side=tk.TOP, fill=tk.BOTH)
+        html_overvew_lbx.bind('<<ListboxSelect>>', self.on_html_tag_selected)
+        
+        self.description = tk.Text(master=self, state=tk.DISABLED)
+        self.description.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        
 
 class MainWindow(tk.Frame):
     '''
@@ -92,6 +122,11 @@ class MainWindow(tk.Frame):
         self.last_selected_dir = Path().home()
         self.set_current_file()
         self.file_is_open = False
+        
+        #Create html tag overview
+        self.tag_overview = TagOverview(self)
+        self.tag_overview.pack(side=tk.LEFT, fill=tk.Y)
+
 
     def create_file_menu(self):
         # create the file top menu item
