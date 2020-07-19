@@ -6,12 +6,11 @@ Created on 13.07.2020
 import os
 from pathlib import Path
 
+from gui import list_creator
+from gui.list_creator import create_html_list_box
 import tkinter as tk
 import tkinter.filedialog as file_dialog
 import tkinter.messagebox as msg_box
-from gui.list_creator import create_html_list_box
-from more_itertools.more import side_effect
-from gui import list_creator
 
 
 class Statusbar(tk.Frame):
