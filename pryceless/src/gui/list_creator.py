@@ -4,6 +4,7 @@ Created on 19.07.2020
 @author: mthoma
 '''
 from tkinter import Listbox
+from scripts import configuration_loader
 
 html_tag_dict = {}
 
@@ -23,10 +24,7 @@ def get_tag_description(tag_name):
 def get_html_tags():
     
     if len(html_tag_dict) == 0:
-        html_tag_dict['html'] = 'Root tag'
-        html_tag_dict['head'] = 'Meta data tag'
-        html_tag_dict['body'] = 'Page content tag'
-        html_tag_dict['input'] = 'User input tag'
+        html_tag_dict.update(configuration_loader.load_html_description())
     
 
     return html_tag_dict

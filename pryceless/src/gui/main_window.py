@@ -11,6 +11,7 @@ from gui.list_creator import create_html_list_box
 import tkinter as tk
 import tkinter.filedialog as file_dialog
 import tkinter.messagebox as msg_box
+from scripts import selenium_testcase_template
 
 
 class Statusbar(tk.Frame):
@@ -239,15 +240,15 @@ class MainWindow(tk.Frame):
         self.prepare_main_input()
     
     def prepare_main_input(self):
-        if hasattr(self, 'main_input'):
-            #Clear the text widget content
-            self.main_input.set_input('')
-        else:
+        if not hasattr(self, 'main_input'):
             #Create the main_input frame
             self.main_input = MainInput(self)
             #Enable menu entries; Generate and Save
             self.file.entryconfig("Generate", state=tk.NORMAL)
             self.file.entryconfig("Save", state=tk.NORMAL)
+        
+        # Write the basic html template to the main input text
+        self.main_input.set_input(selenium_testcase_template.get_template('basic_html_file.template').substitute())
 
 
 if __name__ == "__main__":
