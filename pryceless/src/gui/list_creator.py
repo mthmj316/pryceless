@@ -3,14 +3,22 @@ Created on 19.07.2020
 
 @author: mthoma
 '''
-from tkinter import Listbox
+from tkinter import Listbox, Scrollbar
+
 from scripts import configuration_loader
+
 
 html_tag_dict = {}
 
 def create_html_list_box(master):
     
     html_listbx = Listbox(master)
+    
+    scrollbar = Scrollbar(html_listbx, orient="vertical")
+    scrollbar.config(command=html_listbx.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    html_listbx.config(yscrollcommand=scrollbar.set)
     
     index = 1
     for tag in get_html_tags():

@@ -10,6 +10,7 @@ from gui import list_creator
 from gui.list_creator import create_html_list_box
 import tkinter as tk
 import tkinter.filedialog as file_dialog
+import tkinter.scrolledtext as scrolledtext
 import tkinter.messagebox as msg_box
 from scripts import selenium_testcase_template
 
@@ -66,7 +67,7 @@ class MainInput(tk.Frame):
         '''
         tk.Frame.__init__(self, master)
         self.text_area = tk.Text(master=master)
-        self.text_area.pack(fill=tk.BOTH, expand=True)
+        self.text_area.pack(fill=tk.BOTH, expand=1)
              
     def set_input(self, value):
         self.text_area.delete('1.0', tk.END)
@@ -83,6 +84,7 @@ class TagOverview(tk.Frame):
     def on_html_tag_selected(self, evt):
         # Note here that Tkinter passes an event object to onselect()
         w = evt.widget
+        
         index = w.curselection()[0]
         value = w.get(index)
         self.description.config(state=tk.NORMAL)
@@ -90,17 +92,33 @@ class TagOverview(tk.Frame):
         self.description.insert(tk.END, list_creator.get_tag_description(value))
         self.description.config(state=tk.DISABLED) 
     
+    def on_html_tag_double_click(self, event):
+        
+        if self.state == 'normal':
+            index = event.widget.curselection()[0]
+            selected_tag = event.widget.get(index)
+        
+    def enable(self, enable):
+        
+        self.state = 'normal' if enable else 'disable'
+        
+        self.html_overvew_lbx.config(state=self.state)
+        self.description.config(state=self.state)
+        
+    
     def __init__(self, master):
         '''
         doc
         '''
         tk.Frame.__init__(self, master)
-        html_overvew_lbx = create_html_list_box(self)
-        html_overvew_lbx.pack(side=tk.TOP, fill=tk.BOTH)
-        html_overvew_lbx.bind('<<ListboxSelect>>', self.on_html_tag_selected)
+        self.html_overvew_lbx = create_html_list_box(self)
+        self.html_overvew_lbx.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.html_overvew_lbx.bind('<<ListboxSelect>>', self.on_html_tag_selected)
+        self.html_overvew_lbx.bind('<Double-Button>', self.on_html_tag_double_click)
         
-        self.description = tk.Text(master=self, state=tk.DISABLED)
-        self.description.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        #self.description = tk.Text(master=self, state=tk.DISABLED)
+        self.description = scrolledtext.ScrolledText(self, undo=True, wrap=tk.WORD)
+        self.description.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=0)
         
 
 class MainWindow(tk.Frame):
@@ -126,6 +144,7 @@ class MainWindow(tk.Frame):
         #Create html tag overview
         self.tag_overview = TagOverview(self)
         self.tag_overview.pack(side=tk.LEFT, fill=tk.Y)
+        self.tag_overview.enable(False)
 
 
     def create_file_menu(self):
@@ -246,6 +265,7 @@ class MainWindow(tk.Frame):
             #Enable menu entries; Generate and Save
             self.file.entryconfig("Generate", state=tk.NORMAL)
             self.file.entryconfig("Save", state=tk.NORMAL)
+            self.tag_overview.enable(True)
         
         # Write the basic html template to the main input text
         self.main_input.set_input(selenium_testcase_template.get_template('basic_html_file.template').substitute())

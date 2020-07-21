@@ -25,7 +25,9 @@ def load_html_description():
     
     for line in io_desc:
         line_splitted = line.split('::')
-        html_desc[line_splitted[0]] = line_splitted[1]
+        desc = line_splitted[1]
+        desc = desc.replace('\\n', os.linesep)
+        html_desc[line_splitted[0]] = desc
     
     return html_desc
         
