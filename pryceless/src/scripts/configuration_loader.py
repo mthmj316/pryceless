@@ -5,6 +5,9 @@ Created on 20.07.2020
 '''
 import os
 import io
+import collections as coll
+
+html_tag_conf = None
 
 def load_conf_files(conf_file_name):
     '''
@@ -24,70 +27,70 @@ def load_html_tag(tag_name):
 
 def load_global_attributes():
     '''
-    Loads from the html_tag.conf the [GLOBAL_ATTRIBUTES] data
+    Loads from the html_tag.conf the [GLOBAL_ATTRIBUTES] attributes
     and returns it as array.
     '''
     pass
 
 def load_heading_contents():
     '''
-    Loads from the html_tag.conf the [HEADING_CONTENT] data
+    Loads from the html_tag.conf the [HEADING_CONTENT] tags
     and returns it as array.
     '''
     pass
  
 def load_phrasing_content():
     '''
-    Loads from the html_tag.conf the [PHRASING_CONTENT] data
+    Loads from the html_tag.conf the [PHRASING_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_flow_content():
     '''
-    Loads from the html_tag.conf the [FLOW_CONTENT]
+    Loads from the html_tag.conf the [FLOW_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_metadata_content():
     '''
-    Loads from the html_tag.conf the [METADATA_CONTENT]
+    Loads from the html_tag.conf the [METADATA_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_embedded_content():
     '''
-    Loads from the html_tag.conf the [EMBEDDED_CONTENT] data
+    Loads from the html_tag.conf the [EMBEDDED_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_interactive_content():
     '''
-    Loads from the html_tag.conf the [INTERACTIVE_CONTENT] data
+    Loads from the html_tag.conf the [INTERACTIVE_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_palpable_content():
     '''
-    Loads from the html_tag.conf the [PALPABLE_CONTENT] data
+    Loads from the html_tag.conf the [PALPABLE_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_sectioning_content():
     '''
-    Loads from the html_tag.conf the [SECTIONING_CONTENT] data
+    Loads from the html_tag.conf the [SECTIONING_CONTENT] tags
     and returns it as array.
     '''
     pass
 
 def load_script_supporting_elements():
     '''
-    Loads from the html_tag.conf the [SCRIPT_SUPPORTING_ELEMENTS] data
+    Loads from the html_tag.conf the [SCRIPT_SUPPORTING_ELEMENTS] tags
     and returns it as array.
     '''
     pass
@@ -171,6 +174,6 @@ def load_html_description():
         desc = line_splitted[1]
         desc = desc.replace('\\n', os.linesep)
         html_desc[line_splitted[0]] = desc
-    
-    return html_desc
+        
+    return coll.OrderedDict(sorted(html_desc.items(), key=lambda t: t[0]))
         

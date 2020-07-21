@@ -23,6 +23,7 @@ def create_html_list_box(master):
     index = 1
     for tag in get_html_tags():
         html_listbx.insert(index, tag)
+        index += 1
     
     return html_listbx
     
