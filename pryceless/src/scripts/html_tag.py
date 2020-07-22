@@ -10,8 +10,8 @@ class HtmlTag(object):
     '''
 
 
-    def __init__(self, params):
+    def __init__(self, name):
         '''
         Constructor
         '''
-        
+        self.name = name
