@@ -7,7 +7,28 @@ import os
 import io
 import collections as coll
 
-html_tag_conf = None
+HTML_TAG_CONF = None
+
+def load_from_html_conf(what):
+    '''
+    Returns the line of the html_tag.conf file
+    which starts with: [what]::.
+    The key is removed form the line.
+    '''    
+    what = '[%s]::' %(what)
+    
+    global HTML_TAG_CONF
+    
+    if HTML_TAG_CONF is None:
+        HTML_TAG_CONF = load_conf_files('html_tag.conf')
+        
+    conf_lines = io.StringIO(HTML_TAG_CONF)
+        
+    for line in conf_lines:
+        if line.startswith(what):
+            conf_lines.close()
+            return line[len(what):].rstrip()
+
 
 def load_conf_files(conf_file_name):
     '''
@@ -174,6 +195,7 @@ def load_html_description():
         desc = line_splitted[1]
         desc = desc.replace('\\n', os.linesep)
         html_desc[line_splitted[0]] = desc
-        
+    
+    io_desc.close()
+     
     return coll.OrderedDict(sorted(html_desc.items(), key=lambda t: t[0]))
-        
