@@ -36,18 +36,18 @@ class Test(unittest.TestCase):
         '''
         
         parents = []
-        parents.append(PHRASING_CONTENT)
-        parents.append(HEADING_CONTENT)
+        parents += PHRASING_CONTENT
+        parents += HEADING_CONTENT
         
         all_events = []
-        all_events.append(WINDOW_EVENTS)
-        all_events.append(FORM_EVENTS)
-        all_events.append(KEYBOARD_EVENTS)
-        all_events.append(MOUSE_EVENTS)        
-        all_events.append(DRAG_EVENTS)        
-        all_events.append(CLIPBOARD_EVENTS)        
-        all_events.append(MEDIA_EVENTS)        
-        all_events.append(MISC_EVENTS)
+        all_events += WINDOW_EVENTS
+        all_events += FORM_EVENTS
+        all_events += KEYBOARD_EVENTS
+        all_events += MOUSE_EVENTS      
+        all_events += DRAG_EVENTS        
+        all_events += CLIPBOARD_EVENTS        
+        all_events += MEDIA_EVENTS     
+        all_events += MISC_EVENTS
         
         expected = {
             'tag': 'h6',
@@ -55,19 +55,24 @@ class Test(unittest.TestCase):
             'attributes': GLOBAL_ATTRIBUTES,
             'parents': parents,
             'children': HEADING_CONTENT,
-            'has_end_tag': False
+            'has_end_tag': True
             }
         
         self.maxDiff = None
         actual = configuration_loader.load_html_tag('h6')
-        self.assertDictEqual(expected, actual)
+        self.assertEqual(expected['tag'], actual['tag'])
+        self.assertEqual(expected['has_end_tag'], actual['has_end_tag'])
+        self.assertCountEqual(expected['events'], actual['events'])
+        self.assertCountEqual(expected['attributes'], actual['attributes'])
+        self.assertCountEqual(expected['parents'], actual['parents'])
+        self.assertCountEqual(expected['children'], actual['children'])
     
     def test_load_html_tag_base(self):
         '''
         [base]::[GLOBAL_ATTRIBUTES],href,target;;;head;false
         '''
         attr_list = ['href','target']
-        attr_list.append(GLOBAL_ATTRIBUTES)
+        attr_list += GLOBAL_ATTRIBUTES
         
         expected = {
             'tag': 'base',
@@ -80,7 +85,12 @@ class Test(unittest.TestCase):
         
         self.maxDiff = None
         actual = configuration_loader.load_html_tag('base')
-        self.assertDictEqual(expected, actual)
+        self.assertEqual(expected['tag'], actual['tag'])
+        self.assertEqual(expected['has_end_tag'], actual['has_end_tag'])
+        self.assertCountEqual(expected['events'], actual['events'])
+        self.assertCountEqual(expected['attributes'], actual['attributes'])
+        self.assertCountEqual(expected['parents'], actual['parents'])
+        self.assertCountEqual(expected['children'], actual['children'])
     
     def test_load_all_events(self):
         '''
@@ -88,14 +98,14 @@ class Test(unittest.TestCase):
         and returns it as array.
         '''
         all_events = []
-        all_events.append(WINDOW_EVENTS)
-        all_events.append(FORM_EVENTS)
-        all_events.append(KEYBOARD_EVENTS)
-        all_events.append(MOUSE_EVENTS)        
-        all_events.append(DRAG_EVENTS)        
-        all_events.append(CLIPBOARD_EVENTS)        
-        all_events.append(MEDIA_EVENTS)        
-        all_events.append(MISC_EVENTS)
+        all_events += WINDOW_EVENTS
+        all_events += FORM_EVENTS
+        all_events += KEYBOARD_EVENTS
+        all_events += MOUSE_EVENTS      
+        all_events += DRAG_EVENTS        
+        all_events += CLIPBOARD_EVENTS
+        all_events += MEDIA_EVENTS     
+        all_events += MISC_EVENTS
         
         actual = configuration_loader.load_all_events()
         self.assertCountEqual(all_events, actual)

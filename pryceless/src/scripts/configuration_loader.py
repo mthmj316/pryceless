@@ -6,7 +6,6 @@ Created on 20.07.2020
 import os
 import io
 import collections as coll
-from attr import attr
 
 HTML_TAG_CONF = None
 
@@ -50,38 +49,98 @@ def load_html_tag(tag_name):
     
     attr_conf = tag_conf_split[0]
     event_conf =  tag_conf_split[1]
-    parent_conf =  tag_conf_split[2]
-    children_conf =  tag_conf_split[3]
+    children_conf =  tag_conf_split[2]
+    parent_conf =  tag_conf_split[3]
     has_end_tag_conf =  tag_conf_split[4]
         
     result = {
             'tag': tag_name,
             'events': __load_html_tag_events(event_conf),
             'attributes': __load_html_tag_attr(attr_conf),
-            'parents': __load_html_tag_parents(parent_conf),
-            'children': __load_html_tag_children(children_conf),
+            'parents': __load_html_tag_rel_tag(parent_conf),
+            'children': __load_html_tag_rel_tag(children_conf),
             'has_end_tag': has_end_tag_conf == 'true'
         }
     
     return result
 
-def __load_html_tag_children(children_conf):
-    pass
+def __load_html_tag_rel_tag(tag_conf):
+    
+    rel = []
+    
+    if len(tag_conf) > 0:
+        if 'FLOW_CONTENT' in tag_conf:
+            rel += load_flow_content()
+        if 'PHRASING_CONTENT' in tag_conf:
+            rel += load_phrasing_content()
+        if 'HEADING_CONTENT' in tag_conf:
+            rel += load_heading_content()
+        if 'METADATA_CONTENT' in tag_conf:
+            rel += load_metadata_content()
+        if 'EMBEDDED_CONTENT' in tag_conf:
+            rel += load_embedded_content()
+        if 'INTERACTIVE_CONTENT' in tag_conf:
+            rel += load_interactive_content()
+        if 'PALPABLE_CONTENT' in tag_conf:
+            rel += load_palpable_content()
+        if 'SECTIONING_CONTENT' in tag_conf:
+            rel += load_sectioning_content()
+        if 'SCRIPT_SUPPORTING_ELEMENTS' in tag_conf:
+            rel += load_script_supporting_elements()
+            
+        for s in tag_conf.split(','):
+            if not s.startswith('['):
+                rel.append(s)
 
-def __load_html_tag_parents(parent_conf):
-    pass
+    return rel
 
 def __load_html_tag_events(event_conf):
-    pass
+    
+    events = []
+    
+    if len(event_conf) > 0:
+        
+        if event_conf == '[ALL_EVENTS]':
+            return load_all_events()
+    
+        if 'WINDOW_EVENTS' in event_conf:
+            events += load_window_events()
+        
+        if 'FORM_EVENTS' in event_conf:
+            events += load_form_events()
+        
+        if 'KEYBOARD_EVENTS' in event_conf:
+            events += load_keyboard_events()
+            
+        if 'MOUSE_EVENTS' in event_conf:
+            events += load_mouse_events()
+            
+        if 'DRAG_EVENTS' in event_conf:
+            events += load_drag_events()
+            
+        if 'CLIPBOARD_EVENTS' in event_conf:
+            events += load_clipboard_events()
+        
+        if 'MEDIA_EVENTS' in event_conf:
+            events += load_media_events()
+    
+        if 'MISC_EVENTS' in event_conf:
+            events += load_misc_events()
+            
+        for s in event_conf.split(','):
+            if not s.startswith('['):
+                events.append(s)
+    
+    return events
     
 def __load_html_tag_attr(attr_conf):
     
     attributes = []
     
     if len(attr_conf) > 0:
-        attr_conf_split = attr_conf.split(',')
+        attr_conf_split = attr_conf.split(',')        
         if attr_conf_split[0] == '[GLOBAL_ATTRIBUTES]':
-            attributes.append(load_global_attributes())
+            attributes += load_global_attributes()
         
         if len(attr_conf_split) > 1:
             idx = 1
@@ -176,14 +235,15 @@ def load_all_events():
     and returns it as array.
     '''
     all_events = []
-    all_events.append(load_window_events())
-    all_events.append(load_form_events())
-    all_events.append(load_keyboard_events())
-    all_events.append(load_mouse_events())
-    all_events.append(load_misc_events())
-    all_events.append(load_media_events())
-    all_events.append(load_clipboard_events())
-    all_events.append(load_drag_events())
+    all_events += load_window_events()
+    all_events += load_form_events()
+    all_events += load_keyboard_events()
+    all_events += load_mouse_events()
+    all_events += load_misc_events()
+    all_events += load_media_events()
+    all_events += load_clipboard_events()
+    all_events += load_drag_events()
+    
     return all_events
 
 def load_window_events():
