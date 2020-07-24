@@ -81,6 +81,15 @@ class TagOverview(tk.Frame):
     '''
     classdocs
     '''
+    def create_html_tag_popup(self, tag):
+        window = tk.Toplevel()
+
+        label = tk.Label(window, text=tag)
+        label.pack(fill='x', padx=50, pady=5)
+
+        button_close = tk.Button(window, text="Cancel", command=window.destroy)
+        button_close.pack(fill='x')
+    
     def on_html_tag_selected(self, evt):
         # Note here that Tkinter passes an event object to onselect()
         w = evt.widget
@@ -97,6 +106,8 @@ class TagOverview(tk.Frame):
         if self.state == 'normal':
             index = event.widget.curselection()[0]
             selected_tag = event.widget.get(index)
+            
+            self.create_html_tag_popup(selected_tag)
         
     def enable(self, enable):
         
