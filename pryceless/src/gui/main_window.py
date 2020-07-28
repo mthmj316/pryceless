@@ -6,13 +6,14 @@ Created on 13.07.2020
 import os
 from pathlib import Path
 
-from gui import list_creator
+from gui import list_creator, table
 from gui.list_creator import create_html_list_box
 import tkinter as tk
 import tkinter.filedialog as file_dialog
 import tkinter.scrolledtext as scrolledtext
 import tkinter.messagebox as msg_box
 from scripts import selenium_testcase_template
+from gui.table import Table
 
 
 class Statusbar(tk.Frame):
@@ -81,15 +82,6 @@ class TagOverview(tk.Frame):
     '''
     classdocs
     '''
-    def create_html_tag_popup(self, tag):
-        window = tk.Toplevel()
-
-        label = tk.Label(window, text=tag)
-        label.pack(fill='x', padx=50, pady=5)
-
-        button_close = tk.Button(window, text="Cancel", command=window.destroy)
-        button_close.pack(fill='x')
-    
     def on_html_tag_selected(self, evt):
         # Note here that Tkinter passes an event object to onselect()
         w = evt.widget
@@ -107,7 +99,7 @@ class TagOverview(tk.Frame):
             index = event.widget.curselection()[0]
             selected_tag = event.widget.get(index)
             
-            self.create_html_tag_popup(selected_tag)
+            table.create_tag_attr_table(selected_tag, self.master)
         
     def enable(self, enable):
         
