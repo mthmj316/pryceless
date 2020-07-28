@@ -18,14 +18,14 @@ class Table(object):
     
     def define_columns(self, columns):
         
-        idx = 1
+        idx = 0
         for column in columns:
-            b = tk.Button(self.table_ui,text=column, command=lambda column=column: self.on_column_select(column))
+            b = tk.Button(self.table_ui,text=column, command=lambda column_idx=idx: self.on_column_select(column_idx))
             b.grid(row=0, column=idx, sticky=tk.W, pady=2)
             idx += 1
             
-    def on_column_select(self, column_name):
-        print(column_name)
+    def on_column_select(self, column_idx):
+        print(column_idx)
     
     def set_title(self, title_suffix):
         new_title = self.table_ui.title()
