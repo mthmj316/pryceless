@@ -8,6 +8,45 @@ import io
 import collections as coll
 
 HTML_TAG_CONF = None
+ATTRIBUTES_CONF = None
+LOADED_HTML_TAGS = {}
+LOADED_HTML_ATTRIBUTES = {}
+
+def load_attribute(attribute_name):
+    '''
+    Loads the attribute with the given name from the attributes.conf file.
+    If found the conf will be returned as dictionary:
+    attribute = {
+        'name': <attribute name>,
+        'description': <attribute description>
+    }
+    '''
+    
+    global LOADED_HTML_ATTRIBUTES
+    
+    if attribute_name in LOADED_HTML_ATTRIBUTES:
+        return LOADED_HTML_ATTRIBUTES[attribute_name]
+    
+    attribute = {
+        'name': attribute_name,
+        'description': load_from_attributes_conf(attribute_name)
+        }
+    
+    LOADED_HTML_ATTRIBUTES[attribute_name] = attribute
+    
+    return attribute
+
+def load_from_attributes_conf(what):
+    '''
+    Returns the line of the attributes.conf file
+    which starts with: 
+    '''
+    global ATTRIBUTES_CONF
+    
+    if ATTRIBUTES_CONF is None:
+        ATTRIBUTES_CONF = load_conf_files('attributes.conf')
+        
+    return load_from_conf(ATTRIBUTES_CONF, what)
 
 def load_from_html_conf(what):
     '''
@@ -15,20 +54,28 @@ def load_from_html_conf(what):
     which starts with: [what]::.
     The key is removed form the line.
     '''    
-    what = '[%s]::' %(what)
     
     global HTML_TAG_CONF
     
     if HTML_TAG_CONF is None:
         HTML_TAG_CONF = load_conf_files('html_tag.conf')
         
-    conf_lines = io.StringIO(HTML_TAG_CONF)
+    return load_from_conf(HTML_TAG_CONF, what)
+
+def load_from_conf(conf, what):
+    '''
+    Returns the line in conf, which starts with:
+    [what]::...
+    The key is removed form the line.    
+    '''
+    what = '[%s]::' %(what)
+    
+    conf_lines = io.StringIO(conf)
         
     for line in conf_lines:
         if line.startswith(what):
             conf_lines.close()
             return line[len(what):].rstrip()
-
 
 def load_conf_files(conf_file_name):
     '''
@@ -44,6 +91,12 @@ def load_conf_files(conf_file_name):
 def load_html_tag(tag_name):
     '''
     '''
+    
+    global LOADED_HTML_TAGS
+    
+    if tag_name in LOADED_HTML_TAGS:
+        return LOADED_HTML_TAGS[tag_name]
+    
     tag_conf = load_from_html_conf(tag_name)
     tag_conf_split = tag_conf.split(';')
     
@@ -61,6 +114,8 @@ def load_html_tag(tag_name):
             'children': __load_html_tag_rel_tag(children_conf),
             'has_end_tag': has_end_tag_conf == 'true'
         }
+    
+    LOADED_HTML_TAGS[tag_name] = result
     
     return result
 

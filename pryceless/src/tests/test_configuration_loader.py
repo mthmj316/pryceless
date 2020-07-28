@@ -30,6 +30,35 @@ SCRIPT_SUPPORTING_ELEMENTS = ['script','template']
 
 class Test(unittest.TestCase):
     
+    def test_loaded_html_tag(self):
+        '''
+        Tests if, after a tag has been loaded, the tag has been written into
+        LOADED_HTML_TAG cache.
+        '''
+        attr_list = ['href','target']
+        attr_list += GLOBAL_ATTRIBUTES
+        
+        expected = {
+            'tag': 'base',
+            'events': [],
+            'attributes': attr_list,
+            'parents': ['head'],
+            'children': [],
+            'has_end_tag': False
+            }
+        
+        self.maxDiff = None
+        configuration_loader.load_html_tag('base')
+        
+        actual = configuration_loader.LOADED_HTML_TAGS['base']
+        
+        self.assertEqual(expected['tag'], actual['tag'])
+        self.assertEqual(expected['has_end_tag'], actual['has_end_tag'])
+        self.assertCountEqual(expected['events'], actual['events'])
+        self.assertCountEqual(expected['attributes'], actual['attributes'])
+        self.assertCountEqual(expected['parents'], actual['parents'])
+        self.assertCountEqual(expected['children'], actual['children'])
+    
     def test_load_html_tag_h6(self):
         '''
         [h6]::[GLOBAL_ATTRIBUTES];[ALL_EVENTS];[HEADING_CONTENT];[PHRASING_CONTENT],[HEADING_CONTENT];true

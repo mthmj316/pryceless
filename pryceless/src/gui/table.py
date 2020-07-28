@@ -20,7 +20,8 @@ class Table(object):
         
         idx = 0
         for column in columns:
-            b = tk.Button(self.table_ui,text=column, command=lambda column_idx=idx: self.on_column_select(column_idx))
+            b = tk.Button(self.table_ui,text=column, 
+                          command=lambda column_idx=idx: self.on_column_select(column_idx))
             b.grid(row=0, column=idx, sticky=tk.W, pady=2)
             idx += 1
             
