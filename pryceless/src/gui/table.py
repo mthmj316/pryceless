@@ -9,8 +9,7 @@ from scripts import configuration_loader
 class Table(tk.Frame):
     
     def __init__(self, master):
-        super(Table, self).__init__()
-        self.table_ui = master
+        tk.Frame.__init__(self, master)
         self.row_idx = 0;
         
     def add_row(self, row_cells):
@@ -19,11 +18,11 @@ class Table(tk.Frame):
         for cell in row_cells:
             cell_ui = None
             if cell['type'] == 'boolean':
-                cell_ui = tk.Checkbutton(self.table_ui)
+                cell_ui = tk.Checkbutton(self)
                 if cell['content'] == 'selected':
                     cell_ui.select()
             else:
-                cell_ui = tk.Label(self.table_ui, text=cell['content'], anchor=tk.W)
+                cell_ui = tk.Label(self, text=cell['content'], anchor=tk.W)
             
             cell_ui.grid(row=self.row_idx, column=col_idx, sticky=tk.NSEW, pady=2)
             
@@ -36,7 +35,7 @@ class Table(tk.Frame):
         
         idx = 0
         for column in columns:
-            b = tk.Button(self.table_ui,text=column, 
+            b = tk.Button(self,text=column, 
                           command=lambda column_idx=idx: self.on_column_select(column_idx))
             b.grid(row=self.row_idx, column=idx, sticky=tk.NSEW, pady=2)
             idx += 1
@@ -45,19 +44,14 @@ class Table(tk.Frame):
             
     def on_column_select(self, column_idx):
         print(column_idx)
-    
-    def set_title(self, title_suffix):
-        new_title = self.table_ui.title()
-        new_title += title_suffix
-        self.table_ui.title(new_title)
         
         
 def create_tag_attr_table(tag_name, master):
     
-    popup = tk.Toplevel()
-    
+    popup = tk.Toplevel(master)
+    popup.title(popup.title() + ' - %s Attribute Selection' %(tag_name.upper()))
+    popup.resizable(0, 0)
     table = Table(popup)
-    table.set_title(' - %s Attribute Selection' %(tag_name.upper()))
     table.define_columns(['Select', 'Attribute Name', 'Attribute Description'])
     
     tag_conf = configuration_loader.load_html_tag(tag_name)
@@ -87,15 +81,20 @@ def create_tag_attr_table(tag_name, master):
         
         table.add_row(cells_def)
     
-    
     table.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW, pady=2)
-    b = tk.Button(popup,text='Close', command=lambda : popup.destroy())
-    b.grid(row=1, column=0, sticky=tk.NSEW, pady=2) 
+    
+    select_btn = tk.Button(popup,text='Select', command=lambda: popup.destroy())
+    select_btn.grid(row=1, column=0, sticky=tk.NSEW, pady=2) 
+    
+    
+    cancel_btn = tk.Button(popup,text='Cancel', command=lambda: popup.destroy())
+    cancel_btn.grid(row=1, column=1, sticky=tk.NSEW, pady=2) 
     
     popup.mainloop()
     
     
 def create_html_tag_popup(self, tag):
+    '''
     window = tk.Toplevel()
 
     label = tk.Label(window, text=tag)
@@ -103,3 +102,5 @@ def create_html_tag_popup(self, tag):
 
     button_close = tk.Button(window, text="Cancel", command=window.destroy)
     button_close.pack(fill='x')
+    '''
+    pass
