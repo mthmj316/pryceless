@@ -30,6 +30,37 @@ SCRIPT_SUPPORTING_ELEMENTS = ['script','template']
 
 class Test(unittest.TestCase):
     
+    def test_loaded_attributes(self):
+        '''
+        Test if a loaded attribute
+        has been written LOADED_ATTRIBUTES cache.
+        '''
+        expected = {
+            'name': 'action',
+            'description': 'Specifies where to send the form-data when a form is submitted.'
+            }
+        
+        configuration_loader.load_attribute('action')
+        
+        actual = configuration_loader.LOADED_HTML_ATTRIBUTES['action']
+        
+        self.assertEqual(expected['name'], actual['name'])
+        self.assertEqual(expected['description'], actual['description'])
+    
+    def test_load_attribute(self):
+        '''
+        Test if the attributes get loaded  correctly from the
+        attributes.conf
+        '''
+        expected = {
+            'name': 'form',
+            'description': '<button>, <fieldset>, <input>, <label>, <meter>, <object>, <output>, <select>, <textarea> Specifies the name of the form the element belongs to'
+            }
+        actual = configuration_loader.load_attribute('form')
+        
+        self.assertEqual(expected['name'], actual['name'])
+        self.assertEqual(expected['description'], actual['description'])
+    
     def test_loaded_html_tag(self):
         '''
         Tests if, after a tag has been loaded, the tag has been written into
