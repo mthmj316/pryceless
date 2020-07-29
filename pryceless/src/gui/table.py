@@ -6,14 +6,12 @@ Created on 24.07.2020
 import tkinter as tk
 from scripts import configuration_loader
 
-class Table(object):
+class Table(tk.Frame):
     
     def __init__(self, master):
-        self.table_ui = tk.Toplevel(master)
+        super(Table, self).__init__()
+        self.table_ui = master
         self.row_idx = 0;
-
-    def open(self):
-        self.table_ui.mainloop()
         
     def add_row(self, row_cells):
         
@@ -25,7 +23,7 @@ class Table(object):
                 if cell['content'] == 'selected':
                     cell_ui.select()
             else:
-                cell_ui = tk.Label(self.table_ui, text=cell['content'])
+                cell_ui = tk.Label(self.table_ui, text=cell['content'], anchor=tk.W)
             
             cell_ui.grid(row=self.row_idx, column=col_idx, sticky=tk.NSEW, pady=2)
             
@@ -55,7 +53,10 @@ class Table(object):
         
         
 def create_tag_attr_table(tag_name, master):
-    table = Table(master)
+    
+    popup = tk.Toplevel()
+    
+    table = Table(popup)
     table.set_title(' - %s Attribute Selection' %(tag_name.upper()))
     table.define_columns(['Select', 'Attribute Name', 'Attribute Description'])
     
@@ -86,7 +87,12 @@ def create_tag_attr_table(tag_name, master):
         
         table.add_row(cells_def)
     
-    table.open()
+    
+    table.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW, pady=2)
+    b = tk.Button(popup,text='Close', command=lambda : popup.destroy())
+    b.grid(row=1, column=0, sticky=tk.NSEW, pady=2) 
+    
+    popup.mainloop()
     
     
 def create_html_tag_popup(self, tag):
