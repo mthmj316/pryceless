@@ -20,6 +20,7 @@ class Table(tk.Frame):
             if cell['type'] == 'boolean':
                 var = tk.IntVar()
                 cell_ui = tk.Checkbutton(self, variable=var)
+                cell_ui.val = var
                 if cell['content'] == 'selected':
                     cell_ui.select()
             else:
@@ -99,9 +100,9 @@ def respond_tag_attr_popup(popup, table, respond_recipient):
     row = 1
     while row < table.grid_size()[1]:
         
-        var = table.grid_slaves(row,0)[0]['variable']
+        val = table.grid_slaves(row,0)[0].val
         
-        print(var)
+        print(val.get())
         
         print(table.grid_slaves(row,1)[0]['text'])
         
