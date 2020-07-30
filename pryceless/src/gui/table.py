@@ -18,7 +18,8 @@ class Table(tk.Frame):
         for cell in row_cells:
             cell_ui = None
             if cell['type'] == 'boolean':
-                cell_ui = tk.Checkbutton(self)
+                var = tk.IntVar()
+                cell_ui = tk.Checkbutton(self, variable=var)
                 if cell['content'] == 'selected':
                     cell_ui.select()
             else:
@@ -46,9 +47,10 @@ class Table(tk.Frame):
         print(column_idx)
         
         
-def create_tag_attr_table(tag_name, master):
+def request_tag_attr_popup(tag_name, master, respond_recipient):
     
     popup = tk.Toplevel(master)
+    popup.transient(master)
     popup.title(popup.title() + ' - %s Attribute Selection' %(tag_name.upper()))
     popup.resizable(0, 0)
     table = Table(popup)
@@ -83,7 +85,7 @@ def create_tag_attr_table(tag_name, master):
     
     table.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW, pady=2)
     
-    select_btn = tk.Button(popup,text='Select', command=lambda: popup.destroy())
+    select_btn = tk.Button(popup,text='Select', command=lambda: respond_tag_attr_popup(popup, table, respond_recipient))
     select_btn.grid(row=1, column=0, sticky=tk.NSEW, pady=2) 
     
     
@@ -91,7 +93,23 @@ def create_tag_attr_table(tag_name, master):
     cancel_btn.grid(row=1, column=1, sticky=tk.NSEW, pady=2) 
     
     popup.mainloop()
+
+def respond_tag_attr_popup(popup, table, respond_recipient):
+
+    row = 1
+    while row < table.grid_size()[1]:
+        
+        var = table.grid_slaves(row,0)[0]['variable']
+        
+        print(var)
+        
+        print(table.grid_slaves(row,1)[0]['text'])
+        
+        row += 1
     
+    popup.destroy()
+    
+    respond_recipient('World!')
     
 def create_html_tag_popup(self, tag):
     '''

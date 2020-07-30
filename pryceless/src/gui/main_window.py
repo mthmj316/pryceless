@@ -99,7 +99,10 @@ class TagOverview(tk.Frame):
             index = event.widget.curselection()[0]
             selected_tag = event.widget.get(index)
             
-            table.create_tag_attr_table(selected_tag, self.master)
+            table.request_tag_attr_popup(selected_tag, self.master, lambda selected_attr: self.on_tag_attr_popu_respond(selected_attr))
+            
+    def on_tag_attr_popu_respond(self, selected_attr):
+        print('Hello ' + selected_attr)
         
     def enable(self, enable):
         
