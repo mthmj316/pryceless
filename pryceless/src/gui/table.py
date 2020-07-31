@@ -5,6 +5,7 @@ Created on 24.07.2020
 '''
 import tkinter as tk
 from scripts import configuration_loader
+from tkinter.constants import BUTT
 
 TABLE_COLOR_BACK = "#D9D9D9"
 TABLE_COLOR_GRID = "#000000"
@@ -36,12 +37,39 @@ class Table(tk.Frame):
         print(self.column_header_width)
         print(self.column_body_width)
         print(self.column_width_to_apply)
-    
+        
+        self.__revise_column_width()
+        
+    def __revise_column_width(self):
+        
+        # revise table header columns
+        for col_idx, col_width in self.column_width_to_apply.items():
+            print(col_idx + ' -> ' + str(col_width))
+            button = self.header.grid_slaves(row=0,column=int(col_idx))[0]
+            button.config(width=col_width)
+            button.grid_propagate()
+            button.update()
+            print(button.winfo_width())
+        
+        
+        # revise table body
+        
+        
     def __calulate_column_width_to_apply(self):
         
         if len(self.column_header_width.keys()) > 0:
+            
             for col_idx, col_width in self.column_header_width.items():
-                pass
+                
+                max_col_width = col_width;
+                
+                if col_idx in self.column_width_to_apply and max_col_width < self.column_width_to_apply[col_idx]:
+                    max_col_width = self.column_width_to_apply[col_idx]
+                    
+                if max_col_width < self.column_body_width[col_idx]:
+                    max_col_width = self.column_body_width[col_idx]
+                    
+                self.column_width_to_apply[col_idx] = max_col_width                    
                 
       
     def __add_row(self, table_row):
@@ -76,7 +104,7 @@ class Table(tk.Frame):
         
     def __create_body(self):
         
-        self.canvas = tk.Canvas(self, borderwidth=0, background=TABLE_COLOR_GRID)
+        self.canvas = tk.Canvas(self, borderwidth=1, background=TABLE_COLOR_GRID)
         
         self.body = tk.Frame(self.canvas, background=TABLE_COLOR_GRID)
         self.body.pack(fill=tk.BOTH, expand=1)
@@ -99,17 +127,14 @@ class Table(tk.Frame):
         
         column_idx = 0
         for column in columns:
-            b = tk.Button(self.header,text=column, 
-                          command=lambda column_idx=column_idx: self.on_column_select(column_idx))
-            b.grid(row=self.row_idx, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+            b = tk.Button(self.header,text=column, command=lambda column_idx=column_idx: self.on_column_select(column_idx))
+            b.grid(row=0, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
             
             b.update()
             
             self.column_header_width[str(column_idx)] = b.winfo_width()
             
             column_idx += 1
-            
-        self.row_idx += 1
             
     def on_column_select(self, column_idx):
         print(column_idx)
@@ -243,15 +268,15 @@ def request_tag_attr_popup(tag_name, master, respond_recipient):
 
 def respond_tag_attr_popup(popup, table, respond_recipient):
 
-    row = 1
+    row = 0
     selected_attributes = []
-    while row < table.grid_size()[1]:
+    while row < table.body.grid_size()[1]:
         
-        if table.grid_slaves(row,0)[0].val.get() == 1:
+        if table.body.grid_slaves(row,0)[0].val.get() == 1:
             
             selected_attribute = {
-                'name': table.grid_slaves(row,1)[0]['text'],
-                'description': table.grid_slaves(row,2)[0]['text']
+                'name': table.body.grid_slaves(row,1)[0]['text'],
+                'description': table.body.grid_slaves(row,2)[0]['text']
                 }
             selected_attributes.append(selected_attribute)
         
