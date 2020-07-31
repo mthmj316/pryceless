@@ -11,10 +11,14 @@ TABLE_COLOR_GRID = "#000000"
 TABLE_GRID_PAD = 1
 class Table(tk.Frame):
     
-    def __init__(self, master, columns):
+    def __init__(self, master, columns, content):
         
         tk.Frame.__init__(self, master)
         self.row_idx = 0;
+        
+        self.column_header_width = {}
+        self.column_body_width = {}
+        self.column_width_to_apply = {}
               
         self.header = tk.Frame(self, background=TABLE_COLOR_BACK)
         #self.header.grid(row=0, column=0, sticky=tk.NSEW, pady=2)
@@ -24,10 +28,27 @@ class Table(tk.Frame):
         
         self.__create_body()
         
-    def add_row(self, row_cells):
+        for table_row in content:
+            self.__add_row(table_row)
+            
+        self.__calulate_column_width_to_apply()
+            
+        print(self.column_header_width)
+        print(self.column_body_width)
+        print(self.column_width_to_apply)
+    
+    def __calulate_column_width_to_apply(self):
+        
+        if len(self.column_header_width.keys()) > 0:
+            for col_idx, col_width in self.column_header_width.items():
+                pass
+                
+      
+    def __add_row(self, table_row):
         
         col_idx = 0;
-        for cell in row_cells:
+        
+        for cell in table_row:
             cell_ui = None
             if cell['type'] == 'boolean':
                 var = tk.IntVar()
@@ -43,8 +64,11 @@ class Table(tk.Frame):
             
             cell_ui.update()
             
-            print(cell_ui.winfo_width())
-            #print(cell_ui.winfo_reqwidth())
+            cell_width = cell_ui.winfo_width()
+            key = str(col_idx)
+            
+            if (not key in self.column_body_width) or (cell_width > self.column_body_width[key]):
+                self.column_body_width[key] = cell_width
             
             col_idx += 1
             
@@ -60,25 +84,30 @@ class Table(tk.Frame):
         self.vsb = tk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vsb.set)
 
-        self.vsb.pack(side="right", fill="y")
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.canvas.create_window((4,4), window=self.body, anchor="nw", tags="self.body")
+        self.vsb.pack(side='right', fill='y')
+        self.canvas.pack(side='left', fill='both', expand=True)
+        self.canvas.create_window((4,4), window=self.body, anchor='nw', tags='self.body')
 
-        self.body.bind("<Configure>", self.onFrameConfigure)
+        self.body.bind('<Configure>', self.onFrameConfigure)
         
         
     def onFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
                 
     def __define_columns(self, columns):
         
-        idx = 0
+        column_idx = 0
         for column in columns:
             b = tk.Button(self.header,text=column, 
-                          command=lambda column_idx=idx: self.on_column_select(column_idx))
-            b.grid(row=self.row_idx, column=idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
-            idx += 1
+                          command=lambda column_idx=column_idx: self.on_column_select(column_idx))
+            b.grid(row=self.row_idx, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+            
+            b.update()
+            
+            self.column_header_width[str(column_idx)] = b.winfo_width()
+            
+            column_idx += 1
             
         self.row_idx += 1
             
@@ -156,21 +185,16 @@ if __name__ == "__main__":
         
 def request_tag_attr_popup(tag_name, master, respond_recipient):
     
-    popup = tk.Toplevel(master)
-    popup.wm_geometry("%dx%d" % (1000, 500))
-    popup.transient(master)
-    popup.title(popup.title() + ' - %s Attribute Selection' %(tag_name.upper()))
-    popup.resizable(0, 0)
-    table = Table(popup, ['X', 'Attribute Name', 'Attribute Description'])
-    
     tag_conf = configuration_loader.load_html_tag(tag_name)
     
     attributes_events = []
     attributes_events += tag_conf['attributes']
     attributes_events += tag_conf['events']
     
+    table_content = []
+    
     for attribute in attributes_events:
-        cells_def = []
+        table_row = []
         
         attribute_def = configuration_loader.load_attribute(attribute)
         
@@ -178,21 +202,30 @@ def request_tag_attr_popup(tag_name, master, respond_recipient):
             'type':'boolean',
             'content':'None'
             }
-        cells_def.append(cell_select)
+        table_row.append(cell_select)
         
         cell_attr_name={
             'type': 'rText',
             'content': attribute_def['name']
             }
-        cells_def.append(cell_attr_name)
+        table_row.append(cell_attr_name)
         
         cell_attr_desc = {
             'type': 'rText',
             'content': attribute_def['description']
             }
-        cells_def.append(cell_attr_desc)
+        table_row.append(cell_attr_desc)
         
-        table.add_row(cells_def)
+        table_content.append(table_row)
+    
+    popup = tk.Toplevel(master)
+    popup.wm_geometry("%dx%d" % (1000, 500))
+    popup.transient(master)
+    popup.title(popup.title() + ' - %s Attribute Selection' %(tag_name.upper()))
+    popup.resizable(0, 0)
+    table = Table(popup, ['X', 'Attribute Name', 'Attribute Description'], table_content)
+        
+    #table.add_row(table_row)
     
     #table.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW, pady=2)
     table.pack(fill=tk.BOTH, expand=1)
