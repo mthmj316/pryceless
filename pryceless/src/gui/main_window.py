@@ -102,7 +102,7 @@ class TagOverview(tk.Frame):
             table.request_tag_attr_popup(selected_tag, self.master, lambda selected_attr: self.on_tag_attr_popu_respond(selected_attr))
             
     def on_tag_attr_popu_respond(self, selected_attr):
-        print('Hello ' + selected_attr)
+        print(selected_attr)
         
     def enable(self, enable):
         
