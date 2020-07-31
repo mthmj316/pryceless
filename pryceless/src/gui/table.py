@@ -6,6 +6,7 @@ Created on 24.07.2020
 import tkinter as tk
 from scripts import configuration_loader
 from tkinter.constants import BUTT
+from pip._internal import self_outdated_check
 
 TABLE_COLOR_BACK = "#D9D9D9"
 TABLE_COLOR_GRID = "#000000"
@@ -22,10 +23,10 @@ class Table(tk.Frame):
         self.column_width_to_apply = {}
               
         self.header = tk.Frame(self, background=TABLE_COLOR_BACK)
-        #self.header.grid(row=0, column=0, sticky=tk.NSEW, pady=2)
         self.header.pack(fill=tk.X)
+        self.header_frames = []
         
-        self.__define_columns(columns)
+        self.__create_header(columns)
         
         self.__create_body()
         
@@ -44,12 +45,18 @@ class Table(tk.Frame):
         
         # revise table header columns
         for col_idx, col_width in self.column_width_to_apply.items():
+            
             print(col_idx + ' -> ' + str(col_width))
-            button = self.header.grid_slaves(row=0,column=int(col_idx))[0]
-            button.config(width=col_width)
-            button.grid_propagate()
-            button.update()
-            print(button.winfo_width())
+            
+            btn_frame = self.header_frames[int(col_idx)]
+            btn_frame.config(width=col_width)
+            btn_frame.update()
+            
+            btn = btn_frame.winfo_children()[0]
+            btn.update()
+            
+            print(btn.winfo_width())
+            print(btn_frame.winfo_reqwidth())
         
         
         # revise table body
@@ -77,22 +84,18 @@ class Table(tk.Frame):
         col_idx = 0;
         
         for cell in table_row:
-            cell_ui = None
-            if cell['type'] == 'boolean':
-                var = tk.IntVar()
-                cell_ui = tk.Checkbutton(self.body, variable=var)
-                cell_ui.val = var
-                if cell['content'] == 'selected':
-                    cell_ui.select()
-            else:
-                cell_ui = tk.Label(self.body, text=cell['content'], anchor=tk.W, justify=tk.LEFT, wraplength=500)
             
-            cell_ui.grid(row=self.row_idx, column=col_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD,
-                         pady=TABLE_GRID_PAD)
+            cell_frame = tk.Frame(self.header, background='#625425', width=200, height=30)
+            cell_frame.pack(fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
+            cell_frame.propagate(False)
             
+            cell_ui = self.__create_cell(cell, cell_frame)
+            
+            #cell_ui.grid(row=self.row_idx, column=col_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+            cell_ui.pack(expand=1, fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
             cell_ui.update()
             
-            cell_width = cell_ui.winfo_width()
+            cell_width = cell_ui.winfo_reqwidth()
             key = str(col_idx)
             
             if (not key in self.column_body_width) or (cell_width > self.column_body_width[key]):
@@ -102,12 +105,27 @@ class Table(tk.Frame):
             
         self.row_idx += 1
         
+    def __create_cell(self, cell_def, parent):
+        if cell_def['type'] == 'boolean':
+            var = tk.IntVar()
+            cell_ui = tk.Checkbutton(parent, variable=var)
+            cell_ui.val = var
+            if cell_def['content'] == 'selected':
+                cell_ui.select()
+        else:
+            cell_ui = tk.Label(self.body, text=cell_def['content'], 
+                               anchor=tk.W, justify=tk.LEFT, wraplength=500)
+            
+        return cell_ui
+            
+            
+        
     def __create_body(self):
         
-        self.canvas = tk.Canvas(self, borderwidth=1, background=TABLE_COLOR_GRID)
+        self.canvas = tk.Canvas(self, borderwidth=0, background=TABLE_COLOR_GRID)
         
         self.body = tk.Frame(self.canvas, background=TABLE_COLOR_GRID)
-        self.body.pack(fill=tk.BOTH, expand=1)
+        self.body.pack(fill=tk.BOTH, expand=1, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
         
         self.vsb = tk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vsb.set)
@@ -123,92 +141,59 @@ class Table(tk.Frame):
         '''Reset the scroll region to encompass the inner frame'''
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
                 
-    def __define_columns(self, columns):
+    def __create_header(self, columns):
         
         column_idx = 0
         for column in columns:
-            b = tk.Button(self.header,text=column, command=lambda column_idx=column_idx: self.on_column_select(column_idx))
-            b.grid(row=0, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+            btn_frame = tk.Frame(self.header, background='#625425', width=200, height=30)
+            btn_frame.pack(fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
+            btn_frame.propagate(False)
             
-            b.update()
+            b = tk.Button(btn_frame,text=column, 
+                          command=lambda column_idx=column_idx: self.on_column_select(column_idx))
+            #b.grid(row=0, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+            b.pack(expand=1, fill=tk.BOTH, side=tk.LEFT)
             
-            self.column_header_width[str(column_idx)] = b.winfo_width()
+            b.update()            
+            b_width = b.winfo_reqwidth()
+            b_heigth = b.winfo_reqheight()
+            
+            print(b_width)
+            
+            btn_frame.config(width=b_width, height=b_heigth)            
+            btn_frame.update()
+            
+            self.column_header_width[str(column_idx)] = btn_frame.winfo_reqwidth()
+            
+            self.header_frames.append(btn_frame)
             
             column_idx += 1
             
     def on_column_select(self, column_idx):
-        print(column_idx)
-
-'''
-def myfunction(event):
-    canvas.configure(scrollregion=canvas.bbox("all"),width=200,height=200)
-
-root=Tk()
-sizex = 800
-sizey = 600
-posx  = 100
-posy  = 100
-root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
-
-myframe=Frame(root,relief=GROOVE,width=50,height=100,bd=1)
-myframe.place(x=10,y=10)
-
-canvas=Canvas(myframe)
-frame=Frame(canvas)
-myscrollbar=Scrollbar(myframe,orient="vertical",command=canvas.yview)
-canvas.configure(yscrollcommand=myscrollbar.set)
-
-myscrollbar.pack(side="right",fill="y")
-canvas.pack(side="left")
-canvas.create_window((0,0),window=frame,anchor='nw')
-frame.bind("<Configure>",myfunction)
-data()
-root.mainloop()
-
-
-
-import tkinter as tk
-
-class Example(tk.Frame):
-    def __init__(self, parent):
-
-        tk.Frame.__init__(self, parent)
-        self.canvas = tk.Canvas(self, borderwidth=0, background="#ffffff")
-        self.frame = tk.Frame(self.canvas, background="#ffffff")
-        self.vsb = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=self.vsb.set)
-
-        self.vsb.pack(side="right", fill="y")
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.canvas.create_window((4,4), window=self.frame, anchor="nw",
-                                  tags="self.frame")
-
-        self.frame.bind("<Configure>", self.onFrameConfigure)
-
-        self.populate()
-
-    def populate(self):
-        Put in some fake data
-        for row in range(100):
-            tk.Label(self.frame, text="%s" % row, width=3, borderwidth="1",
-                     relief="solid").grid(row=row, column=0)
-            t="this is the second column for row %s" %row
-            tk.Label(self.frame, text=t).grid(row=row, column=1)
-
-    def onFrameConfigure(self, event):
-        Reset the scroll region to encompass the inner frame
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
-if __name__ == "__main__":
-    root=tk.Tk()
-    example = Example(root)
-    example.pack(side="top", fill="both", expand=True)
-    root.mainloop()
-
-
-'''       
+        print(column_idx)   
         
 def request_tag_attr_popup(tag_name, master, respond_recipient):
+    
+    table_content = create_attribute_popup_content(tag_name)
+    
+    popup = tk.Toplevel(master)
+    popup.wm_geometry("%dx%d" % (1000, 500))
+    popup.title(popup.title() + ' - %s Attribute Selection' %(tag_name.upper()))
+    table = Table(popup, ['X', 'Attribute Name', 'Attribute Description'], table_content)
+    table.pack(fill=tk.BOTH, expand=1)
+        
+    button_row = tk.Frame(popup)
+    button_row.pack(fill=tk.X)
+    
+    select_btn = tk.Button(button_row,text='Select', command=lambda: respond_tag_attr_popup(popup, table, respond_recipient))
+    select_btn.grid(row=1, column=0, sticky=tk.NSEW, pady=2, padx=2) 
+    
+    cancel_btn = tk.Button(button_row,text='Cancel', command=lambda: popup.destroy())
+    cancel_btn.grid(row=1, column=1, sticky=tk.NSEW, pady=2, padx=2) 
+    
+    popup.mainloop()
+    
+def create_attribute_popup_content(tag_name):
     
     tag_conf = configuration_loader.load_html_tag(tag_name)
     
@@ -242,29 +227,8 @@ def request_tag_attr_popup(tag_name, master, respond_recipient):
         table_row.append(cell_attr_desc)
         
         table_content.append(table_row)
-    
-    popup = tk.Toplevel(master)
-    popup.wm_geometry("%dx%d" % (1000, 500))
-    popup.transient(master)
-    popup.title(popup.title() + ' - %s Attribute Selection' %(tag_name.upper()))
-    popup.resizable(0, 0)
-    table = Table(popup, ['X', 'Attribute Name', 'Attribute Description'], table_content)
         
-    #table.add_row(table_row)
-    
-    #table.grid(row=0, column=0, columnspan=2, sticky=tk.NSEW, pady=2)
-    table.pack(fill=tk.BOTH, expand=1)
-        
-    button_row = tk.Frame(popup)
-    button_row.pack(fill=tk.X)
-    
-    select_btn = tk.Button(button_row,text='Select', command=lambda: respond_tag_attr_popup(popup, table, respond_recipient))
-    select_btn.grid(row=1, column=0, sticky=tk.NSEW, pady=2, padx=2) 
-    
-    cancel_btn = tk.Button(button_row,text='Cancel', command=lambda: popup.destroy())
-    cancel_btn.grid(row=1, column=1, sticky=tk.NSEW, pady=2, padx=2) 
-    
-    popup.mainloop()
+    return table_content
 
 def respond_tag_attr_popup(popup, table, respond_recipient):
 
