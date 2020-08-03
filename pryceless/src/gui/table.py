@@ -83,17 +83,12 @@ class Table(tk.Frame):
         
         col_idx = 0;
         
+        row_frame = self.__create_row_frame()
+
         for cell in table_row:
             
-            cell_frame = tk.Frame(self.header, background='#625425', width=200, height=30)
-            cell_frame.pack(fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
-            cell_frame.propagate(False)
-            
+            cell_frame = self.__create_cell_frame(row_frame)
             cell_ui = self.__create_cell(cell, cell_frame)
-            
-            #cell_ui.grid(row=self.row_idx, column=col_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
-            cell_ui.pack(expand=1, fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
-            cell_ui.update()
             
             cell_width = cell_ui.winfo_reqwidth()
             key = str(col_idx)
@@ -105,16 +100,36 @@ class Table(tk.Frame):
             
         self.row_idx += 1
         
-    def __create_cell(self, cell_def, parent):
+    def __create_row_frame(self):
+        
+        cell_row = tk.Frame(self.body, background='#625425', width=200, height=30)
+        cell_row.grid(row=self.row_idx, column=0, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
+        cell_row.grid_propagate(False)
+        
+        return cell_row
+    
+    def __create_cell_frame(self, row_frame):
+            
+        cell_frame = tk.Frame(row_frame, background='#625425', width=200, height=30)
+        cell_frame.pack(fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
+        cell_frame.propagate(False)
+        
+        return cell_frame
+        
+    def __create_cell(self, cell_def, cell_frame):
+        
         if cell_def['type'] == 'boolean':
             var = tk.IntVar()
-            cell_ui = tk.Checkbutton(parent, variable=var)
+            cell_ui = tk.Checkbutton(cell_frame, variable=var)
             cell_ui.val = var
             if cell_def['content'] == 'selected':
                 cell_ui.select()
         else:
             cell_ui = tk.Label(self.body, text=cell_def['content'], 
                                anchor=tk.W, justify=tk.LEFT, wraplength=500)
+        
+        cell_ui.pack(expand=1, fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+        cell_ui.update()
             
         return cell_ui
             
