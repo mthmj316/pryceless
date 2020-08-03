@@ -12,6 +12,7 @@ ATTRIBUTES_CONF = None
 LOADED_HTML_TAGS = {}
 LOADED_HTML_ATTRIBUTES = {}
 
+
 def load_attribute(attribute_name):
     '''
     Loads the attribute with the given name from the attributes.conf file.
