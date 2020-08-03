@@ -8,8 +8,8 @@ from scripts import configuration_loader
 from tkinter.constants import BUTT
 from pip._internal import self_outdated_check
 
-TABLE_COLOR_BACK = "#D9D9D9"
-TABLE_COLOR_GRID = "#000000"
+TABLE_COLOR_BACK = '#D9D9D9'
+TABLE_COLOR_GRID = '#000000'
 TABLE_GRID_PAD = 1
 class Table(tk.Frame):
     
@@ -25,6 +25,8 @@ class Table(tk.Frame):
         self.header = tk.Frame(self, background=TABLE_COLOR_BACK)
         self.header.pack(fill=tk.X)
         self.header_frames = []
+        self.table_rows = []
+        self.cell_frames = []
         
         self.__create_header(columns)
         
@@ -35,9 +37,9 @@ class Table(tk.Frame):
             
         self.__calulate_column_width_to_apply()
             
-        print(self.column_header_width)
-        print(self.column_body_width)
-        print(self.column_width_to_apply)
+        #print(self.column_header_width)
+        #print(self.column_body_width)
+        #print(self.column_width_to_apply)
         
         self.__revise_column_width()
         
@@ -46,20 +48,30 @@ class Table(tk.Frame):
         # revise table header columns
         for col_idx, col_width in self.column_width_to_apply.items():
             
-            print(col_idx + ' -> ' + str(col_width))
+            #print(col_idx + ' -> ' + str(col_width))
             
             btn_frame = self.header_frames[int(col_idx)]
             btn_frame.config(width=col_width)
-            btn_frame.update()
+            #btn_frame.update()
             
-            btn = btn_frame.winfo_children()[0]
-            btn.update()
+            #btn = btn_frame.winfo_children()[0]
+            #btn.update()
             
-            print(btn.winfo_width())
-            print(btn_frame.winfo_reqwidth())
+            #print(btn.winfo_width())
+            #print(btn_frame.winfo_reqwidth())
         
         
         # revise table body
+        for cell_frame in self.cell_frames:
+            
+            cell_frame.config(width=self.column_width_to_apply[str(cell_frame.col_idx)])
+            cell_frame.update()
+            
+            #cell_frame.winfo_children()[0].update()
+            
+            #print(cell_frame.winfo_width())
+            #print(cell_frame.winfo_children()[0].winfo_reqwidth())
+                              
         
         
     def __calulate_column_width_to_apply(self):
@@ -84,10 +96,16 @@ class Table(tk.Frame):
         col_idx = 0;
         
         row_frame = self.__create_row_frame()
+        self.table_rows.append(row_frame)
 
         for cell in table_row:
             
             cell_frame = self.__create_cell_frame(row_frame)
+            cell_frame.col_idx = col_idx
+            cell_frame.row_idx = self.row_idx
+            
+            self.cell_frames.append(cell_frame)
+            
             cell_ui = self.__create_cell(cell, cell_frame)
             
             cell_width = cell_ui.winfo_reqwidth()
@@ -102,16 +120,18 @@ class Table(tk.Frame):
         
     def __create_row_frame(self):
         
-        cell_row = tk.Frame(self.body, background='#625425', width=200, height=30)
-        cell_row.grid(row=self.row_idx, column=0, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
-        cell_row.grid_propagate(False)
+        #cell_row = tk.Frame(self.body, background='#625425', width=200, height=30)
+        cell_row = tk.Frame(self.body, background=TABLE_COLOR_BACK)
+        cell_row.grid(row=self.row_idx, column=0, sticky=tk.NSEW)            
+        #cell_row.grid_propagate(False)
         
         return cell_row
     
     def __create_cell_frame(self, row_frame):
             
-        cell_frame = tk.Frame(row_frame, background='#625425', width=200, height=30)
-        cell_frame.pack(fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
+        #cell_frame = tk.Frame(row_frame, background='#625000', width=200, height=30)
+        cell_frame = tk.Frame(row_frame, background=TABLE_COLOR_GRID, height=30)
+        cell_frame.pack(fill=tk.BOTH, side=tk.LEFT)            
         cell_frame.propagate(False)
         
         return cell_frame
@@ -125,8 +145,8 @@ class Table(tk.Frame):
             if cell_def['content'] == 'selected':
                 cell_ui.select()
         else:
-            cell_ui = tk.Label(self.body, text=cell_def['content'], 
-                               anchor=tk.W, justify=tk.LEFT, wraplength=500)
+            cell_ui = tk.Label(cell_frame, text=cell_def['content'], anchor=tk.W, justify=tk.LEFT) 
+                               #anchor=tk.W, justify=tk.LEFT, wraplength=500)
         
         cell_ui.pack(expand=1, fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
         cell_ui.update()
@@ -137,17 +157,17 @@ class Table(tk.Frame):
         
     def __create_body(self):
         
-        self.canvas = tk.Canvas(self, borderwidth=0, background=TABLE_COLOR_GRID)
+        self.canvas = tk.Canvas(self, borderwidth=0, background=TABLE_COLOR_BACK)
         
-        self.body = tk.Frame(self.canvas, background=TABLE_COLOR_GRID)
-        self.body.pack(fill=tk.BOTH, expand=1, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+        self.body = tk.Frame(self.canvas, background=TABLE_COLOR_BACK)
+        self.body.pack(fill=tk.BOTH, expand=1)
         
         self.vsb = tk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vsb.set)
 
         self.vsb.pack(side='right', fill='y')
         self.canvas.pack(side='left', fill='both', expand=True)
-        self.canvas.create_window((4,4), window=self.body, anchor='nw', tags='self.body')
+        self.canvas.create_window((0,0), window=self.body, anchor='nw', tags='self.body')
 
         self.body.bind('<Configure>', self.onFrameConfigure)
         
@@ -160,27 +180,29 @@ class Table(tk.Frame):
         
         column_idx = 0
         for column in columns:
-            btn_frame = tk.Frame(self.header, background='#625425', width=200, height=30)
-            btn_frame.pack(fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)            
-            btn_frame.propagate(False)
+            #header_frame = tk.Frame(self.header, background='#625425', width=200, height=30)
+            header_frame = tk.Frame(self.header, background=TABLE_COLOR_GRID)
+            header_frame.pack(fill=tk.BOTH, side=tk.LEFT)            
+            header_frame.propagate(False)
             
-            b = tk.Button(btn_frame,text=column, 
+            column_header = tk.Button(header_frame,text=column, 
                           command=lambda column_idx=column_idx: self.on_column_select(column_idx))
-            #b.grid(row=0, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
-            b.pack(expand=1, fill=tk.BOTH, side=tk.LEFT)
+            #column_header.grid(row=0, column=column_idx, sticky=tk.NSEW, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
+            column_header.pack(expand=1, fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
             
-            b.update()            
-            b_width = b.winfo_reqwidth()
-            b_heigth = b.winfo_reqheight()
+            #column_header.update()            
+            #b_width = column_header.winfo_reqwidth()
+            #b_heigth = column_header.winfo_reqheight()
             
-            print(b_width)
+            #print(b_width)
             
-            btn_frame.config(width=b_width, height=b_heigth)            
-            btn_frame.update()
+            header_frame.config(width=column_header.winfo_reqwidth(),
+                                height=column_header.winfo_reqheight())            
+            #header_frame.update()
             
-            self.column_header_width[str(column_idx)] = btn_frame.winfo_reqwidth()
+            self.column_header_width[str(column_idx)] = header_frame.winfo_reqwidth()
             
-            self.header_frames.append(btn_frame)
+            self.header_frames.append(header_frame)
             
             column_idx += 1
             
@@ -246,21 +268,24 @@ def create_attribute_popup_content(tag_name):
     return table_content
 
 def respond_tag_attr_popup(popup, table, respond_recipient):
-
-    row = 0
+    
     selected_attributes = []
-    while row < table.body.grid_size()[1]:
+
+    for cell_frame in table.cell_frames:
         
-        if table.body.grid_slaves(row,0)[0].val.get() == 1:
+        if cell_frame.col_idx == 0 and cell_frame.winfo_children()[0].val.get() == 1:
+            
+            table_row = table.table_rows[cell_frame.row_idx]
+            name_cell = table_row.winfo_children()[1].winfo_children()[0]
+            description_cell = table_row.winfo_children()[1].winfo_children()[0]
             
             selected_attribute = {
-                'name': table.body.grid_slaves(row,1)[0]['text'],
-                'description': table.body.grid_slaves(row,2)[0]['text']
+                'name': name_cell['text'],
+                'description': description_cell['text']
                 }
             selected_attributes.append(selected_attribute)
+            
         
-        row += 1
-    
     popup.destroy()
     
     respond_recipient(selected_attributes)
