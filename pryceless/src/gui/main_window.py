@@ -14,6 +14,9 @@ import tkinter.scrolledtext as scrolledtext
 import tkinter.messagebox as msg_box
 from scripts import selenium_testcase_template
 from gui.table import Table
+from utils.observable import Observable
+from utils.observer import Observer
+from typing import List
 
 
 class Statusbar(tk.Frame):
@@ -78,10 +81,23 @@ class MainInput(tk.Frame):
     def get_input(self):
         return self.text_area.get('1.0', tk.END)
 
-class TagOverview(tk.Frame):
+class TagOverview(tk.Frame, Observable):
     '''
     classdocs
-    '''
+    '''    
+    __observers: List[Observer] = []
+    
+    def attach(self, observer:Observer)->None:
+        self.__observers.append(observer)
+        
+    def detach(self, observer:Observer)->None:
+        self.__observers.remove(observer)
+        
+    def notify(self)->None:
+        
+        for observer in self.__observers:
+            observer.update(self)
+
     def on_html_tag_selected(self, evt):
         # Note here that Tkinter passes an event object to onselect()
         w = evt.widget

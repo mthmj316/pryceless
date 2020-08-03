@@ -5,8 +5,6 @@ Created on 24.07.2020
 '''
 import tkinter as tk
 from scripts import configuration_loader
-from tkinter.constants import BUTT
-from pip._internal import self_outdated_check
 
 TABLE_COLOR_BACK = '#D9D9D9'
 TABLE_COLOR_GRID = '#000000'
@@ -65,7 +63,7 @@ class Table(tk.Frame):
         for cell_frame in self.cell_frames:
             
             cell_frame.config(width=self.column_width_to_apply[str(cell_frame.col_idx)])
-            cell_frame.update()
+            #cell_frame.update()
             
             #cell_frame.winfo_children()[0].update()
             
@@ -146,7 +144,7 @@ class Table(tk.Frame):
                 cell_ui.select()
         else:
             cell_ui = tk.Label(cell_frame, text=cell_def['content'], anchor=tk.W, justify=tk.LEFT) 
-                               #anchor=tk.W, justify=tk.LEFT, wraplength=500)
+            #anchor=tk.W, justify=tk.LEFT, wraplength=500)
         
         cell_ui.pack(expand=1, fill=tk.BOTH, side=tk.LEFT, padx=TABLE_GRID_PAD, pady=TABLE_GRID_PAD)
         cell_ui.update()
@@ -211,7 +209,7 @@ class Table(tk.Frame):
         
 def request_tag_attr_popup(tag_name, master, respond_recipient):
     
-    table_content = create_attribute_popup_content(tag_name)
+    table_content = __create_attribute_popup_content(tag_name)
     
     popup = tk.Toplevel(master)
     popup.wm_geometry("%dx%d" % (1000, 500))
@@ -222,7 +220,7 @@ def request_tag_attr_popup(tag_name, master, respond_recipient):
     button_row = tk.Frame(popup)
     button_row.pack(fill=tk.X)
     
-    select_btn = tk.Button(button_row,text='Select', command=lambda: respond_tag_attr_popup(popup, table, respond_recipient))
+    select_btn = tk.Button(button_row,text='Select', command=lambda: __respond_tag_attr_popup(popup, table, respond_recipient))
     select_btn.grid(row=1, column=0, sticky=tk.NSEW, pady=2, padx=2) 
     
     cancel_btn = tk.Button(button_row,text='Cancel', command=lambda: popup.destroy())
@@ -230,7 +228,7 @@ def request_tag_attr_popup(tag_name, master, respond_recipient):
     
     popup.mainloop()
     
-def create_attribute_popup_content(tag_name):
+def __create_attribute_popup_content(tag_name):
     
     tag_conf = configuration_loader.load_html_tag(tag_name)
     
@@ -267,7 +265,7 @@ def create_attribute_popup_content(tag_name):
         
     return table_content
 
-def respond_tag_attr_popup(popup, table, respond_recipient):
+def __respond_tag_attr_popup(popup, table, respond_recipient):
     
     selected_attributes = []
 
@@ -289,15 +287,3 @@ def respond_tag_attr_popup(popup, table, respond_recipient):
     popup.destroy()
     
     respond_recipient(selected_attributes)
-    
-def create_html_tag_popup(self, tag):
-    '''
-    window = tk.Toplevel()
-
-    label = tk.Label(window, text=tag)
-    label.pack(fill='x', padx=50, pady=5)
-
-    button_close = tk.Button(window, text="Cancel", command=window.destroy)
-    button_close.pack(fill='x')
-    '''
-    pass
