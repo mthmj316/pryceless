@@ -11,13 +11,13 @@ class Observable(ABC):
     The Subject interface declares a set of methods for managing subscribers.
     """
     @abstractmethod
-    def attach(self, observer: Observer) -> None:
+    def register(self, observer: Observer) -> None:
         """
         Attach an observer to the subject.
         """
 
     @abstractmethod
-    def detach(self, observer: Observer) -> None:
+    def unregister(self, observer: Observer) -> None:
         """
         Detach an observer from the subject.
         """

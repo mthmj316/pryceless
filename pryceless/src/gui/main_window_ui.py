@@ -14,8 +14,8 @@ import tkinter.scrolledtext as scrolledtext
 import tkinter.messagebox as msg_box
 from scripts import selenium_testcase_template
 from gui.table import Table
-from utils.observable import Observable
-from utils.observer import Observer
+#from utils.observable import Observable
+#from utils.observer import Observer
 from typing import List
 
 
@@ -81,10 +81,9 @@ class MainInput(tk.Frame):
     def get_input(self):
         return self.text_area.get('1.0', tk.END)
 
-class TagOverview(tk.Frame, Observable):
+class TagOverview(tk.Frame):
     '''
     classdocs
-    '''    
     __observers: List[Observer] = []
     
     def attach(self, observer:Observer)->None:
@@ -97,6 +96,7 @@ class TagOverview(tk.Frame, Observable):
         
         for observer in self.__observers:
             observer.update(self)
+    '''    
 
     def on_html_tag_selected(self, evt):
         # Note here that Tkinter passes an event object to onselect()
@@ -291,10 +291,3 @@ class MainWindowUI(tk.Frame):
         
         # Write the basic html template to the main input text
         self.main_input.set_input(selenium_testcase_template.get_template('basic_html_file.template').substitute())
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    MainWindowUI(root).pack(side="top", fill="both", expand=True)
-    root.attributes('-zoomed', True)
-    root.mainloop()
