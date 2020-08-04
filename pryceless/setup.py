@@ -7,7 +7,7 @@ setup(
     name='pryceless',
     version="0.1",
     package_dir={'': 'src'},
-    packages=['scripts', 'templates', 'tests', 'gui', 'conf', 'utils'],
+    packages=['scripts', 'templates', 'tests', 'gui', 'conf', 'utils', 'controller', 'main', 'model'],
     package_data={'': ['*.template', '*.expected', '*.conf']},
     include_package_data=True,
 )
