@@ -143,7 +143,7 @@ class TagOverview(tk.Frame, Observable):
         self.description.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=0)
         
 
-class MainWindow(tk.Frame):
+class MainWindowUI(tk.Frame):
     '''
     classdocs
     '''
@@ -295,6 +295,6 @@ class MainWindow(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    MainWindow(root).pack(side="top", fill="both", expand=True)
+    MainWindowUI(root).pack(side="top", fill="both", expand=True)
     root.attributes('-zoomed', True)
     root.mainloop()
