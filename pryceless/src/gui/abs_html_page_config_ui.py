@@ -11,7 +11,7 @@ class ABSHTMLPageConfigUI(abc.ABC, Observable):
     '''
     Interface for HTML
     '''
-    
+        
     @abc.abstractmethod
     def insert(self, tag: HTMLElement) -> None:
         '''
