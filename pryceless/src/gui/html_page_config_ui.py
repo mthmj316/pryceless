@@ -5,21 +5,99 @@ Created on 04.08.2020
 '''
 import tkinter as tk
 import tkinter.ttk as ttk
+from gui.abs_html_page_config_ui import ABSHTMLPageConfigUI
+from scripts.html_element import HTMLElement
+from gi import overrides
+from utils.observer import Observer
+from typing import List
+from tkinter.ttk import Treeview
 
-class HTMLPageConfigUI(frame):
+class HTMLPageConfigUI(tk.Frame, ABSHTMLPageConfigUI):
     '''
     classdocs
     '''
-
-
+    
+    __observers: List[Observer] = []
+    __tree: Treeview = None
+    
     def __init__(self, master):
         '''
         Constructor
         '''        
-        self.tree = ttk.Treeview(master)
+        self.__tree = ttk.Treeview(master)
+    
+    @overrides(ABSHTMLPageConfigUI)   
+    def insert(self, tag:HTMLElement)->None:
+        pass
+    
+    @overrides(ABSHTMLPageConfigUI)    
+    def remove(self, tag:HTMLElement)->None:
+        pass
+
+    @overrides(ABSHTMLPageConfigUI)
+    def update(self, tag:HTMLElement) -> None:
+        '''
+        '''
+        pass
+    
+    @overrides(ABSHTMLPageConfigUI)    
+    def clear(self) -> None:
+        '''
+        '''
+        pass
+    
+    @overrides(ABSHTMLPageConfigUI)  
+    def move(self, tag: HTMLElement) -> None:
+        '''
+        '''
+        pass
+
+    @overrides(ABSHTMLPageConfigUI)
+    def get_selected(self) -> str:
+        '''
+        Returns the id of the selected html tag
+        '''
+        pass     
+
+    @overrides(ABSHTMLPageConfigUI)
+    def register(self, observer: Observer) -> None:
+        self.__observers.append(observer)
         
+    @overrides(ABSHTMLPageConfigUI)
+    def unregister(self, observer:Observer)->None:
+        self.__observers.remove(observer)
+        
+    @overrides(ABSHTMLPageConfigUI) 
+    def notify(self)->None:
+        
+        for observer in self.__observers:
+            observer.update(self)   
         
 '''
+
+def __init__(self, master=None, **kw):
+        ttk.Treeview.__init__(self, master, **kw)
+
+        self._curfocus = None
+        self._inplace_widgets = {}
+        self._inplace_widgets_show = {}
+        self._inplace_vars = {}
+        self._header_clicked = False
+        self._header_dragged = False
+
+        # Wheel events?
+        self.bind('<<TreeviewSelect>>', self.check_focus)
+        self.bind('<4>', lambda e: self.after_idle(self.__updateWnds))
+        self.bind('<5>', lambda e: self.after_idle(self.__updateWnds))
+        self.bind('<KeyRelease>', self.check_focus)
+        self.bind('<Home>', functools.partial(self.__on_key_press, 'Home'))
+        self.bind('<End>', functools.partial(self.__on_key_press, 'End'))
+        self.bind('<Button-1>', self.__on_button1)
+        self.bind('<ButtonRelease-1>', self.__on_button1_release)
+        self.bind('<Motion>', self.__on_mouse_motion)
+        self.bind('<Configure>', lambda e: self.after_idle(self.__updateWnds)) 
+
+
 import logging
 logging.basicConfig(filename='example.log',level=logging.DEBUG)
 logging.debug('This message should go to the log file')

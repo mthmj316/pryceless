@@ -18,131 +18,26 @@ from gui.table import Table
 #from utils.observer import Observer
 from typing import List
 
+'''
+_____________________________________________________
+|          |                              |         |
+|          |                              |  Attr.  |
+|   HTML   |                              |         |
+|   Tag    |                              |         |
+| Overview |     Page Config              |         |
+|          |                              |---------|
+|          |                              |         |
+|          |                              |   CSS   |
+|          |                              |         |
+|----------|------------------------------|---------|
+|          |               |              |         |
+|          |               |              |         |
+|    JS    |      Events   |    G-Var     |  Var    |
+|          |               |              |         |
+|__________|_______________|______________|_________|
 
-class Statusbar(tk.Frame):
-    '''
-    classdocs
-    '''
-    def __init__(self, master):
-        '''
-        doc
-        '''
-        tk.Frame.__init__(self, master)
-        
-        self.opened_file_var = tk.StringVar()
-        self.opened_file_lbl = tk.Label(self, bd=2, relief=tk.SUNKEN, anchor=tk.W,
-                                      textvariable=self.opened_file_var,
-                                      font=('arial',10,'normal'))
-        
-        self.opened_file_var.set('opened: ')       
-        self.opened_file_lbl.grid(row=0, column=0)
-        #self.opened_file_lbl.pack(fill=tk.X)
-        
-        self.variable=tk.StringVar()    
-        
-        self.label=tk.Label(self, bd=2, relief=tk.SUNKEN, anchor=tk.W,
-                           textvariable=self.variable,
-                           font=('arial',10,'normal'))
-        
-        self.variable.set('state')  
-        self.label.grid(row=0, column=1)       
-        #self.label.pack(fill=tk.X)
-              
-        self.pack(side=tk.BOTTOM, fill=tk.X)
-        
-    def set_status_text(self, text):
-        '''
-        Sets the 'opened:' part of the status bar
-        if text == None the section will contain: opened: None
-        otherwise: opened: <text>
-        '''
-        if text == None:
-            text = 'None'
-        
-        self.opened_file_var.set('opened: ' + text)
-        
-class MainInput(tk.Frame):
-    '''
-    classdocs
-    '''
-    def __init__(self, master):
-        '''
-        doc
-        '''
-        tk.Frame.__init__(self, master)
-        self.text_area = tk.Text(master=master)
-        self.text_area.pack(fill=tk.BOTH, expand=1)
-             
-    def set_input(self, value):
-        self.text_area.delete('1.0', tk.END)
-        self.text_area.insert(tk.END, value)  
 
-            
-    def get_input(self):
-        return self.text_area.get('1.0', tk.END)
-
-class TagOverview(tk.Frame):
-    '''
-    classdocs
-    __observers: List[Observer] = []
-    
-    def attach(self, observer:Observer)->None:
-        self.__observers.append(observer)
-        
-    def detach(self, observer:Observer)->None:
-        self.__observers.remove(observer)
-        
-    def notify(self)->None:
-        
-        for observer in self.__observers:
-            observer.update(self)
-    '''    
-
-    def on_html_tag_selected(self, evt):
-        # Note here that Tkinter passes an event object to onselect()
-        w = evt.widget
-        
-        index = w.curselection()[0]
-        value = w.get(index)
-        self.description.config(state=tk.NORMAL)
-        self.description.delete('1.0', tk.END)
-        self.description.insert(tk.END, list_creator.get_tag_description(value))
-        self.description.config(state=tk.DISABLED) 
-    
-    def on_html_tag_double_click(self, event):
-        
-        if self.state == 'normal':
-            index = event.widget.curselection()[0]
-            selected_tag = event.widget.get(index)
-            
-            table.request_tag_attr_popup(selected_tag, self.master, lambda selected_attr: self.on_tag_attr_popu_respond(selected_attr))
-            
-    def on_tag_attr_popu_respond(self, selected_attr):
-        print(selected_attr)
-        
-    def enable(self, enable):
-        
-        self.state = 'normal' if enable else 'disable'
-        
-        self.html_overvew_lbx.config(state=self.state)
-        self.description.config(state=self.state)
-        
-    
-    def __init__(self, master):
-        '''
-        doc
-        '''
-        tk.Frame.__init__(self, master)
-        self.html_overvew_lbx = create_html_list_box(self)
-        self.html_overvew_lbx.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        self.html_overvew_lbx.bind('<<ListboxSelect>>', self.on_html_tag_selected)
-        self.html_overvew_lbx.bind('<Double-Button>', self.on_html_tag_double_click)
-        
-        #self.description = tk.Text(master=self, state=tk.DISABLED)
-        self.description = scrolledtext.ScrolledText(self, undo=True, wrap=tk.WORD)
-        self.description.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=0)
-        
-
+'''
 class MainWindowUI(tk.Frame):
     '''
     classdocs
