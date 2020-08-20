@@ -53,9 +53,7 @@ class ChangeStack(object):
     
     __stack_size = 0
     
-    __undo_stack: List[ABSMemento] = []
-    
-    __redo_stack: List[ABSMemento] = []
+    __stack: List[ABSMemento] = []
     
     def __init__(self, stack_size=50):
         '''
@@ -71,10 +69,6 @@ class ChangeStack(object):
         Returns True after the max stack size has been exceeded once.
         '''
         
-    def undo(self) -> ABSMemento:
+    def pull(self) -> ABSMemento:
         '''
-        '''
-    
-    def redo(self) -> ABSMemento:
-        '''
-        '''   
+        '''  
