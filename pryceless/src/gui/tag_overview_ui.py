@@ -27,12 +27,20 @@ class TagOverviewUI(tk.Frame, ABSTagOverviewUI, TagOverviewObservable):
     
     __description_scdtxt: scrolledtext.ScrolledText = None
     
+    __parent_width: int = 0
+    
+    __parent_height: int = 0
+    
     def __init__(self, master):
         '''
         Constructor
         '''
-        tk.Frame.__init__(self, master, background='#111AAA')
-        self.configure(width=master.winfo_reqwidth(), height=master.winfo_reqheight())
+        tk.Frame.__init__(self, master, bg='#111AAA')
+        
+        self.__parent_width = master.winfo_reqwidth()
+        self.__parent_height = master.winfo_reqheight()
+        
+        self.configure(width=self.__parent_width, height=self.__parent_height)
         self.grid_propagate(False)
         
         self.grid()
@@ -46,11 +54,30 @@ class TagOverviewUI(tk.Frame, ABSTagOverviewUI, TagOverviewObservable):
         print(self.winfo_width())
         print(self.winfo_height())
         
-        self.__create_html_list_box()   
+        html_list_frame = tk.Frame(self, bg='#333AAA')
+        html_list_frame.configure(width=self.__parent_width, height=int((self.__parent_height*2) / 3))
+        html_list_frame.grid(row=0,column=0, rowspan=2, sticky=tk.NSEW)
         
-        self.__description_scdtxt = scrolledtext.ScrolledText(self, undo=True, wrap=tk.WORD)
-        #self.description.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=0)
-        self.__description_scdtxt.grid(row=2, column=0)
+        #self.__create_html_list_box()  
+        
+        description_frame = tk.Frame(self, bg='#222AAA')
+        #description_frame.configure(width=self.__parent_width, height=int(self.__parent_height / 3))
+        description_frame.grid(row=2,column=0, sticky=tk.NSEW)
+        
+        
+        self.__description_scdtxt = scrolledtext.ScrolledText(description_frame, undo=True, wrap=tk.WORD)
+        #self.propagate(False)
+        self.__description_scdtxt.configure(width=self.__parent_width, height=int(self.__parent_height / 3))
+        
+        #self.__description_scdtxt.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=0)
+        self.__description_scdtxt.pack_configure(expand=0)
+        #self.__description_scdtxt.grid(column=0, row=0, sticky=tk.NSEW)
+        
+        print(self.__description_scdtxt.winfo_reqwidth())
+        print(self.__description_scdtxt.winfo_reqheight())
+        
+        #print(self.__description_scdtxt.grid_info())
+        
     
         
     def __on_html_tag_selected(self, evt):
@@ -143,14 +170,14 @@ class TagOverviewUI(tk.Frame, ABSTagOverviewUI, TagOverviewObservable):
         '''
         self.__click_observers.remove(observer)
         
-    @overrides
+    #@overrides
     def on_click(self)->None:
         '''
         '''
         for observer in self.__click_observers:
             observer.on_click(self)
         
-    @overrides
+    #@overrides
     def on_double_click(self)->None:
         '''
         '''

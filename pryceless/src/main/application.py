@@ -3,11 +3,9 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-import tkinter as tk
-from gui.main_window_ui import MainWindowUI
+from main_window.main_window_cntlr import MainWindowCNTLR
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    MainWindowUI(root).pack(side="top", fill="both", expand=True)
-    root.attributes('-zoomed', True)
-    root.mainloop()
+    
+    main_window = MainWindowCNTLR()
+    main_window.show('Pryceless')
