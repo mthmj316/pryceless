@@ -17,10 +17,27 @@ class MainWindowMo(ABSMainWindowMo):
     
     __loaded_project_dict: dict = None
 
+    __has_changes: bool = False
+    
+    __full_project_path: str = None
+
     def __init__(self):
         '''
         Constructor
         '''
+    
+    @overrides
+    def save(self)->None:
+        '''
+        '''
+        print(self.__full_project_path)
+        self.__has_changes = False
+    
+    @overrides
+    def has_changes(self)-> bool:
+        '''
+        '''
+        return self.__has_changes
     
     @overrides
     def is_project_open(self) -> bool:
@@ -51,7 +68,10 @@ class MainWindowMo(ABSMainWindowMo):
             # write the file content to the __loaded_project_json attribute
             with open(file_name, 'r') as file:
                 self.__loaded_project_dict = json.load(file)
-                
+            
+            #and save the file name
+            self.__full_project_path = file_name
+            
             return True
         
         return False

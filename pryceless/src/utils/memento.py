@@ -10,7 +10,7 @@ class ABSMemento(ABC):
     '''
     Empty interface
     '''
-
+    
 class ABSMementoOrigin(ABC):
     
     @abstractmethod
@@ -45,7 +45,7 @@ class Memento(ABSMemento):
         '''
         self.__change_type = change_type
         self.__memento_origin = origin
-
+    
     @property
     def change(self):
         '''

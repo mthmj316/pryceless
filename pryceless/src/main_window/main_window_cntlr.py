@@ -10,6 +10,7 @@ from main_window.main_window_ui import MainWindowUI
 from overrides.overrides import overrides
 from utils.utils import Event
 from main_window.main_window_mo import MainWindowMo
+from tkinter.messagebox import askyesnocancel
 
 
 
@@ -68,15 +69,37 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         
         is_project_open = self.__model.is_project_open()
         
-        if is_project_open:
-            
-            pass
-            
-        else:
-            is_project_open = self.__model.open_project()
-            
+        open_askopenfilename = False
         
         if is_project_open:
+            
+            if self.__model.has_changes():
+                
+                user_answer = askyesnocancel('Save on close', 
+                                     'Save changes before closing the project?')
+                if not user_answer == None:
+                    #Either 'yes' or 'no' has been pressed
+                    #Hence project selection must be opened.
+                    open_askopenfilename = True
+                    if user_answer:
+                        #'yes' has been pressed.
+                        #Save project and open a new one
+                        self.__model.save()
+                #else: cancel has been pressed 
+                #-> don't ask for project
+                
+            else:
+                open_askopenfilename = True
+            
+        else:
+            open_askopenfilename = True
+            
+        
+        if open_askopenfilename:
+            is_project_open = self.__model.open_project()
+
+        if is_project_open:
+            #Load data into the ui
             pass
         
     @overrides

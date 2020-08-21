@@ -204,7 +204,20 @@ class ABSMainWindowMo(abc.ABC):
         If a project has been actually open
         True will be returned, otherwise False.
         '''
-
+    
+    @abstractmethod
+    def has_changes(self) -> bool:
+        '''
+        Returns True if there are unsaved changes,
+        Otherwise False.
+        '''
+    
+    @abstractmethod
+    def save(self) -> None:
+        '''
+        Save the current project setup to the file system.
+        '''
+        
 
 class MainWindowMenuKeys(object):
     '''
