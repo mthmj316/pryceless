@@ -27,10 +27,19 @@ class MainWindowMo(ABSMainWindowMo):
         '''
     
     @overrides
+    def get_project_name(self)->str:
+        '''
+        Returns the name of the currently loaded project
+        '''
+        return self.__loaded_project_dict['project_name']
+    
+    @overrides
     def save(self)->None:
         '''
         '''
-        print(self.__full_project_path)
+        with open(self.__full_project_path, 'w') as file:
+            json.dump(self.__loaded_project_dict, file)
+                
         self.__has_changes = False
     
     @overrides

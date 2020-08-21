@@ -23,6 +23,9 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     __gui: ABSMainWindowUI = MainWindowUI(__root)
     
     __model: ABSMainWindowMo = MainWindowMo()
+    
+    #Window title which is displayed directly after application start.
+    __base_title: str = None
 
     def __init__(self):
         '''
@@ -36,7 +39,10 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         self.__gui.register_observer(self)        
         
         self.__root.attributes('-zoomed', True)
-        self.__root.title(title)
+        
+        self.__base_title = title
+        
+        self.__root.title(self.__base_title)
         self.__root.mainloop()
         
     @overrides
@@ -73,23 +79,7 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         
         if is_project_open:
             
-            if self.__model.has_changes():
-                
-                user_answer = askyesnocancel('Save on close', 
-                                     'Save changes before closing the project?')
-                if not user_answer == None:
-                    #Either 'yes' or 'no' has been pressed
-                    #Hence project selection must be opened.
-                    open_askopenfilename = True
-                    if user_answer:
-                        #'yes' has been pressed.
-                        #Save project and open a new one
-                        self.__model.save()
-                #else: cancel has been pressed 
-                #-> don't ask for project
-                
-            else:
-                open_askopenfilename = True
+            open_askopenfilename = self.__check_and_save_changes()
             
         else:
             open_askopenfilename = True
@@ -100,7 +90,44 @@ class MainWindowCNTLR(ABSMainWindowObserver):
 
         if is_project_open:
             #Load data into the ui
-            pass
+            self.__root.title(' - '.join([self.__base_title, 
+                                         self.__model.get_project_name()]))
+    
+     
+           
+    def __check_and_save_changes(self) -> bool:
+        '''
+        Check if the model is changed
+        If the model is changed it asks the user if changes shall be saved:
+            User answer:
+                'yes'    -> changes are saved -> return == True
+                'no'     -> changes won't be saved -> return == True
+                'cancel' -> changes won't be saved -> return == False
+        If the model is unchanged -> return == True
+        
+        Note: Only if this method returns True the process may be continued.
+        If False is returned the process must be discontinued
+        '''
+        if self.__model.has_changes():
+            #Model is changed -> ask user if changes shall be saved.                
+                user_answer = askyesnocancel('Save on close', 
+                                     'Save changes before closing the project?')
+                if not user_answer == None:
+                    #Either 'yes' or 'no' has been pressed
+                    #Hence True must be returned
+                    if user_answer:
+                        #'yes' has been pressed.
+                        #Save project and open a new one
+                        self.__model.save()
+                        
+                    return True
+                else:
+                    # cancel has been pressed 
+                    #-> process must be discontinued
+                    return False
+        else:
+            #Model is unchanged
+            return True
         
     @overrides
     def on_new(self, event:Event) -> None:
@@ -111,8 +138,17 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     def on_exit(self, event:Event) -> None:  # @UnusedVariable
         '''
         '''
-        self.__gui.unregister_observer(self)
-        self.__root.quit()
+        
+        perform_exit = True
+        
+        if self.__model.is_project_open():
+            perform_exit = self.__check_and_save_changes()
+        
+        #if perform_exit == False, then the user has canceled
+        # the exit during the check and save changes process.
+        if perform_exit:
+            self.__gui.unregister_observer(self)
+            self.__root.quit()
         
     @overrides
     def on_undo(self, event:Event) -> None:

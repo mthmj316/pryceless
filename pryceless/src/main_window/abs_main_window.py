@@ -158,7 +158,8 @@ class ABSMainwindowObservable(abc.ABC):
 class ABSMainWindowUI(ABSMainwindowObservable):
     '''
     classdocs
-    '''    
+    '''
+        
     @abc.abstractmethod
     def get_page_config_frame(self) -> tk.Frame:
         '''
@@ -187,6 +188,12 @@ class ABSMainWindowUI(ABSMainwindowObservable):
 class ABSMainWindowMo(abc.ABC):
     '''
     '''
+    @abstractmethod
+    def get_project_name(self) -> str:
+        '''
+        Returns the name of the currently loaded project
+        '''
+    
     @abstractmethod
     def is_project_open(self) -> bool:
         '''
