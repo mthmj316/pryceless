@@ -5,12 +5,13 @@ Created on 04.08.2020
 '''
 import tkinter as tk
 from main_window.abs_main_window import ABSMainWindowUI, ABSMainWindowObserver,\
-    ABSMainWindowMo
+    ABSMainWindowMo, MainWindowMenuKeys
 from main_window.main_window_ui import MainWindowUI
 from overrides.overrides import overrides
 from utils.utils import Event
 from main_window.main_window_mo import MainWindowMo
 from tkinter.messagebox import askyesnocancel
+from tkinter import simpledialog
 
 
 
@@ -133,7 +134,10 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     def on_new(self, event:Event) -> None:
         '''
         '''
-        
+        if event.event_source == MainWindowMenuKeys.KEY_PROJECT:
+            self.__model.create_new_project()
+            
+    
     @overrides
     def on_exit(self, event:Event) -> None:  # @UnusedVariable
         '''

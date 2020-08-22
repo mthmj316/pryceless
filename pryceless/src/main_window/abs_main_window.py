@@ -187,7 +187,23 @@ class ABSMainWindowUI(ABSMainwindowObservable):
 
 class ABSMainWindowMo(abc.ABC):
     '''
+    
     '''
+    @abstractmethod
+    def create_new_project(self) -> None:
+        '''
+        Creates a new project.
+        Firstly the user must select the directory where the
+        project shall be created.
+        After that the user is ask to define a project name.
+        If the user input is cancelled or the input is empty
+        the project won't be created.
+        If the name has been entered it is check if there is already 
+        a project in the selected directory with the same name.
+        If so the user is asked to change the name.
+        After that the project file is created.
+        '''
+    
     @abstractmethod
     def get_project_name(self) -> str:
         '''

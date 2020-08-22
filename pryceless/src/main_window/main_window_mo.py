@@ -6,8 +6,9 @@ Created on 04.08.2020
 from overrides.overrides import overrides
 from main_window.abs_main_window import ABSMainWindowMo
 import os
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, askdirectory
 import json
+from tkinter import messagebox, simpledialog
 
 class MainWindowMo(ABSMainWindowMo):
     '''
@@ -26,6 +27,69 @@ class MainWindowMo(ABSMainWindowMo):
         Constructor
         '''
     
+    @overrides
+    def create_new_project(self) -> None:
+        '''
+        Creates a new project.
+        Firstly the user must select the directory where the
+        project shall be created.
+        After that the user is ask to define a project name.
+        If the user input is cancelled or the input is empty
+        the project won't be created.
+        If the name has been entered it is check if there is already 
+        a project in the selected directory with the same name.
+        If so the user is asked to change the name.
+        After that the project file is created.
+        '''
+        selected_dir = askdirectory(initialdir = self.__last_project_folder,
+                                    title = 'Select Project Folder')
+        
+        if len(selected_dir) > 0:
+            self.__last_project_folder = selected_dir
+            
+            project_name = ''
+            
+            while project_name == '':
+                # while loop is as long continued as
+                # project_name is ''
+                project_name = simpledialog.askstring('Project Name',
+                                                      'Please enter an unique name for the new project.')
+            
+                if not project_name == None:
+                    
+                    new_
+                    
+                    if not self.__exists_project(project_name):
+                        
+                        self.__full_project_path = self.__create_full_project_path(project_name)
+                        
+                        print(self.__full_project_path)
+                        
+                        return
+                    else:
+                        messagebox.showerror('Project exsits', 
+                                             'Project name "%s" is already used.' %(project_name))
+                        project_name = ''
+        
+        messagebox.showinfo('Project Creation', 'Project creation has been cancelled.')
+    
+    def __create_full_project_path(self, project_name) -> str:
+        '''
+        Creates the full path for the given project_name
+        '''
+        full_path = '/'.join([self.__last_project_folder,
+                              project_name])
+        
+        return '.'.join([full_path, 'json'])
+    
+    def __exists_project(self, project_name):
+        '''
+        Check if in the currently selected project folder
+        a project exists with the given project name.
+        If so True otherwise False is returned.
+        '''
+        return False
+        
     @overrides
     def get_project_name(self)->str:
         '''

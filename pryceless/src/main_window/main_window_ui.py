@@ -135,7 +135,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
 
     def __on_new_project(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_PROJECT
+        self.notify_new()
     
     
     def __on_new_html_page(self):
