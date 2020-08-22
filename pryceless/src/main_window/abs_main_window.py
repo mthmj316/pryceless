@@ -159,6 +159,19 @@ class ABSMainWindowUI(ABSMainwindowObservable):
     '''
     classdocs
     '''
+    @abstractmethod
+    def enable_menu_project_depending(self, enable:bool) -> None:
+        '''
+        Enables/disbales all menu items which only depend on
+        that a project is opened:
+            HTML Page, 
+            CSS Rule, 
+            JavaScript, 
+            Text, 
+            Variable, 
+            Rename Project 
+            and Generate
+        '''
         
     @abc.abstractmethod
     def get_page_config_frame(self) -> tk.Frame:
@@ -189,6 +202,18 @@ class ABSMainWindowMo(abc.ABC):
     '''
     
     '''
+    @abstractmethod
+    def create_page(self) -> None:
+        '''
+        Creates a new HTML page within the selected project.
+        Duplicated pages are prevented.
+        '''
+    
+    @abstractmethod
+    def rename_project(self) -> None:
+        '''
+        Renames the currently loaded project
+        '''
     @abstractmethod
     def create_new_project(self) -> None:
         '''

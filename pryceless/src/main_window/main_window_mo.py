@@ -26,7 +26,69 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Constructor
         '''
+            
+    @overrides
+    def create_page(self) -> None:
+        '''
+        Creates a new HTML page within the selected project.
+        Duplicated pages are prevented.
+        '''
+        page_name = self.__name_page('New Page', 'Please enter page name.')
+        
+        if not page_name == None:
+            
+            self.__loaded_project_dict['pages'][page_name] = {
+                'page_name': page_name,
+                'content': {}
+                } 
+            
+            self.save()
     
+    def __name_page(self, title, msg) -> str:
+        
+        page_name = ''
+            
+        while page_name == '':
+            # while loop is as long continued as
+            # page_name is ''
+            page_name = simpledialog.askstring(title, msg)
+        
+            if not page_name == None:
+                # Check if the name already exists
+                
+                pages = self.__loaded_project_dict['pages']
+                
+                if not page_name in pages:
+                    
+                    return page_name
+                    
+                else:
+                    messagebox.showerror('Page exists', 
+                                         'Page name "%s" is already used.' %(page_name))
+                    page_name = ''
+        
+        return None
+    
+    @overrides
+    def rename_project(self) -> None:
+        '''
+        Renames the currently loaded project
+        '''
+        new_project = self.__name_project('Rename Project', 
+                                               'Please enter the new project name.')
+        
+        if not new_project == None:
+            
+            old_fully_qualified_path = self.__full_project_path
+            self.__full_project_path = new_project[1]
+            
+            self.__loaded_project_dict['project_name'] = new_project[0]
+            
+            self.save()
+            
+            os.unlink(old_fully_qualified_path)
+    
+        
     @overrides
     def create_new_project(self) -> None:
         '''
@@ -47,31 +109,46 @@ class MainWindowMo(ABSMainWindowMo):
         if len(selected_dir) > 0:
             self.__last_project_folder = selected_dir
             
-            project_name = ''
+            project_names = self.__name_project('Project Name', 
+                                                'Please enter an unique name for the new project.')
             
-            while project_name == '':
-                # while loop is as long continued as
-                # project_name is ''
-                project_name = simpledialog.askstring('Project Name',
-                                                      'Please enter an unique name for the new project.')
-            
-                if not project_name == None:
-                    
-                    new_
-                    
-                    if not self.__exists_project(project_name):
+            if not project_names == None:
+                
+                self.__full_project_path = project_names[1]
+                self.__loaded_project_dict = {
+                    'project_name': project_names[0],
+                    'pages': {}                            
+                    }
                         
-                        self.__full_project_path = self.__create_full_project_path(project_name)
-                        
-                        print(self.__full_project_path)
-                        
-                        return
-                    else:
-                        messagebox.showerror('Project exsits', 
-                                             'Project name "%s" is already used.' %(project_name))
-                        project_name = ''
+                self.save()
+                
+                return
         
         messagebox.showinfo('Project Creation', 'Project creation has been cancelled.')
+    
+    def __name_project(self, title, msg):
+        
+        project_name = ''
+            
+        while project_name == '':
+            # while loop is as long continued as
+            # project_name is ''
+            project_name = simpledialog.askstring(title, msg)
+        
+            if not project_name == None:
+                
+                new_full_project_path = self.__create_full_project_path(project_name)
+                
+                if not self.__exists_project(new_full_project_path):
+                    
+                    return (project_name, new_full_project_path)
+
+                else:
+                    messagebox.showerror('Project exists', 
+                                         'Project name "%s" is already used.' %(project_name))
+                    project_name = ''
+        
+        return None
     
     def __create_full_project_path(self, project_name) -> str:
         '''
@@ -82,13 +159,12 @@ class MainWindowMo(ABSMainWindowMo):
         
         return '.'.join([full_path, 'json'])
     
-    def __exists_project(self, project_name):
+    def __exists_project(self, full_project_path):
         '''
-        Check if in the currently selected project folder
-        a project exists with the given project name.
-        If so True otherwise False is returned.
+        Check if full_project_path already exists.
+        Return True if so otheriwse False
         '''
-        return False
+        return os.path.isfile(full_project_path)
         
     @overrides
     def get_project_name(self)->str:
@@ -102,7 +178,7 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         '''
         with open(self.__full_project_path, 'w') as file:
-            json.dump(self.__loaded_project_dict, file)
+            json.dump(self.__loaded_project_dict, file, indent=4, sort_keys=True)
                 
         self.__has_changes = False
     

@@ -35,6 +35,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     __file_menu: tk.Menu = None
     
+    __new_menu: tk.Menu = None
+
     __edit_menu: tk.Menu = None
     
     __html_page_menu: tk.Menu = None
@@ -42,6 +44,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     __last_event: Event = Event()
     
     __observers: List[ABSMainWindowObserver] = []
+    
     
     '''
     classdoc
@@ -67,6 +70,29 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__create_css_frame()
         self.__create_text_frame()
         self.__create_events_frame()
+        
+    @overrides
+    def enable_menu_project_depending(self, enable:bool) -> None:
+        '''
+        Enables/disbales all menu items which only depend on
+        that a project is opened:
+            HTML Page, 
+            CSS Rule, 
+            JavaScript, 
+            Text, 
+            Variable, 
+            Rename Project 
+            and Generate
+        '''
+        new_state = tk.NORMAL if enable else tk.DISABLED
+        
+        self.__new_menu.entryconfig(mKey.KEY_HTML_PAGE, state=new_state)
+        self.__new_menu.entryconfig(mKey.KEY_CSS_RULE, state=new_state)
+        self.__new_menu.entryconfig(mKey.KEY_JAVASCRIPT, state=new_state)
+        self.__new_menu.entryconfig(mKey.KEY_TEXT, state=new_state)
+        self.__new_menu.entryconfig(mKey.KEY_VARIABLE, state=new_state)
+        self.__edit_menu.entryconfig(mKey.KEY_RENAME_PROJECT, state=new_state)
+        self.__html_page_menu.entryconfig(mKey.KEY_GENERATE, state=new_state)
         
     @overrides
     def get_page_config_frame(self) -> tk.Frame:
@@ -140,7 +166,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_new_html_page(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_HTML_PAGE
+        self.notify_new()
     
     
     def __on_new_javascript(self):
@@ -190,21 +217,21 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         '''
         self.__file_menu = tk.Menu(self.__menubar, tearoff=0)
         
-        new_menu = tk.Menu(self.__menubar, tearoff=0)
-        new_menu.add_command(label=mKey.KEY_PROJECT, command=lambda: self.__on_new_project())
-        new_menu.add_separator()
-        new_menu.add_command(label=mKey.KEY_HTML_PAGE, command=lambda: self.__on_new_html_page())
-        new_menu.entryconfig(mKey.KEY_HTML_PAGE, state=tk.DISABLED)
-        new_menu.add_command(label=mKey.KEY_CSS_RULE, command=lambda: self.__on_new_css_rule())
-        new_menu.entryconfig(mKey.KEY_CSS_RULE, state=tk.DISABLED)
-        new_menu.add_command(label=mKey.KEY_JAVASCRIPT, command=lambda: self.__on_new_javascript())
-        new_menu.entryconfig(mKey.KEY_JAVASCRIPT, state=tk.DISABLED)
-        new_menu.add_separator()
-        new_menu.add_command(label=mKey.KEY_TEXT, command=lambda: self.__on_new_text())
-        new_menu.entryconfig(mKey.KEY_TEXT, state=tk.DISABLED)
-        new_menu.add_command(label=mKey.KEY_VARIABLE, command=lambda: self.__on_new_variable())
-        new_menu.entryconfig(mKey.KEY_VARIABLE, state=tk.DISABLED)
-        self.__file_menu.add_cascade(label=mKey.KEY_NEW, menu=new_menu)
+        self.__new_menu = tk.Menu(self.__menubar, tearoff=0)
+        self.__new_menu.add_command(label=mKey.KEY_PROJECT, command=lambda: self.__on_new_project())
+        self.__new_menu.add_separator()
+        self.__new_menu.add_command(label=mKey.KEY_HTML_PAGE, command=lambda: self.__on_new_html_page())
+        self.__new_menu.entryconfig(mKey.KEY_HTML_PAGE, state=tk.DISABLED)
+        self.__new_menu.add_command(label=mKey.KEY_CSS_RULE, command=lambda: self.__on_new_css_rule())
+        self.__new_menu.entryconfig(mKey.KEY_CSS_RULE, state=tk.DISABLED)
+        self.__new_menu.add_command(label=mKey.KEY_JAVASCRIPT, command=lambda: self.__on_new_javascript())
+        self.__new_menu.entryconfig(mKey.KEY_JAVASCRIPT, state=tk.DISABLED)
+        self.__new_menu.add_separator()
+        self.__new_menu.add_command(label=mKey.KEY_TEXT, command=lambda: self.__on_new_text())
+        self.__new_menu.entryconfig(mKey.KEY_TEXT, state=tk.DISABLED)
+        self.__new_menu.add_command(label=mKey.KEY_VARIABLE, command=lambda: self.__on_new_variable())
+        self.__new_menu.entryconfig(mKey.KEY_VARIABLE, state=tk.DISABLED)
+        self.__file_menu.add_cascade(label=mKey.KEY_NEW, menu=self.__new_menu)
         
         self.__file_menu.add_command(label=mKey.KEY_OPEN, command=lambda: self.__on_open())
         self.__file_menu.add_separator()
@@ -227,7 +254,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_rename_project(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_RENAME_PROJECT
+        self.notify_rename()
     
     
     def __on_rename_page(self):

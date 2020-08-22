@@ -11,9 +11,6 @@ from overrides.overrides import overrides
 from utils.utils import Event
 from main_window.main_window_mo import MainWindowMo
 from tkinter.messagebox import askyesnocancel
-from tkinter import simpledialog
-
-
 
 class MainWindowCNTLR(ABSMainWindowObserver):
     '''
@@ -91,11 +88,35 @@ class MainWindowCNTLR(ABSMainWindowObserver):
 
         if is_project_open:
             #Load data into the ui
-            self.__root.title(' - '.join([self.__base_title, 
-                                         self.__model.get_project_name()]))
+            self.__load_data_in_view()
+        
+        self.__enable_menu()
     
-     
-           
+    def __load_data_in_view(self):
+        '''
+        Loads the model data into the view
+        '''       
+        self.__root.title(' - '.join([self.__base_title,
+                                      self.__model.get_project_name()]))
+        
+    def __enable_menu(self):
+        
+        #save, save as ..., undo may only be enabled if model.has_changes() == True
+        #redo -> only if undo has been performed
+        #HTML Page, CSS Rule, JavaScript, Text, Variable, and Rename Project
+        #may only enabled if an project is open
+        #Select Page -> at least two pages must exist
+        #Rename Page -> at least one page must exist
+        #Edit CSS Rule -> at least one CSS Rule must exist
+        #Edit JavaScript -> dto Javascript
+        #Edit Text -> dto Text
+        #Edit Variable -> dto Variable
+        #Generate -> Project must be opend
+        #Add ... -> Tag must be selected
+        # Delete ... -> dto 
+        
+        self.__gui.enable_menu_project_depending(self.__model.is_project_open())
+        
     def __check_and_save_changes(self) -> bool:
         '''
         Check if the model is changed
@@ -135,7 +156,19 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         '''
         '''
         if event.event_source == MainWindowMenuKeys.KEY_PROJECT:
+            
+            if self.__model.is_project_open() \
+                and not self.__check_and_save_changes():
+                # user has cancelled the process
+                return
+                
             self.__model.create_new_project()
+            self.__load_data_in_view() 
+            self.__enable_menu()
+            
+        elif event.event_source == MainWindowMenuKeys.KEY_HTML_PAGE:
+            self.__model.create_page()
+            self.__load_data_in_view()
             
     
     @overrides
@@ -163,6 +196,9 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     def on_rename(self, event:Event) -> None:
         '''
         '''
+        if event.event_source == MainWindowMenuKeys.KEY_RENAME_PROJECT:
+            self.__model.rename_project()
+            self.__load_data_in_view()
         
     @overrides
     def on_edit(self, event:Event) -> None:
