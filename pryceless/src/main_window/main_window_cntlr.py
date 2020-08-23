@@ -11,6 +11,7 @@ from overrides.overrides import overrides
 from utils.utils import Event
 from main_window.main_window_mo import MainWindowMo
 from tkinter.messagebox import askyesnocancel
+from controls.page_overview_control import PageOverviewControl
 
 class MainWindowCNTLR(ABSMainWindowObserver):
     '''
@@ -29,6 +30,7 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         '''
         Constructor
         '''
+        PageOverviewControl(self.__gui.get_page_overview_frame(), 'Page Overview')
         
     def show(self, title:str='TITLE'):
         '''
@@ -161,9 +163,13 @@ class MainWindowCNTLR(ABSMainWindowObserver):
                 and not self.__check_and_save_changes():
                 # user has cancelled the process
                 return
-                
+            
             self.__model.create_new_project()
-            self.__load_data_in_view() 
+
+            if self.__model.is_project_open():  
+                #Only needed when project has been actually created.
+                self.__load_data_in_view() 
+                
             self.__enable_menu()
             
         elif event.event_source == MainWindowMenuKeys.KEY_HTML_PAGE:

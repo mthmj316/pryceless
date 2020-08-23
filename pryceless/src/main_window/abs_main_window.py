@@ -182,22 +182,12 @@ class ABSMainWindowUI(ABSMainwindowObservable):
     def get_attributes_frame(self) -> tk.Frame:
         '''
         '''        
-
+        
     @abc.abstractmethod
-    def get_text_frame(self) -> tk.Frame:
+    def get_page_overview_frame(self) -> tk.Frame:
         '''
         '''
         
-    @abc.abstractmethod
-    def get_css_frame(self) -> tk.Frame:
-        '''
-        '''
-        
-    @abc.abstractmethod
-    def get_events_frame(self) -> tk.Frame:
-        '''
-        '''
-
 class ABSMainWindowMo(abc.ABC):
     '''
     

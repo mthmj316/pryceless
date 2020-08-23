@@ -21,11 +21,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     __attributes_frame: tk.Frame = None
     
-    __css_frame: tk.Frame = None
-    
-    __text_frame: tk.Frame = None
-    
-    __events_frame: tk.Frame = None
+    __page_overview_frame: tk.Frame = None
     
     __cell_width: float = 0
     
@@ -67,9 +63,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         
         self.__create_page_config_frame()
         self.__create_attributes_fram()
-        self.__create_css_frame()
-        self.__create_text_frame()
-        self.__create_events_frame()
+        self.__create_page_overview_frame()
         
     @overrides
     def enable_menu_project_depending(self, enable:bool) -> None:
@@ -107,23 +101,11 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         return self.__attributes_frame       
 
     @overrides
-    def get_text_frame(self) -> tk.Frame:
+    def get_page_overview_frame(self) -> tk.Frame:
         '''
         '''
-        return self.__text_frame
-        
-    @overrides
-    def get_css_frame(self) -> tk.Frame:
-        '''
-        '''
-        return self.__css_frame
+        return self.__page_overview_frame
 
-    @overrides
-    def get_events_frame(self) -> tk.Frame:
-        '''
-        '''
-        return self.__events_frame
-        
     def __create_page_config_frame(self):
         '''
         '''
@@ -134,31 +116,17 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     def __create_attributes_fram(self):
         '''
         '''
-        self.__page_config_frame = tk.Frame(self, background='#222222', 
-                                            width=self.__cell_width, height=self.__cell_height)
-        self.__page_config_frame.grid(row=0, column=0, rowspan=1, columnspan=1)
-        
-    def __create_css_frame(self):
-        '''
-        '''
-        self.__page_config_frame = tk.Frame(self, background='#444444', 
+        self.__attributes_frame = tk.Frame(self, background='#222222', 
                                             width=self.__cell_width, height=self.__cell_height*3)
-        self.__page_config_frame.grid(row=0, column=3, rowspan=3, columnspan=1)
+        self.__attributes_frame.grid(row=0, column=3, rowspan=3, columnspan=1)
         
-    def __create_text_frame(self):
+    def __create_page_overview_frame(self):
         '''
         '''
-        self.__page_config_frame = tk.Frame(self, background='#666666', 
-                                            width=self.__cell_width, height=self.__cell_height)
-        self.__page_config_frame.grid(row=1, column=0, rowspan=1, columnspan=1)
+        self.__page_overview_frame = tk.Frame(self, background='#444444', 
+                                            width=self.__cell_width, height=self.__cell_height*3)
+        self.__page_overview_frame.grid(row=0, column=0, rowspan=3, columnspan=1)
         
-    def __create_events_frame(self):
-        '''
-        '''
-        self.__page_config_frame = tk.Frame(self, background='#888888', 
-                                            width=self.__cell_width, height=self.__cell_height)
-        self.__page_config_frame.grid(row=2, column=0, rowspan=1, columnspan=1)
-    
 
     def __on_new_project(self):
         self.__last_event.event_source = mKey.KEY_PROJECT
