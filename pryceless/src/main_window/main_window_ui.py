@@ -123,9 +123,9 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     def __create_page_overview_frame(self):
         '''
         '''
-        self.__page_overview_frame = tk.Frame(self, background='#444444', 
-                                            width=self.__cell_width, height=self.__cell_height*3)
+        self.__page_overview_frame = tk.Frame(self, background='#444444')
         self.__page_overview_frame.grid(row=0, column=0, rowspan=3, columnspan=1)
+        self.__page_overview_frame.grid_propagate(False)
         
 
     def __on_new_project(self):

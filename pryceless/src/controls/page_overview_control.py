@@ -4,6 +4,8 @@ Created on 23.08.2020
 @author: mthoma
 '''
 import tkinter as tk
+from tkinter import StringVar
+from tkinter.ttk import Treeview
 
 class PageOverviewControl(object):
     '''
@@ -12,22 +14,19 @@ class PageOverviewControl(object):
     def __init__(self, master:tk.Frame, header:str):
         '''
         Constructor
+
         '''
+        label_text_var = StringVar()
         
-        print(master.winfo_reqwidth())
+        header_label = tk.Label(master=master, textvariable=label_text_var)
+        label_text_var.set(header)
+        header_label.propagate(False)
         
+        header_label.pack(side=tk.TOP, anchor=tk.W)
         
-        header_frame = tk.Frame(master, bg='#231526', 
-                                width=master.winfo_reqwidth(),
-                                height=master.winfo_reqheight())
+        overview = Treeview(master=master)
+        overview.pack(fill=tk.BOTH, side=tk.BOTTOM)
+        overview.propagate(False)
         
-        header_frame.grid(row=0, column=0, rowspan=1, columnspan=1)
-        header_frame.grid_propagate(False)
-        
-        header_label = tk.Label(master=header_frame, width=master.winfo_reqwidth())
-        header_label.configure(text=header)
-        header_label.grid(sticky=tk.W)
-        header_label.grid_propagate(False)
-        
-        print(header_label.winfo_width())
+        overview.insert('', 0, 'project', text='Pages')
         
