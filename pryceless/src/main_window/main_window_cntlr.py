@@ -11,9 +11,10 @@ from overrides.overrides import overrides
 from utils.utils import Event
 from main_window.main_window_mo import MainWindowMo
 from tkinter.messagebox import askyesnocancel
-from controls.page_overview_control import PageOverviewControl
+from controls.page_overview_control import PageOverviewControl,\
+    PageOverviewControlObserver
 
-class MainWindowCNTLR(ABSMainWindowObserver):
+class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver):
     '''
     classdocs
     '''
@@ -23,6 +24,8 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     
     __model: ABSMainWindowMo = MainWindowMo()
     
+    __page_overview: PageOverviewControl = None
+    
     #Window title which is displayed directly after application start.
     __base_title: str = None
 
@@ -30,7 +33,9 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         '''
         Constructor
         '''
-        PageOverviewControl(self.__gui.get_page_overview_frame(), 'Page Overview')
+        self.__page_overview = PageOverviewControl(self.__gui.get_page_overview_frame(), 
+                                                   'Page Overview')
+        self.__page_overview.add_obeserver(self)
         
     def show(self, title:str='TITLE'):
         '''
@@ -100,6 +105,12 @@ class MainWindowCNTLR(ABSMainWindowObserver):
         '''       
         self.__root.title(' - '.join([self.__base_title,
                                       self.__model.get_project_name()]))
+        
+        self.__page_overview.remove_all()
+        
+        for page_id in self.__model.get_pages().keys():
+            self.__page_overview.insert_page(page_id, page_id)
+            
         
     def __enable_menu(self):
         
@@ -210,11 +221,6 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     def on_edit(self, event:Event) -> None:
         '''
         '''
-    
-    @overrides
-    def on_select_page(self, event:Event) -> None:
-        '''
-        '''
         
     @overrides
     def on_add(self, event:Event) -> None:
@@ -235,3 +241,9 @@ class MainWindowCNTLR(ABSMainWindowObserver):
     def on_move(self, event:Event) -> None:
         '''
         '''  
+    
+    @overrides
+    def on_page_selected(self, page_id:str)-> None:
+        '''
+        '''
+        print(page_id)

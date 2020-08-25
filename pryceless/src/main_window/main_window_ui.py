@@ -23,9 +23,9 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     __page_overview_frame: tk.Frame = None
     
-    __cell_width: float = 0
+    #__cell_width: float = 0
     
-    __cell_height: float = 0
+    #__cell_height: float = 0
     
     __menubar: tk.Menu = None
     
@@ -57,9 +57,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__create_file_menu()
         self.__create_edit_menu()
         self.__create_html_page_menu()
-        
-        self.__cell_width = self.winfo_screenwidth() / 4
-        self.__cell_height = self.winfo_screenheight() / 3
         
         self.__create_page_config_frame()
         self.__create_attributes_fram()
@@ -110,14 +107,16 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         '''
         '''
         self.__page_config_frame = tk.Frame(self, background='#000000', 
-                                            width=self.__cell_width*2, height=self.__cell_height*3)
+                                            #width=self.__cell_width*2, height=self.__cell_height*3
+                                            )
         self.__page_config_frame.grid(row=0, column=1, rowspan=3, columnspan=2)
     
     def __create_attributes_fram(self):
         '''
         '''
         self.__attributes_frame = tk.Frame(self, background='#222222', 
-                                            width=self.__cell_width, height=self.__cell_height*3)
+                                           #width=self.__cell_width, height=self.__cell_height*3
+                                           )
         self.__attributes_frame.grid(row=0, column=3, rowspan=3, columnspan=1)
         
     def __create_page_overview_frame(self):
@@ -277,10 +276,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__menubar.add_cascade(label=mKey.KEY_EDIT, menu=self.__edit_menu)
 
     
-    def __on_select_page(self):
-        pass
-    
-    
     def __on_add_child(self):
         pass
     
@@ -348,11 +343,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     def __create_html_page_menu(self):
         
         self.__html_page_menu = tk.Menu(self.__menubar, tearoff=0)
-        
-        self.__html_page_menu.add_command(label=mKey.KEY_SELECT_PAGE, command=lambda: self.__on_select_page())
-        self.__html_page_menu.entryconfig(mKey.KEY_SELECT_PAGE, state=tk.DISABLED)
-        
-        self.__html_page_menu.add_separator()
         
         self.__html_page_menu.add_command(label=mKey.KEY_ADD_CHILD, command=lambda: self.__on_add_child())
         self.__html_page_menu.entryconfig(mKey.KEY_ADD_CHILD, state=tk.DISABLED)
@@ -472,13 +462,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         for observer in self.__observers:
             observer.on_edit(self.__last_event)
     
-    @overrides
-    def notify_select_page(self) -> None:
-        '''
-        '''
-        for observer in self.__observers:
-            observer.on_select_page(self.__last_event)
-        
     @overrides
     def notify_add(self) -> None:
         '''

@@ -26,7 +26,23 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Constructor
         '''
-            
+    
+    @overrides
+    def get_pages(self) -> dict:
+        '''
+        Returns a dictionary containing:
+        key -> id of the page
+        value -> name of the page
+        '''
+        pages = self.__loaded_project_dict['pages']
+        
+        page_data = {}
+        
+        for page_id in pages.keys():
+            page_data[page_id] = page_id
+              
+        return page_data
+        
     @overrides
     def create_page(self) -> None:
         '''

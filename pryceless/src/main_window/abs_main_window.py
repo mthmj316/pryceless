@@ -53,11 +53,6 @@ class ABSMainWindowObserver(abc.ABC):
         '''
     
     @abstractmethod
-    def on_select_page(self, event:Event) -> None:
-        '''
-        '''
-        
-    @abstractmethod
     def on_add(self, event:Event) -> None:
         '''
         '''
@@ -129,12 +124,6 @@ class ABSMainwindowObservable(abc.ABC):
     def notify_edit(self) -> None:
         '''
         '''
-    
-    @abstractmethod
-    def notify_select_page(self) -> None:
-        '''
-        '''
-        
     @abstractmethod
     def notify_add(self) -> None:
         '''
@@ -192,6 +181,14 @@ class ABSMainWindowMo(abc.ABC):
     '''
     
     '''
+    @abstractmethod
+    def get_pages(self) -> dict:
+        '''
+        Returns a dictionary containing:
+        key -> id of the page
+        value -> name of the page
+        '''
+        
     @abstractmethod
     def create_page(self) -> None:
         '''
@@ -317,8 +314,6 @@ class MainWindowMenuKeys(object):
     KEY_SAVE = 'Save'
 
     KEY_SAVE_AS = 'Save as ...'
-
-    KEY_SELECT_PAGE = 'Select Page'
 
     KEY_SELENIUM_TEST_CASES = 'Selenium Test Cases'
 
