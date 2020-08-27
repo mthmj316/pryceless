@@ -37,18 +37,22 @@ class PageOverviewControl(object):
         '''
         self.__overview = Treeview(master=master, selectmode='browse')
         self.__overview.pack(fill=tk.BOTH, side=tk.BOTTOM)
+        self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
+        
         self.__overview.insert('', 0, self.__root_id, text='Pages')
         self.__overview.item(self.__root_id, open=True)
-        #self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
         
-        self.__overview.bind('<Button-1>', self.__notifiy_observer)
+    def select_page(self, page_id:str):
+        
+        if not page_id == None:
+            self.__overview.focus(page_id)
+            self.__overview.selection_set(page_id)
         
     def insert_page(self, page_id:str, page_name:str):
         
-        self.__inserted.append(page_id)
-        
+        self.__inserted.append(page_id)        
         self.__overview.insert(self.__root_id, 'end', page_id, text=page_name)
-        self.__overview.item(page_id, open=True)
+        
         
     def remove_page(self, page_id:str):
         
@@ -75,7 +79,7 @@ class PageOverviewControl(object):
         
     def __notifiy_observer(self, event):  # @UnusedVariable
         
-        page_id = self.__overview.focus()
+        page_id = event.widget.selection()[0]
         
         if page_id == self.__root_id or page_id == '':
             page_id = None

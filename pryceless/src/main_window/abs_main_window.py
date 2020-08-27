@@ -182,6 +182,13 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def selected_page(self) -> str:
+        '''
+        Returns the id of the selected page.
+        If none is selected None will be returned.
+        '''
+        
+    @abstractmethod
     def select_page(self, page_id:str) -> None:
         '''
         Sets the selected page in the model.

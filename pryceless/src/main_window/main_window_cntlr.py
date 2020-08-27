@@ -108,17 +108,27 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         self.__enable_menu()
     
     def __load_data_in_view(self):
+        self.__update_title()
+        self.__load_page_config()
+        self.__load_page_overview()
+        
+    def __update_title(self):
+        self.__root.title(' - '.join([self.__base_title,
+                                      self.__model.get_project_name()]))
+    
+    def __load_page_config(self):
         '''
         Loads the model data into the view
         '''       
-        self.__root.title(' - '.join([self.__base_title,
-                                      self.__model.get_project_name()]))
-        
+    
+    def __load_page_overview(self):
         self.__page_overview.remove_all()
         
         for page_id in self.__model.get_pages().keys():
             self.__page_overview.insert_page(page_id, page_id)
             
+        self.__page_overview.select_page(self.__model.selected_page())    
+                
         
     def __enable_menu(self):
         
@@ -255,7 +265,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         '''
         '''
         self.__model.select_page(page_id)
-        self.__load_data_in_view()
+        self.__load_page_config()
         
         print(page_id)
         

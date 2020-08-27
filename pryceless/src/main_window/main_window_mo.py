@@ -27,13 +27,22 @@ class MainWindowMo(ABSMainWindowMo):
     def __init__(self):
         '''
         Constructor
-        '''    
+        ''' 
+    @overrides
+    def selected_page(self) -> str:
+        '''
+        Returns the id of the selected page.
+        If none is selected None will be returned.
+        '''
+        return self.__selected_page_id
+           
     @overrides
     def select_page(self, page_id:str) -> None:
         '''
         Sets the selected page in the model.
         '''
         self.__selected_page_id = page_id
+        
     @overrides
     def get_pages(self) -> dict:
         '''
@@ -41,14 +50,15 @@ class MainWindowMo(ABSMainWindowMo):
         key -> id of the page
         value -> name of the page
         '''
-        pages = self.__loaded_project_dict['pages']
-        
         page_data = {}
-        
-        for page_id in pages.keys():
-            page_data[page_id] = page_id
+
+        if self.is_project_open():
+            pages = self.__loaded_project_dict['pages']
+            for page_id in pages.keys():
+                page_data[page_id] = page_id
               
         return page_data
+        
         
     @overrides
     def create_page(self) -> None:
@@ -66,6 +76,8 @@ class MainWindowMo(ABSMainWindowMo):
                 } 
             
             self.save()
+            
+            self.select_page(page_name)
     
     def __name_page(self, title, msg) -> str:
         
@@ -144,6 +156,9 @@ class MainWindowMo(ABSMainWindowMo):
                     }
                         
                 self.save()
+                
+                self.__selected_page_id = None
+                self.__has_changes = False
                 
                 return
         
@@ -247,6 +262,9 @@ class MainWindowMo(ABSMainWindowMo):
             
             #and save the file name
             self.__full_project_path = file_name
+            
+            self.__selected_page_id = None
+            self.__has_changes = None
             
             return True
         
