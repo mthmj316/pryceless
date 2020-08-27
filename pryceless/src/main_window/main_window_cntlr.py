@@ -119,15 +119,20 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
     def __load_page_config(self):
         '''
         Loads the model data into the view
-        '''       
+               
+        for item in self.__model:
+            print(item)   
+        '''
     
     def __load_page_overview(self):
         self.__page_overview.remove_all()
         
-        for page_id in self.__model.get_pages().keys():
-            self.__page_overview.insert_page(page_id, page_id)
+        pages = self.__model.get_pages()
+        
+        for page_id in pages.keys():
+            self.__page_overview.insert_page(page_id, pages[page_id])
             
-        self.__page_overview.select_page(self.__model.selected_page())    
+        self.__page_overview.select_page(self.__model.selected())    
                 
         
     def __enable_menu(self):
@@ -264,7 +269,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
     def on_page_selected(self, page_id:str)-> None:
         '''
         '''
-        self.__model.select_page(page_id)
+        self.__model.select(page_id)
         self.__load_page_config()
         
         print(page_id)

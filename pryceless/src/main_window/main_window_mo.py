@@ -22,26 +22,61 @@ class MainWindowMo(ABSMainWindowMo):
     
     __full_project_path: str = None
     
-    __selected_page_id: str = None
+    __selected_id: str = None
+    
+    __iterate_this: dict = None
+    
+    __iteration_current: int = 0
 
     def __init__(self):
         '''
         Constructor
         ''' 
     @overrides
-    def selected_page(self) -> str:
+    def __iter__(self):
+        
+        if not self.is_project_open():
+            raise ValueError('No Project opened!')
+        elif self.__selected_id == None:
+            raise ValueError('No page selected!')
+        
+        self.__iteration_current = 0
+        
+        selected_split = self.__selected_id.split(sep='.')
+        
+            
+        self.__iterate_this = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['content']
+        
+        return self
+    
+    @overrides
+    def __next__(self):
+        
+        print(len(self.__iterate_this))
+        
+        if self.__iteration_current < len(self.__iterate_this):
+            
+            ret_val = list(self.__iterate_this.values())[self.__iteration_current]
+            self.__iteration_current += 1
+            
+            return ret_val
+        
+        raise StopIteration
+    
+    @overrides
+    def selected(self) -> str:
         '''
-        Returns the id of the selected page.
+        Returns the id of the selected configuration item.
         If none is selected None will be returned.
         '''
-        return self.__selected_page_id
+        return self.__selected_id
            
     @overrides
-    def select_page(self, page_id:str) -> None:
+    def select(self, conf_id:str) -> None:
         '''
-        Sets the selected page in the model.
+        Sets the selected configuration item in the model.
         '''
-        self.__selected_page_id = page_id
+        self.__selected_id = conf_id
         
     @overrides
     def get_pages(self) -> dict:
@@ -55,7 +90,7 @@ class MainWindowMo(ABSMainWindowMo):
         if self.is_project_open():
             pages = self.__loaded_project_dict['pages']
             for page_id in pages.keys():
-                page_data[page_id] = page_id
+                page_data['.'.join(['pages', page_id])] = page_id
               
         return page_data
         
@@ -77,7 +112,7 @@ class MainWindowMo(ABSMainWindowMo):
             
             self.save()
             
-            self.select_page(page_name)
+            self.select(page_name)
     
     def __name_page(self, title, msg) -> str:
         
@@ -152,12 +187,16 @@ class MainWindowMo(ABSMainWindowMo):
                 self.__full_project_path = project_names[1]
                 self.__loaded_project_dict = {
                     'project_name': project_names[0],
-                    'pages': {}                            
+                    'pages': {},
+                    'css_rules': {},
+                    'javascript': {},
+                    'text': {},
+                    'variables': {}                         
                     }
                         
                 self.save()
                 
-                self.__selected_page_id = None
+                self.__selected_id = None
                 self.__has_changes = False
                 
                 return
@@ -263,7 +302,7 @@ class MainWindowMo(ABSMainWindowMo):
             #and save the file name
             self.__full_project_path = file_name
             
-            self.__selected_page_id = None
+            self.__selected_id = None
             self.__has_changes = None
             
             return True

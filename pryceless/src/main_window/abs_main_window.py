@@ -182,16 +182,26 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
-    def selected_page(self) -> str:
+    def __iter__(self):
         '''
-        Returns the id of the selected page.
+        '''
+    
+    @abstractmethod
+    def __next__(self):
+        '''
+        '''
+        
+    @abstractmethod
+    def selected(self) -> str:
+        '''
+        Returns the id of the selected configuration item.
         If none is selected None will be returned.
         '''
         
     @abstractmethod
-    def select_page(self, page_id:str) -> None:
+    def select(self, conf_id:str) -> None:
         '''
-        Sets the selected page in the model.
+        Sets the selected configuration item in the model.
         '''
     
     @abstractmethod

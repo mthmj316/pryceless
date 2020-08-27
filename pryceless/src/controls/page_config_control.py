@@ -38,7 +38,7 @@ class PageConfigControl(object):
         '''
         self.__overview = Treeview(master=master)
         self.__overview.pack(fill=BOTH, side=BOTTOM)
-        self.__overview.insert('', 0, self.__root_id, text='HTML Tags')
+        self.__overview.insert('', 0, self.__root_id, text='Configuration')
         self.__overview.item(self.__root_id, open=True)
         self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
     

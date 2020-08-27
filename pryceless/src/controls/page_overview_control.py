@@ -4,7 +4,7 @@ Created on 23.08.2020
 @author: mthoma
 '''
 import tkinter as tk
-from tkinter.ttk import Treeview, Style
+from tkinter.ttk import Treeview
 from typing import List
 from abc import ABC, abstractmethod
 
@@ -41,6 +41,18 @@ class PageOverviewControl(object):
         
         self.__overview.insert('', 0, self.__root_id, text='Pages')
         self.__overview.item(self.__root_id, open=True)
+        
+        self.__overview.insert('', 1, 'css_rules', text='CSS Rules')
+        self.__overview.item('css_rules', open=True)
+        
+        self.__overview.insert('', 2, 'javascript', text='JavaScript')
+        self.__overview.item('javascript', open=True)
+        
+        self.__overview.insert('', 3, 'text', text='Text')
+        self.__overview.item('text', open=True)
+        
+        self.__overview.insert('', 4, 'variables', text='Variables')
+        self.__overview.item('variables', open=True)
         
     def select_page(self, page_id:str):
         
@@ -81,7 +93,7 @@ class PageOverviewControl(object):
         
         page_id = event.widget.selection()[0]
         
-        if page_id == self.__root_id or page_id == '':
+        if '.' not in page_id:
             page_id = None
             
         for observer in self.__observers:
