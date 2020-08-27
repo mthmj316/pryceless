@@ -182,6 +182,12 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def select_page(self, page_id:str) -> None:
+        '''
+        Sets the selected page in the model.
+        '''
+    
+    @abstractmethod
     def get_pages(self) -> dict:
         '''
         Returns a dictionary containing:

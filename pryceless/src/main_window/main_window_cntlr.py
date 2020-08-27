@@ -13,8 +13,11 @@ from main_window.main_window_mo import MainWindowMo
 from tkinter.messagebox import askyesnocancel
 from controls.page_overview_control import PageOverviewControl,\
     PageOverviewControlObserver
+from controls.page_config_control import PageConfigControl,\
+    PageConfigControlObserver
 
-class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver):
+class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
+                      PageConfigControlObserver):
     '''
     classdocs
     '''
@@ -26,6 +29,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver):
     
     __page_overview: PageOverviewControl = None
     
+    __page_config: PageConfigControl = None
+    
     #Window title which is displayed directly after application start.
     __base_title: str = None
 
@@ -33,9 +38,12 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver):
         '''
         Constructor
         '''
-        self.__page_overview = PageOverviewControl(self.__gui.get_page_overview_frame(), 
-                                                   'Page Overview')
+        self.__page_overview = PageOverviewControl(self.__gui.get_page_overview_frame())
         self.__page_overview.add_obeserver(self)
+        
+        self.__page_config = PageConfigControl(self.__gui.get_page_config_frame())
+        self.__page_config.add_obeserver(self)
+        
         
     def show(self, title:str='TITLE'):
         '''
@@ -246,4 +254,11 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver):
     def on_page_selected(self, page_id:str)-> None:
         '''
         '''
+        self.__model.select_page(page_id)
+        self.__load_data_in_view()
+        
         print(page_id)
+        
+    @overrides
+    def on_tag_selected(self, tag_id:str)->None:
+        print(tag_id)

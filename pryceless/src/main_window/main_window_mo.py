@@ -21,12 +21,19 @@ class MainWindowMo(ABSMainWindowMo):
     __has_changes: bool = False
     
     __full_project_path: str = None
+    
+    __selected_page_id: str = None
 
     def __init__(self):
         '''
         Constructor
+        '''    
+    @overrides
+    def select_page(self, page_id:str) -> None:
         '''
-    
+        Sets the selected page in the model.
+        '''
+        self.__selected_page_id = page_id
     @overrides
     def get_pages(self) -> dict:
         '''
@@ -187,7 +194,11 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Returns the name of the currently loaded project
         '''
-        return self.__loaded_project_dict['project_name']
+        
+        if self.is_project_open():
+            return self.__loaded_project_dict['project_name']
+        else:
+            return ''
     
     @overrides
     def save(self)->None:
