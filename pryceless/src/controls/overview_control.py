@@ -8,7 +8,7 @@ from tkinter.ttk import Treeview
 from typing import List
 from abc import ABC, abstractmethod
 
-class PageOverviewControlObserver(ABC):
+class OverviewControlObserver(ABC):
 
     @abstractmethod
     def on_page_selected(self, page_id:str) -> None:
@@ -18,13 +18,13 @@ class PageOverviewControlObserver(ABC):
         if the root element is selected None will be returned.
         '''
     
-class PageOverviewControl(object):
+class OverviewControl(object):
     '''
     classdocs
     '''
     __root_id: str = 'pages'
     
-    __observers: List[PageOverviewControlObserver] = []
+    __observers: List[OverviewControlObserver] = []
     
     __overview: Treeview = None
     
@@ -54,13 +54,13 @@ class PageOverviewControl(object):
         self.__overview.insert('', 4, 'variables', text='Variables')
         self.__overview.item('variables', open=True)
         
-    def select_page(self, page_id:str):
+    def select(self, page_id:str):
         
         if not page_id == None:
             self.__overview.focus(page_id)
             self.__overview.selection_set(page_id)
         
-    def insert_page(self, page_id:str, page_name:str):
+    def insert(self, page_id:str, page_name:str):
         
         self.__inserted.append(page_id)
         
@@ -84,11 +84,11 @@ class PageOverviewControl(object):
             
         self.__inserted.clear()
         
-    def add_obeserver(self, observer:PageOverviewControlObserver):
+    def add_obeserver(self, observer:OverviewControlObserver):
         
         self.__observers.append(observer)
         
-    def remove_observer(self, observer:PageOverviewControlObserver):
+    def remove_observer(self, observer:OverviewControlObserver):
         
         self.__observers.remove(observer)
         

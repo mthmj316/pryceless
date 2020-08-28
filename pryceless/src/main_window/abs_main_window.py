@@ -190,14 +190,24 @@ class ABSMainWindowMo(abc.ABC):
     def __next__(self):
         '''
         '''
-        
+    @abstractmethod
+    def get_sub_data(self) -> dict:
+        '''
+        '''
+       
     @abstractmethod
     def selected(self) -> str:
         '''
         Returns the id of the selected configuration item.
         If none is selected None will be returned.
         '''
-        
+    
+    @abstractmethod
+    def select_sub(self, sub_id:str) -> None:
+        '''
+        Sets the selected configuration item in the model.
+        '''
+       
     @abstractmethod
     def select(self, conf_id:str) -> None:
         '''

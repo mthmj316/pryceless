@@ -10,6 +10,7 @@ from main_window.abs_main_window import ABSMainWindowUI,\
 from utils.utils import Event
 from typing import List
 from main_window.abs_main_window import MainWindowMenuKeys as mKey
+from tkinter.ttk import Frame
 
 '''
 
@@ -41,7 +42,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     __observers: List[ABSMainWindowObserver] = []
     
-    
+    __right_side: Frame = None
     '''
     classdoc
     '''
@@ -58,8 +59,13 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__create_edit_menu()
         self.__create_html_page_menu()
         
-        self.__create_page_config_frame()
+        self.__right_side = tk.Frame(self, background='#000000', 
+                                            #width=self.__cell_width*2, height=self.__cell_height*3
+                                            )
+        self.__right_side.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
+        
         self.__create_attributes_fram()
+        self.__create_page_config_frame()
         self.__create_page_overview_frame()
         
     @overrides
@@ -106,20 +112,20 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     def __create_page_config_frame(self):
         '''
         '''
-        self.__page_config_frame = tk.Frame(self, background='#000000', 
+        self.__page_config_frame = tk.Frame(self.__right_side, background='#000000', 
                                             #width=self.__cell_width*2, height=self.__cell_height*3
                                             )
         #self.__page_config_frame.grid(row=0, column=1, columnspan=2)
-        self.__page_config_frame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
+        self.__page_config_frame.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
         
     def __create_attributes_fram(self):
         '''
         '''
-        self.__attributes_frame = tk.Frame(self, background='#222222', 
+        self.__attributes_frame = tk.Frame(self.__right_side, background='#222222', 
                                            #width=self.__cell_width, height=self.__cell_height*3
                                            )
         #self.__attributes_frame.grid(row=0, column=3)
-        #self.__attributes_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
+        self.__attributes_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
         
         
     def __create_page_overview_frame(self):

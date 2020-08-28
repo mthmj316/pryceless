@@ -11,12 +11,13 @@ from overrides.overrides import overrides
 from utils.utils import Event
 from main_window.main_window_mo import MainWindowMo
 from tkinter.messagebox import askyesnocancel
-from controls.page_overview_control import PageOverviewControl,\
-    PageOverviewControlObserver
-from controls.page_config_control import ConfigurationControl,\
+from controls.overview_control import OverviewControl,\
+    OverviewControlObserver
+from controls.configuration_control import ConfigurationControl,\
     ConfigurationControlObserver
+from controls.properties_control import PropertiesControl
 
-class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
+class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver):
     '''
     classdocs
@@ -27,9 +28,11 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
     
     __model: ABSMainWindowMo = MainWindowMo()
     
-    __overview: PageOverviewControl = None
+    __overview: OverviewControl = None
     
     __configuration: ConfigurationControl = None
+    
+    __properties: PropertiesControl = None
     
     #Window title which is displayed directly after application start.
     __base_title: str = None
@@ -38,11 +41,14 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         '''
         Constructor
         '''
-        self.__overview = PageOverviewControl(self.__gui.get_page_overview_frame())
+        self.__overview = OverviewControl(self.__gui.get_page_overview_frame())
         self.__overview.add_obeserver(self)
         
         self.__configuration = ConfigurationControl(self.__gui.get_page_config_frame())
         self.__configuration.add_obeserver(self)
+        
+        self.__properties = PropertiesControl(self.__gui.get_attributes_frame())
+        self.__properties.add_obeserver(self)
         
         
     def show(self, title:str='TITLE'):
@@ -133,9 +139,9 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         overview = self.__model.get_overview_data()
         
         for page_id in overview.keys():
-            self.__overview.insert_page(page_id, overview[page_id])
+            self.__overview.insert(page_id, overview[page_id])
             
-        self.__overview.select_page(self.__model.selected())    
+        self.__overview.select(self.__model.selected())    
                 
         
     def __enable_menu(self):
@@ -284,6 +290,6 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         '''
         
     @overrides
-    def on_conf_selected(self, tag_id:str)->None:
-        print(tag_id)
+    def on_conf_selected(self, sub_id:str)->None:
+        self.__model.select_sub(sub_id)
         

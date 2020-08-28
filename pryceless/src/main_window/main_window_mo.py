@@ -24,6 +24,8 @@ class MainWindowMo(ABSMainWindowMo):
     
     __selected_id: str = None
     
+    __selected_sub: str = None
+    
     __iterate_this: dict = None
     
     __iteration_current: int = 0
@@ -32,6 +34,20 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Constructor
         ''' 
+    
+    @overrides
+    def get_sub_data(self) -> dict:
+        '''
+        '''
+    
+    @overrides
+    def select_sub(self, sub_id:str) -> None:
+        '''
+        Sets the selected configuration item in the model.
+        '''
+        self.__selected_sub = sub_id
+        print(self.__selected_sub)
+    
     @overrides
     def __iter__(self):
         
