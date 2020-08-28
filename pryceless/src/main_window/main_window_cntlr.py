@@ -17,6 +17,7 @@ from controls.configuration_control import ConfigurationControl,\
     ConfigurationControlObserver
 from controls.properties_control import PropertiesControl,\
     PropertiesControlObserver
+from tkinter import simpledialog
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver,
@@ -133,7 +134,6 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         
         if not self.__model.selected() == None:
             for item in self.__model:
-                print(item)
                 self.__configuration.insert_conf(item[0], item[2], item[1])
     
     def __load_page_overview(self):
@@ -302,7 +302,6 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         if not sub_id == None:
             
             properties = self.__model.get_sub_data()
-            print(properties)
             for _property in properties:
                 self.__properties.insert(_property[0], _property[1], _property[2])
             
@@ -315,6 +314,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         if the root element is selected None will be returned.
         '''
         if not _id == None:
-            print(_id)
-            print(self.__model.get_property_value(_id))
+            answer = simpledialog.askstring("Input", ''.join(['Set: ', _id.split('.')[-1]]), 
+                                            parent=self.__root, initialvalue=self.__model.get_property_value(_id))
+            
+            print(answer)
         

@@ -73,7 +73,6 @@ class MainWindowMo(ABSMainWindowMo):
         Sets the selected configuration item in the model.
         '''
         self.__selected_sub = sub_id
-        print(self.__selected_sub)
     
     @overrides
     def __iter__(self):
