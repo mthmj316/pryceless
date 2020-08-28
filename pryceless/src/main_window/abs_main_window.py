@@ -205,7 +205,7 @@ class ABSMainWindowMo(abc.ABC):
         '''
     
     @abstractmethod
-    def get_pages(self) -> dict:
+    def get_overview_data(self) -> dict:
         '''
         Returns a dictionary containing:
         key -> id of the page

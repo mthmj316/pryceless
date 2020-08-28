@@ -14,7 +14,7 @@ class MainWindowMo(ABSMainWindowMo):
     '''
     classdocs
     '''
-    __last_project_folder: str = os.getenv('HOME')
+    __last_project_folder: str =  '/home/mthoma/Dokumente/prycless-workspace'  #os.getenv('HOME')
     
     __loaded_project_dict: dict = None
 
@@ -43,8 +43,6 @@ class MainWindowMo(ABSMainWindowMo):
         self.__iteration_current = 0
         
         selected_split = self.__selected_id.split(sep='.')
-        
-            
         self.__iterate_this = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['content']
         
         return self
@@ -56,10 +54,20 @@ class MainWindowMo(ABSMainWindowMo):
         
         if self.__iteration_current < len(self.__iterate_this):
             
-            ret_val = list(self.__iterate_this.values())[self.__iteration_current]
+            _data = list(self.__iterate_this.values())[self.__iteration_current]
             self.__iteration_current += 1
             
-            return ret_val
+            #ret_val = (id, parent_id, display_name)
+            # parent_id is the id of the element within the conf
+            # not within the json file -> eg. css_rule has no parent_id
+            
+            _id =  '.'.join([self.__selected_id, 'content', _data['id']])
+            parent_id = None
+            
+            if 'parent_id' in _data and not _data['parent_id'] == '':
+                parent_id = '.'.join([self.__selected_id, 'content', _data['parent_id']])
+            
+            return (_id, parent_id)
         
         raise StopIteration
     
@@ -79,22 +87,42 @@ class MainWindowMo(ABSMainWindowMo):
         self.__selected_id = conf_id
         
     @overrides
-    def get_pages(self) -> dict:
+    def get_overview_data(self) -> dict:
         '''
         Returns a dictionary containing:
         key -> id of the page
         value -> name of the page
         '''
-        page_data = {}
+        overview_data = {}
+        
 
         if self.is_project_open():
-            pages = self.__loaded_project_dict['pages']
-            for page_id in pages.keys():
-                page_data['.'.join(['pages', page_id])] = page_id
-              
-        return page_data
+            overview_data.update(self.__get_for_overview('pages'))
+            overview_data.update(self.__get_for_overview('css_rules'))
+            overview_data.update(self.__get_for_overview('javascript'))
+            overview_data.update(self.__get_for_overview('text'))
+            overview_data.update(self.__get_for_overview('variables'))
+            
+            '''
+            items = self.__loaded_project_dict['pages']
+            for page_id in items.keys():
+                overview_data['.'.join(['pages', page_id])] = page_id
+            '''
+            
+        return overview_data
         
+    def __get_for_overview(self, base):
         
+        _data = {}
+        
+        if base in self.__loaded_project_dict:
+            items = self.__loaded_project_dict[base]
+        
+            for _id in items.keys():
+                _data['.'.join([base, _id])] = _id
+            
+        return _data
+                
     @overrides
     def create_page(self) -> None:
         '''

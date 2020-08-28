@@ -8,24 +8,25 @@ from abc import ABC, abstractmethod
 from typing import List
 from tkinter.ttk import Treeview
 from tkinter.constants import BOTH, BOTTOM
+import tkinter
 
-class PageConfigControlObserver(ABC):
+class ConfigurationControlObserver(ABC):
 
     @abstractmethod
-    def on_tag_selected(self, tag_id:str) -> None:
+    def on_conf_selected(self, conf_id:str) -> None:
         '''
-        Is called after a tag has been selected.
-        tag_id -> id of the selected tag
+        Is called after a conf has been selected.
+        conf_id -> id of the selected conf
         if the root element is selected None will be returned.
         '''
 
-class PageConfigControl(object):
+class ConfigurationControl(object):
     '''
     classdocs
     '''
-    __root_id: str = 'tags'
+    __root_id: str = 'confs'
     
-    __observers: List[PageConfigControlObserver] = []
+    __observers: List[ConfigurationControlObserver] = []
     
     __overview: Treeview = None
     
@@ -37,53 +38,53 @@ class PageConfigControl(object):
         Constructor
         '''
         self.__overview = Treeview(master=master)
-        self.__overview.pack(fill=BOTH, side=BOTTOM)
+        self.__overview.pack(fill=BOTH, side=tkinter.LEFT, expand=True)
         self.__overview.insert('', 0, self.__root_id, text='Configuration')
         self.__overview.item(self.__root_id, open=True)
         self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
     
     
-    def insert_tag(self, tag_id:str, tag_name:str, parent:str='tags', pos:str='end'):
+    def insert_conf(self, conf_id:str, conf_name:str, parent:str='confs', pos:str='end'):
         
-        self.__inserted.append(tag_id)
-        self.__overview.insert(parent, pos, tag_id, text=tag_name)
+        self.__inserted.append(conf_id)
+        self.__overview.insert(parent, pos, conf_id, text=conf_name)
     
-    def append_tag(self, tag_id:str, tag_name:str):
+    def append_conf(self, conf_id:str, conf_name:str):
         
-        self.insert_tag(tag_id, tag_name)
+        self.insert_conf(conf_id, conf_name)
         
         
-    def remove_tag(self, tag_id:str):
+    def remove_conf(self, conf_id:str):
         
-        self.__remove(tag_id)
-        self.__inserted.remove(tag_id)
+        self.__remove(conf_id)
+        self.__inserted.remove(conf_id)
         
-    def __remove(self, tag_id):
-        self.__overview.delete(tag_id)
+    def __remove(self, conf_id):
+        self.__overview.delete(conf_id)
         
     def remove_all(self):
         
-        for tag_id in self.__inserted:
-            self.__remove(tag_id)
+        for conf_id in self.__inserted:
+            self.__remove(conf_id)
             
         self.__inserted.clear()
     
         
-    def add_obeserver(self, observer:PageConfigControlObserver):
+    def add_obeserver(self, observer:ConfigurationControlObserver):
         
         self.__observers.append(observer)
         
-    def remove_observer(self, observer:PageConfigControlObserver):
+    def remove_observer(self, observer:ConfigurationControlObserver):
         
         self.__observers.remove(observer)
         
     def __notifiy_observer(self, event):  # @UnusedVariable
         
-        tag_id = self.__overview.focus()
+        conf_id = self.__overview.focus()
         
-        if tag_id == self.__root_id or tag_id == '':
-            tag_id = None
+        if conf_id == self.__root_id or conf_id == '':
+            conf_id = None
             
         for observer in self.__observers:
-            observer.on_page_selected(tag_id)
+            observer.on_page_selected(conf_id)
         

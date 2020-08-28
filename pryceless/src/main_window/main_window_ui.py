@@ -109,22 +109,26 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__page_config_frame = tk.Frame(self, background='#000000', 
                                             #width=self.__cell_width*2, height=self.__cell_height*3
                                             )
-        self.__page_config_frame.grid(row=0, column=1, rowspan=3, columnspan=2)
-    
+        #self.__page_config_frame.grid(row=0, column=1, columnspan=2)
+        self.__page_config_frame.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
+        
     def __create_attributes_fram(self):
         '''
         '''
         self.__attributes_frame = tk.Frame(self, background='#222222', 
                                            #width=self.__cell_width, height=self.__cell_height*3
                                            )
-        self.__attributes_frame.grid(row=0, column=3, rowspan=3, columnspan=1)
+        #self.__attributes_frame.grid(row=0, column=3)
+        #self.__attributes_frame.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
+        
         
     def __create_page_overview_frame(self):
         '''
         '''
         self.__page_overview_frame = tk.Frame(self, background='#444444')
-        self.__page_overview_frame.grid(row=0, column=0, rowspan=3, columnspan=1)
-        self.__page_overview_frame.grid_propagate(False)
+        #self.__page_overview_frame.grid(row=0, column=0)
+        self.__page_overview_frame.pack(fill=tk.Y, side=tk.LEFT)
+        
         
 
     def __on_new_project(self):

@@ -36,7 +36,7 @@ class PageOverviewControl(object):
 
         '''
         self.__overview = Treeview(master=master, selectmode='browse')
-        self.__overview.pack(fill=tk.BOTH, side=tk.BOTTOM)
+        self.__overview.pack(fill=tk.Y, side=tk.LEFT)
         self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
         
         self.__overview.insert('', 0, self.__root_id, text='Pages')
@@ -62,8 +62,11 @@ class PageOverviewControl(object):
         
     def insert_page(self, page_id:str, page_name:str):
         
-        self.__inserted.append(page_id)        
-        self.__overview.insert(self.__root_id, 'end', page_id, text=page_name)
+        self.__inserted.append(page_id)
+        
+        parent_id = page_id.split(sep='.')[0]
+           
+        self.__overview.insert(parent_id, 'end', page_id, text=page_name)
         
         
     def remove_page(self, page_id:str):
