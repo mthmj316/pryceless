@@ -26,7 +26,7 @@ class MainWindowMo(ABSMainWindowMo):
     
     __selected_sub: str = None
     
-    __iterate_this: dict = None
+    __iterate_this: dict = {}
     
     __iteration_current: int = 0
 
@@ -86,14 +86,28 @@ class MainWindowMo(ABSMainWindowMo):
         self.__iteration_current = 0
         
         selected_split = self.__selected_id.split(sep='.')
-        self.__iterate_this = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['content']
+        
+        content = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['content']
+        temp = []
+        
+        for key,value in content.items():
+            
+            if 'parent_id' in value and not value['parent_id'] == '':
+                
+                try:
+                    temp.insert(temp.index(value['parent_id']) + 1, key)
+                except ValueError:
+                    temp.append(key)
+            else:
+                temp.insert(0, key)
+            
+        for key in temp:
+            self.__iterate_this[key] = content[key]
         
         return self
     
     @overrides
     def __next__(self):
-        
-        print(len(self.__iterate_this))
         
         if self.__iteration_current < len(self.__iterate_this):
             
@@ -121,6 +135,7 @@ class MainWindowMo(ABSMainWindowMo):
             
             return (_id, parent_id, display_name)
         
+        self.__iterate_this.clear()
         raise StopIteration
     
     @overrides
