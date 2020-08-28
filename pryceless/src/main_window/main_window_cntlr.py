@@ -29,7 +29,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
     
     __overview: PageOverviewControl = None
     
-    __page_config: ConfigurationControl = None
+    __configuration: ConfigurationControl = None
     
     #Window title which is displayed directly after application start.
     __base_title: str = None
@@ -41,8 +41,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         self.__overview = PageOverviewControl(self.__gui.get_page_overview_frame())
         self.__overview.add_obeserver(self)
         
-        self.__page_config = ConfigurationControl(self.__gui.get_page_config_frame())
-        self.__page_config.add_obeserver(self)
+        self.__configuration = ConfigurationControl(self.__gui.get_page_config_frame())
+        self.__configuration.add_obeserver(self)
         
         
     def show(self, title:str='TITLE'):
@@ -119,10 +119,13 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
     def __load_page_config(self):
         '''
         Loads the model data into the view
-               
-        for item in self.__model:
-            print(item)   
         '''
+        self.__configuration.remove_all()
+        
+        if not self.__model.selected() == None:
+            for item in self.__model:
+                print(item)
+                self.__configuration.insert_conf(item[0], item[2], item[1])
     
     def __load_page_overview(self):
         self.__overview.remove_all()
@@ -202,7 +205,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
 
             if self.__model.is_project_open():  
                 #Only needed when project has been actually created.
-                self.__load_data_in_view() 
+                self.__load_page_overview()
+                self.__
                 
             self.__enable_menu()
             
@@ -272,10 +276,12 @@ class MainWindowCNTLR(ABSMainWindowObserver, PageOverviewControlObserver,
         self.__model.select(page_id)
         self.__load_page_config()
         
+        '''
         print(page_id)
         
         for item in self.__model:
             print(item)  
+        '''
         
     @overrides
     def on_conf_selected(self, tag_id:str)->None:

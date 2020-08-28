@@ -7,7 +7,7 @@ from tkinter import Frame
 from abc import ABC, abstractmethod
 from typing import List
 from tkinter.ttk import Treeview
-from tkinter.constants import BOTH, BOTTOM
+from tkinter.constants import BOTH
 import tkinter
 
 class ConfigurationControlObserver(ABC):
@@ -28,7 +28,7 @@ class ConfigurationControl(object):
     
     __observers: List[ConfigurationControlObserver] = []
     
-    __overview: Treeview = None
+    __configuration: Treeview = None
     
     __inserted: List[str] = []
 
@@ -37,35 +37,29 @@ class ConfigurationControl(object):
         '''
         Constructor
         '''
-        self.__overview = Treeview(master=master)
-        self.__overview.pack(fill=BOTH, side=tkinter.LEFT, expand=True)
-        self.__overview.insert('', 0, self.__root_id, text='Configuration')
-        self.__overview.item(self.__root_id, open=True)
-        self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
+        self.__configuration = Treeview(master=master)
+        self.__configuration.pack(fill=BOTH, side=tkinter.LEFT, expand=True)
+        self.__configuration.insert('', 0, self.__root_id, text='Configuration')
+        self.__configuration.item(self.__root_id, open=True)
+        self.__configuration.bind('<<TreeviewSelect>>', self.__notifiy_observer)
     
     
     def insert_conf(self, conf_id:str, conf_name:str, parent:str='confs', pos:str='end'):
         
+        if parent == None:
+            parent = 'confs'
+        
         self.__inserted.append(conf_id)
-        self.__overview.insert(parent, pos, conf_id, text=conf_name)
-    
-    def append_conf(self, conf_id:str, conf_name:str):
-        
-        self.insert_conf(conf_id, conf_name)
-        
-        
-    def remove_conf(self, conf_id:str):
-        
-        self.__remove(conf_id)
-        self.__inserted.remove(conf_id)
+        self.__configuration.insert(parent, pos, conf_id, text=conf_name)
         
     def __remove(self, conf_id):
-        self.__overview.delete(conf_id)
+        self.__configuration.delete(conf_id)
         
     def remove_all(self):
         
         for conf_id in self.__inserted:
-            self.__remove(conf_id)
+            if self.__configuration.exists(conf_id):
+                self.__remove(conf_id)
             
         self.__inserted.clear()
     
@@ -80,11 +74,11 @@ class ConfigurationControl(object):
         
     def __notifiy_observer(self, event):  # @UnusedVariable
         
-        conf_id = self.__overview.focus()
+        conf_id = self.__configuration.focus()
         
         if conf_id == self.__root_id or conf_id == '':
             conf_id = None
             
         for observer in self.__observers:
-            observer.on_page_selected(conf_id)
+            observer.on_conf_selected(conf_id)
         

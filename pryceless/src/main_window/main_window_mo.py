@@ -67,7 +67,16 @@ class MainWindowMo(ABSMainWindowMo):
             if 'parent_id' in _data and not _data['parent_id'] == '':
                 parent_id = '.'.join([self.__selected_id, 'content', _data['parent_id']])
             
-            return (_id, parent_id)
+            display_name = ''
+                
+            if 'name' in _data:
+                display_name = ''.join([_data['name'],' (', _data['id'] ,')'])
+            elif 'type' in _data:
+                display_name = ''.join([_data['id'],' (', _data['type'] ,')'])
+            else:
+                display_name = _data['id']        
+            
+            return (_id, parent_id, display_name)
         
         raise StopIteration
     
