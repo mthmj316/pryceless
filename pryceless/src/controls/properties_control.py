@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 class PropertiesControlObserver(ABC):
 
     @abstractmethod
-    def on_selected(self, page_id:str) -> None:
+    def on_property_selected(self, page_id:str) -> None:
         '''
         Is called after a page has been selected.
         page_id -> id of the selected page
@@ -22,7 +22,7 @@ class PropertiesControl(object):
     '''
     classdocs
     '''
-    __root_id: str = 'properties'
+    __root_id: str = ''
     
     __observers: List[PropertiesControlObserver] = []
     
@@ -35,18 +35,21 @@ class PropertiesControl(object):
         Constructor
 
         '''
-        self.__properties = Treeview(master=master, selectmode='browse')
+        self.__properties = Treeview(master=master, columns=("#1"))
+        self.__properties.column('#0', stretch=tk.NO)
+        self.__properties.heading('#0',text='Key',anchor=tk.W)
+        self.__properties.heading('#1',text='Value',anchor=tk.W)
         self.__properties.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
         self.__properties.bind('<Double-1>', self.__notifiy_observer)
         
-        self.__properties.insert('', 0, self.__root_id, text='Properties')
-        self.__properties.item(self.__root_id, open=True)
+        #self.__properties.insert('', 0, self.__root_id, text='Properties')
+        #self.__properties.item(self.__root_id, open=True)
         
     def insert(self, _id:str, key:str, value:str):
         
-        self.__inserted.append(key)
+        self.__inserted.append(_id)
            
-        self.__properties.insert(self.__root_id, 'end', key, text=value)
+        self.__properties.insert(self.__root_id, 'end', _id, text=key, values=[value])
         
     def __remove(self, tag_id):
         self.__properties.delete(tag_id)
@@ -66,12 +69,12 @@ class PropertiesControl(object):
         
         self.__observers.remove(observer)
         
-    def __notifiy_observer(self, event):  # @UnusedVariable
+    def __notifiy_observer(self, event):
         
-        key = event.widget.selection()[0]
+        _id = event.widget.selection()[0]
         
-        if '.' not in key:
-            page_id = None
+        if '.' not in _id:
+            _id = None
             
         for observer in self.__observers:
-            observer.on_page_selected(key)
+            observer.on_property_selected(_id)

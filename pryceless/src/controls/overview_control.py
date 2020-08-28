@@ -36,6 +36,7 @@ class OverviewControl(object):
 
         '''
         self.__overview = Treeview(master=master, selectmode='browse')
+        self.__overview.heading('#0',text='Overview',anchor=tk.W)
         self.__overview.pack(fill=tk.Y, side=tk.LEFT)
         self.__overview.bind('<<TreeviewSelect>>', self.__notifiy_observer)
         

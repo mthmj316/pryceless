@@ -15,10 +15,12 @@ from controls.overview_control import OverviewControl,\
     OverviewControlObserver
 from controls.configuration_control import ConfigurationControl,\
     ConfigurationControlObserver
-from controls.properties_control import PropertiesControl
+from controls.properties_control import PropertiesControl,\
+    PropertiesControlObserver
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
-                      ConfigurationControlObserver):
+                      ConfigurationControlObserver,
+                      PropertiesControlObserver):
     '''
     classdocs
     '''
@@ -127,6 +129,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         Loads the model data into the view
         '''
         self.__configuration.remove_all()
+        self.__properties.remove_all()
         
         if not self.__model.selected() == None:
             for item in self.__model:
@@ -291,5 +294,27 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         
     @overrides
     def on_conf_selected(self, sub_id:str)->None:
+        
         self.__model.select_sub(sub_id)
+        
+        self.__properties.remove_all()
+        
+        if not sub_id == None:
+            
+            properties = self.__model.get_sub_data()
+            print(properties)
+            for _property in properties:
+                self.__properties.insert(_property[0], _property[1], _property[2])
+            
+        
+    @overrides
+    def on_property_selected(self, _id:str) -> None:
+        '''
+        Is called after a page has been selected.
+        page_id -> id of the selected page
+        if the root element is selected None will be returned.
+        '''
+        if not _id == None:
+            print(_id)
+            print(self.__model.get_property_value(_id))
         

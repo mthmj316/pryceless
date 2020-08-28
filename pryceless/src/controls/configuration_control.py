@@ -24,7 +24,7 @@ class ConfigurationControl(object):
     '''
     classdocs
     '''
-    __root_id: str = 'confs'
+    __root_id: str = ''
     
     __observers: List[ConfigurationControlObserver] = []
     
@@ -38,16 +38,17 @@ class ConfigurationControl(object):
         Constructor
         '''
         self.__configuration = Treeview(master=master)
+        self.__configuration.heading('#0',text='Configuration',anchor=tkinter.W)
         self.__configuration.pack(fill=BOTH, side=tkinter.LEFT, expand=True)
-        self.__configuration.insert('', 0, self.__root_id, text='Configuration')
-        self.__configuration.item(self.__root_id, open=True)
+        #self.__configuration.insert('', 0, self.__root_id, text='Configuration')
+        #self.__configuration.item(self.__root_id, open=True)
         self.__configuration.bind('<<TreeviewSelect>>', self.__notifiy_observer)
     
     
     def insert_conf(self, conf_id:str, conf_name:str, parent:str='confs', pos:str='end'):
         
         if parent == None:
-            parent = 'confs'
+            parent = self.__root_id
         
         self.__inserted.append(conf_id)
         self.__configuration.insert(parent, pos, conf_id, text=conf_name)

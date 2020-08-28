@@ -182,6 +182,11 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def get_property_value(self, property_id:str) -> str:
+        '''
+        '''
+    
+    @abstractmethod
     def __iter__(self):
         '''
         '''

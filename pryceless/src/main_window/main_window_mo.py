@@ -36,9 +36,36 @@ class MainWindowMo(ABSMainWindowMo):
         ''' 
     
     @overrides
+    def get_property_value(self, property_id:str) -> str:
+        '''
+        '''
+        split_property_id = property_id.split('.')
+        
+        value = self.__loaded_project_dict
+        
+        for _id in split_property_id:
+            value = value[_id]
+            
+        return value
+            
+        
+    @overrides
     def get_sub_data(self) -> dict:
         '''
         '''
+        split_sub_id = self.__selected_sub.split('.')
+        
+        sub_data = self.__loaded_project_dict
+        
+        for _id in split_sub_id:
+            sub_data = sub_data[_id]
+        
+        properties = []
+        
+        for key,value in sub_data.items():
+            properties.append(('.'.join([self.__selected_sub, key]),key,value))
+            
+        return properties
     
     @overrides
     def select_sub(self, sub_id:str) -> None:
@@ -85,8 +112,8 @@ class MainWindowMo(ABSMainWindowMo):
             
             display_name = ''
                 
-            if 'name' in _data:
-                display_name = ''.join([_data['name'],' (', _data['id'] ,')'])
+            if 'tag' in _data:
+                display_name = ''.join([_data['tag'],' (', _data['id'] ,')'])
             elif 'type' in _data:
                 display_name = ''.join([_data['id'],' (', _data['type'] ,')'])
             else:
