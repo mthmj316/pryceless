@@ -34,7 +34,129 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Constructor
         ''' 
+    @overrides
+    def create_variable(self) -> None:
+        '''
+        '''
+        variable_name = ''
+        
+        existing_variables = self.__loaded_project_dict['variables'].keys()
+        while variable_name == '':
+            
+            variable_name = simpledialog.askstring("Create Variable", 
+                                                  'Enter the name of the variable:')
+            
+            if variable_name in existing_variables:
+                messagebox.showerror('Variable exists',
+                                     'Variable "%s" already exists.' %(variable_name))
+                
+                variable_name = ''
+            
+        if not variable_name == None:
+            
+            new_variable = {
+                'content': {
+                    variable_name: {
+                        'id': variable_name,
+                        'values': '',
+                        'default_value': ''
+                    }
+                },
+                'name': variable_name
+            }
+            
+            self.__loaded_project_dict['variables'][variable_name] = new_variable
+            self.save()
+            
+    @overrides
+    def create_text(self) -> None:
+        '''
+        '''
+        text_name = ''
+        
+        existing_texts = self.__loaded_project_dict['text'].keys()
+        while text_name == '':
+            
+            text_name = simpledialog.askstring("Create Text", 
+                                                  'Enter the name of the Text')
+            
+            if text_name in existing_texts:
+                messagebox.showerror('Text exists',
+                                     'Text "%s" already exists.' %(text_name))
+                
+                text_name = ''
+            
+        if not text_name == None:
+            
+            new_text = {
+                'content': {
+                    text_name: {
+                        'id': text_name,
+                        'value': ''
+                    }
+                },
+                'name': text_name
+            }
+            
+            self.__loaded_project_dict['text'][text_name] = new_text
+            self.save()
+   
+    @overrides
+    def create_javascript(self) -> None:
+        '''
+        '''
+        script_name = ''
+        
+        existing_scripts = self.__loaded_project_dict['javascripts'].keys()
+        while script_name == '':
+            
+            script_name = simpledialog.askstring("Create JavaScript", 
+                                                  'Enter the name of the JS')
+            
+            if script_name in existing_scripts:
+                messagebox.showerror('JavaScript exists',
+                                     'JavaScript "%s" already exists.' %(script_name))
+                
+                script_name = ''
+            
+        if not script_name == None:
+            
+            new_script = {
+                'content': {},
+                'name': script_name
+            }
+            
+            self.__loaded_project_dict['javascripts'][script_name] = new_script
+            self.save()   
     
+    @overrides
+    def create_css_rule(self) -> None:
+        '''
+        '''
+        new_css_rule = ''
+        
+        existing_rules = self.__loaded_project_dict['css_rules'].keys()
+        while new_css_rule == '':
+            
+            new_css_rule = simpledialog.askstring("Create CSS Rule", 
+                                                  'Enter the name of the rule')
+            
+            if new_css_rule in existing_rules:
+                messagebox.showerror('CSS Rule exists',
+                                     'CSS Rule "%s" already exists.' %(new_css_rule))
+                
+                new_css_rule = ''
+            
+        if not new_css_rule == None:
+            
+            new_rule = {
+                'content': {},
+                'name': new_css_rule
+            }
+            
+            self.__loaded_project_dict['css_rules'][new_css_rule] = new_rule
+            self.save()    
+            
     @overrides
     def get_property_value(self, property_id:str) -> str:
         '''
@@ -154,7 +276,7 @@ class MainWindowMo(ABSMainWindowMo):
             
             return (_id, parent_id, display_name)
         
-        self.__iterate_this.clear()
+        self.__iterate_this = {}
         raise StopIteration
     
     @overrides
@@ -185,7 +307,7 @@ class MainWindowMo(ABSMainWindowMo):
         if self.is_project_open():
             overview_data.update(self.__get_for_overview('pages'))
             overview_data.update(self.__get_for_overview('css_rules'))
-            overview_data.update(self.__get_for_overview('javascript'))
+            overview_data.update(self.__get_for_overview('javascripts'))
             overview_data.update(self.__get_for_overview('text'))
             overview_data.update(self.__get_for_overview('variables'))
             
@@ -303,7 +425,7 @@ class MainWindowMo(ABSMainWindowMo):
                     'project_name': project_names[0],
                     'pages': {},
                     'css_rules': {},
-                    'javascript': {},
+                    'javascripts': {},
                     'text': {},
                     'variables': {}                         
                     }

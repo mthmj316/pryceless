@@ -148,15 +148,18 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_new_javascript(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_JAVASCRIPT
+        self.notify_new()
     
     
     def __on_new_css_rule(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_CSS_RULE
+        self.notify_new()
     
     
     def __on_new_text(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_TEXT
+        self.notify_new()
     
     
     def __on_open(self):
@@ -186,7 +189,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_new_variable(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_VARIABLE
+        self.notify_new()
     
     
     def __create_file_menu(self):

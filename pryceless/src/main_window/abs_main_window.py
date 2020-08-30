@@ -182,6 +182,26 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def create_variable(self) -> None:
+        '''
+        '''
+        
+    @abstractmethod
+    def create_text(self) -> None:
+        '''
+        '''
+    
+    @abstractmethod
+    def create_javascript(self) -> None:
+        '''
+        '''
+        
+    @abstractmethod
+    def create_css_rule(self) -> None:
+        '''
+        '''
+        
+    @abstractmethod
     def get_property_value(self, property_id:str) -> str:
         '''
         '''

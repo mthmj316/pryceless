@@ -203,6 +203,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def on_new(self, event:Event) -> None:
         '''
         '''
+        print(event.event_source)
         if event.event_source == MainWindowMenuKeys.KEY_PROJECT:
             
             if self.__model.is_project_open() \
@@ -215,13 +216,28 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
             if self.__model.is_project_open():  
                 #Only needed when project has been actually created.
                 self.__load_page_overview()
-                self.__
                 
             self.__enable_menu()
             
         elif event.event_source == MainWindowMenuKeys.KEY_HTML_PAGE:
             self.__model.create_page()
             self.__load_data_in_view()
+        elif event.event_source == MainWindowMenuKeys.KEY_CSS_RULE:
+            self.__model.create_css_rule()
+            self.__load_data_in_view()
+        elif event.event_source == MainWindowMenuKeys.KEY_JAVASCRIPT:
+            self.__model.create_javascript()
+            self.__load_data_in_view()
+        elif event.event_source == MainWindowMenuKeys.KEY_TEXT:
+            self.__model.create_text()
+            self.__load_data_in_view()
+        elif event.event_source == MainWindowMenuKeys.KEY_VARIABLE:
+            self.__model.create_variable()
+            self.__load_data_in_view()
+            
+            
+            
+            
             
     
     @overrides

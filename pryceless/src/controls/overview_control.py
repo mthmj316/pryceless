@@ -46,8 +46,8 @@ class OverviewControl(object):
         self.__overview.insert('', 1, 'css_rules', text='CSS Rules')
         self.__overview.item('css_rules', open=True)
         
-        self.__overview.insert('', 2, 'javascript', text='JavaScript')
-        self.__overview.item('javascript', open=True)
+        self.__overview.insert('', 2, 'javascripts', text='JavaScripts')
+        self.__overview.item('javascripts', open=True)
         
         self.__overview.insert('', 3, 'text', text='Text')
         self.__overview.item('text', open=True)
