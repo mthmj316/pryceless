@@ -42,13 +42,9 @@ class PropertiesControl(object):
         self.__properties.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
         self.__properties.bind('<Double-1>', self.__notifiy_observer)
         
-        #self.__properties.insert('', 0, self.__root_id, text='Properties')
-        #self.__properties.item(self.__root_id, open=True)
-        
     def insert(self, _id:str, key:str, value:str):
         
         self.__inserted.append(_id)
-           
         self.__properties.insert(self.__root_id, 'end', _id, text=key, values=[value])
         
     def __remove(self, tag_id):

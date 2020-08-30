@@ -52,6 +52,7 @@ class ConfigurationControl(object):
         
         self.__inserted.append(conf_id)
         self.__configuration.insert(parent, pos, conf_id, text=conf_name)
+        self.__configuration.item(conf_id, open=True)
         
     def __remove(self, conf_id):
         self.__configuration.delete(conf_id)

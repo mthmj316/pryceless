@@ -85,25 +85,45 @@ class MainWindowMo(ABSMainWindowMo):
         self.__iteration_current = 0
         
         selected_split = self.__selected_id.split(sep='.')
-        
         content = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['content']
-        temp = []
         
-        for key,value in content.items():
-            
-            if 'parent_id' in value and not value['parent_id'] == '':
-                
-                try:
-                    temp.insert(temp.index(value['parent_id']) + 1, key)
-                except ValueError:
-                    temp.append(key)
-            else:
-                temp.insert(0, key)
-            
-        for key in temp:
-            self.__iterate_this[key] = content[key]
+        #Check if the dict to be iterated has a sub-dict: struct
+        if 'struct' in self.__loaded_project_dict[selected_split[0]][selected_split[1]]:
+            #Sub-struct -> the structure must be built before iteration can be start.
+            for _id in self.__build_struct(selected_split):
+                self.__iterate_this[_id] = content[_id]
+        else:
+            #No sub-dict -> there is no structure to be built up
+            self.__iterate_this = content
         
         return self
+    
+    def __build_struct(self, selected_split):
+        '''
+        Builds the structure for the iterator
+        '''
+        struct_info = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['struct']
+        root_id = struct_info['root']
+        children = struct_info[root_id].split(',')
+        
+        struct = [root_id]
+        struct += children
+        
+        while len(children) > 0:
+            
+            tmp = []
+            
+            for child in children:
+                for s in struct_info[child].split(','):
+                    if not s == '':
+                        
+                        struct.append(s)
+                        tmp.append(s)
+                        
+            children = tmp
+            tmp = []
+            
+        return struct
     
     @overrides
     def __next__(self):
