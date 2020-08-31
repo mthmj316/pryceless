@@ -18,7 +18,6 @@ from controls.configuration_control import ConfigurationControl,\
 from controls.properties_control import PropertiesControl,\
     PropertiesControlObserver
 from tkinter import simpledialog
-from dialogs.html_dialogs import TagDialog
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver,
@@ -281,8 +280,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         '''
         if event.event_source == MainWindowMenuKeys.KEY_ADD_CHILD:
-            TagDialog(self.__root, self.__model)
-            #self.__model.create_tag()
+            self.__model.create_tag()
         
     @overrides
     def on_delete(self, event:Event) -> None:

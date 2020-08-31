@@ -9,9 +9,9 @@ import os
 from tkinter.filedialog import askopenfilename, askdirectory
 import json
 from tkinter import messagebox, simpledialog
-import time as _time
+from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
 
-class MainWindowMo(ABSMainWindowMo):
+class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     '''
     classdocs
     '''
@@ -37,10 +37,37 @@ class MainWindowMo(ABSMainWindowMo):
         ''' 
     
     @overrides
+    def on_dialog_closed(self, result=None):
+        '''
+        '''
+        if not result == None:
+            
+            if self.__selected_sub == None:
+                # Check if root is already set
+                
+                split_selected_id = self.__selected_id.split('.')
+                
+                selected_page_conf = self.__loaded_project_dict['pages'][split_selected_id[-1]]
+                
+                if 'root' in selected_page_conf['struct']:
+                    messagebox.showerror('Input Error', 'Root element already exists!')
+                else:
+                    self.__insert_tag(result)
+                    
+                    
+    def __insert_tag(self, tag_basic_data):
+        
+        tag = {
+            '__id': tag_basic_data[0],
+            'name': tag_basic_data[1]
+        }
+            
+    
+    @overrides
     def create_tag(self)->None:
         '''
         '''
-        internal_id = _time.time()
+        CreateTagDialog(self)
     
     @overrides
     def rename(self)->None:
