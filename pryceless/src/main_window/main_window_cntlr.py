@@ -164,6 +164,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         # Delete ... -> dto 
         
         self.__gui.enable_menu_project_depending(self.__model.is_project_open())
+        self.__gui.enable_menu_overview_depending(self.__model.is_selected())
         
     def __check_and_save_changes(self) -> bool:
         '''
@@ -268,6 +269,10 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         if event.event_source == MainWindowMenuKeys.KEY_RENAME_PROJECT:
             self.__model.rename_project()
             self.__load_data_in_view()
+            
+        elif event.event_source == MainWindowMenuKeys.KEY_RENAME:
+            self.__model.rename()
+            self.__load_data_in_view()
         
     @overrides
     def on_edit(self, event:Event) -> None:
@@ -300,6 +305,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         self.__model.select(page_id)
         self.__load_page_config()
+        self.__enable_menu()
         
         '''
         print(page_id)

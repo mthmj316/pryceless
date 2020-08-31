@@ -68,6 +68,13 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__create_page_config_frame()
         self.__create_page_overview_frame()
         
+    
+    @overrides
+    def enable_menu_overview_depending(self, enable:bool) -> None:
+        new_state = tk.NORMAL if enable else tk.DISABLED
+        
+        self.__edit_menu.entryconfigure(mKey.KEY_RENAME, state=new_state)
+        
     @overrides
     def enable_menu_project_depending(self, enable:bool) -> None:
         '''
@@ -89,7 +96,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__new_menu.entryconfig(mKey.KEY_TEXT, state=new_state)
         self.__new_menu.entryconfig(mKey.KEY_VARIABLE, state=new_state)
         self.__edit_menu.entryconfig(mKey.KEY_RENAME_PROJECT, state=new_state)
-        self.__html_page_menu.entryconfig(mKey.KEY_GENERATE, state=new_state)
+        self.__file_menu.entryconfig(mKey.KEY_GENERATE, state=new_state)
         
     @overrides
     def get_page_config_frame(self) -> tk.Frame:
@@ -220,6 +227,25 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__file_menu.entryconfig(mKey.KEY_SAVE, state=tk.DISABLED)
         self.__file_menu.add_command(label=mKey.KEY_SAVE_AS, command=lambda: self.__on_save_as())
         self.__file_menu.entryconfig(mKey.KEY_SAVE_AS, state=tk.DISABLED)
+                
+        self.__file_menu.add_separator()        
+
+        generate_menu = tk.Menu(self.__menubar, tearoff=0)
+        generate_menu.add_command(label=mKey.KEY_HTML_PAGE, command=lambda: self.__on_generate_html_page())
+        generate_menu.add_command(label=mKey.KEY_CSS, command=lambda: self.__on_generate_css())
+        generate_menu.add_command(label=mKey.KEY_JAVASCRIPT, command=lambda: self.__on_generate_javascript())
+        
+        generate_menu.add_separator()
+        
+        generate_menu.add_command(label=mKey.KEY_SELENIUM_TEST_CASES, command=lambda: self.__on_selenium_test_cases())
+        
+        generate_menu.add_separator()
+        
+        generate_menu.add_command(label=mKey.KEY_ALL, command=lambda: self.__on_generate_all())
+                       
+        self.__file_menu.add_cascade(label=mKey.KEY_GENERATE, menu=generate_menu)
+        self.__file_menu.entryconfig(mKey.KEY_GENERATE, state=tk.DISABLED)
+        
         self.__file_menu.add_separator()
         self.__file_menu.add_command(label=mKey.KEY_EXIT, command=lambda: self.__on_exit())
     
@@ -240,8 +266,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_rename_page(self):
-        pass
-    
+        self.__last_event.event_source = mKey.KEY_RENAME
+        self.notify_rename()
     
     def __on_edit_css_rule(self):
         pass
@@ -273,8 +299,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         
         self.__edit_menu.add_command(label=mKey.KEY_RENAME_PROJECT, command=lambda: self.__on_rename_project())
         self.__edit_menu.entryconfig(mKey.KEY_RENAME_PROJECT, state=tk.DISABLED)
-        self.__edit_menu.add_command(label=mKey.KEY_RENAME_PAGE, command=lambda: self.__on_rename_page())
-        self.__edit_menu.entryconfig(mKey.KEY_RENAME_PAGE, state=tk.DISABLED)
+        self.__edit_menu.add_command(label=mKey.KEY_RENAME, command=lambda: self.__on_rename_page())
+        self.__edit_menu.entryconfig(mKey.KEY_RENAME, state=tk.DISABLED)
         
         self.__edit_menu.add_separator()
         
@@ -386,24 +412,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__html_page_menu.entryconfig(mKey.KEY_DELETE_EVENT, state=tk.DISABLED)
         self.__html_page_menu.add_command(label=mKey.KEY_DELETE_TEXT, command=lambda: self.__on_delete_text())
         self.__html_page_menu.entryconfig(mKey.KEY_DELETE_TEXT, state=tk.DISABLED)
-        
-        self.__html_page_menu.add_separator()        
-
-        generate_menu = tk.Menu(self.__menubar, tearoff=0)
-        generate_menu.add_command(label=mKey.KEY_HTML_PAGE, command=lambda: self.__on_generate_html_page())
-        generate_menu.add_command(label=mKey.KEY_CSS, command=lambda: self.__on_generate_css())
-        generate_menu.add_command(label=mKey.KEY_JAVASCRIPT, command=lambda: self.__on_generate_javascript())
-        
-        generate_menu.add_separator()
-        
-        generate_menu.add_command(label=mKey.KEY_SELENIUM_TEST_CASES, command=lambda: self.__on_selenium_test_cases())
-        
-        generate_menu.add_separator()
-        
-        generate_menu.add_command(label=mKey.KEY_ALL, command=lambda: self.__on_generate_all())
-                       
-        self.__html_page_menu.add_cascade(label=mKey.KEY_GENERATE, menu=generate_menu)
-        self.__html_page_menu.entryconfig(mKey.KEY_GENERATE, state=tk.DISABLED)
                        
         self.__menubar.add_cascade(label=mKey.KEY_HTML_HYPHEN_PAGE, menu=self.__html_page_menu)
     

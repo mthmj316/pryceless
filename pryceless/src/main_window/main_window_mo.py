@@ -34,6 +34,51 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Constructor
         ''' 
+    
+    @overrides
+    def rename(self)->None:
+        '''
+        '''
+        
+        split_selected_id = self.__selected_id.split('.')
+        existing_names = self.__loaded_project_dict[split_selected_id[0]].keys()
+        
+        initial_value = split_selected_id[1]
+        
+        new_name = ''
+        while new_name == '':
+            
+            new_name = simpledialog.askstring('Rename ...', 
+                                              'Enter the new name:',
+                                              initialvalue=initial_value)
+            
+            if new_name in existing_names:
+                messagebox.showerror('Name exists',
+                                     'Item "%s" already exists.' %(new_name))
+                initial_value = new_name
+                new_name = ''
+        
+        if not new_name == None:
+            
+            conf = self.__loaded_project_dict[split_selected_id[0]][split_selected_id[1]]
+            conf['name'] = new_name
+        
+            del self.__loaded_project_dict[split_selected_id[0]][split_selected_id[1]]
+            
+            self.__loaded_project_dict[split_selected_id[0]][new_name] = conf
+            
+            self.save()
+            
+            self.__load_project(self.__full_project_path)
+            
+            self.__selected_id = '.'.join([split_selected_id[0], new_name])
+        
+    @overrides
+    def is_selected(self)->bool:
+        '''
+        '''
+        return (not self.__selected_id == None)
+        
     @overrides
     def create_variable(self) -> None:
         '''
@@ -55,13 +100,7 @@ class MainWindowMo(ABSMainWindowMo):
         if not variable_name == None:
             
             new_variable = {
-                'content': {
-                    variable_name: {
-                        'id': variable_name,
-                        'values': '',
-                        'default_value': ''
-                    }
-                },
+                'content': {},
                 'name': variable_name
             }
             
@@ -89,12 +128,7 @@ class MainWindowMo(ABSMainWindowMo):
         if not text_name == None:
             
             new_text = {
-                'content': {
-                    text_name: {
-                        'id': text_name,
-                        'value': ''
-                    }
-                },
+                'content': {},
                 'name': text_name
             }
             
@@ -532,8 +566,7 @@ class MainWindowMo(ABSMainWindowMo):
             # set new working dir
             self.__last_project_folder = os.path.dirname(file_name)
             # write the file content to the __loaded_project_json attribute
-            with open(file_name, 'r') as file:
-                self.__loaded_project_dict = json.load(file)
+            self.__load_project(file_name)
             
             #and save the file name
             self.__full_project_path = file_name
@@ -544,3 +577,9 @@ class MainWindowMo(ABSMainWindowMo):
             return True
         
         return False
+    
+    def __load_project(self, file_name):
+        '''
+        '''
+        with open(file_name, 'r') as file:
+            self.__loaded_project_dict = json.load(file)

@@ -149,6 +149,14 @@ class ABSMainWindowUI(ABSMainwindowObservable):
     classdocs
     '''
     @abstractmethod
+    def enable_menu_overview_depending(self, enable:bool) -> None:
+        '''
+        Enables/disables all menu items which depend on that a
+        page is selected:
+            Rename Page
+        '''
+    
+    @abstractmethod
     def enable_menu_project_depending(self, enable:bool) -> None:
         '''
         Enables/disbales all menu items which only depend on
@@ -181,6 +189,16 @@ class ABSMainWindowMo(abc.ABC):
     '''
     
     '''
+    @abstractmethod
+    def rename(self) -> None:
+        '''
+        '''
+        
+    @abstractmethod
+    def is_selected(self) -> bool:
+        '''
+        '''
+    
     @abstractmethod
     def create_variable(self) -> None:
         '''
@@ -365,7 +383,7 @@ class MainWindowMenuKeys(object):
 
     KEY_REDO = 'Redo'
 
-    KEY_RENAME_PAGE = 'Rename Page'
+    KEY_RENAME = 'Rename ...'
 
     KEY_RENAME_PROJECT = 'Rename Project'
 
