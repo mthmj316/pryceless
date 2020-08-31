@@ -74,6 +74,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         new_state = tk.NORMAL if enable else tk.DISABLED
         
         self.__edit_menu.entryconfigure(mKey.KEY_RENAME, state=new_state)
+        self.__html_page_menu.entryconfig(mKey.KEY_ADD_CHILD, state=new_state)
         
     @overrides
     def enable_menu_project_depending(self, enable:bool) -> None:
@@ -317,7 +318,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
 
     
     def __on_add_child(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_ADD_CHILD
+        self.notify_add()
     
     
     def __on_add_attribute(self):

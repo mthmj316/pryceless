@@ -190,6 +190,11 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def create_tag(self) -> None:
+        '''
+        '''
+    
+    @abstractmethod
     def rename(self) -> None:
         '''
         '''

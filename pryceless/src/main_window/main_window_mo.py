@@ -9,6 +9,7 @@ import os
 from tkinter.filedialog import askopenfilename, askdirectory
 import json
 from tkinter import messagebox, simpledialog
+import time as _time
 
 class MainWindowMo(ABSMainWindowMo):
     '''
@@ -34,6 +35,12 @@ class MainWindowMo(ABSMainWindowMo):
         '''
         Constructor
         ''' 
+    
+    @overrides
+    def create_tag(self)->None:
+        '''
+        '''
+        internal_id = _time.time()
     
     @overrides
     def rename(self)->None:
@@ -259,6 +266,10 @@ class MainWindowMo(ABSMainWindowMo):
         Builds the structure for the iterator
         '''
         struct_info = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['struct']
+        
+        if not 'root' in struct_info:
+            return []
+        
         root_id = struct_info['root']
         children = struct_info[root_id].split(',')
         
@@ -377,7 +388,8 @@ class MainWindowMo(ABSMainWindowMo):
             
             self.__loaded_project_dict['pages'][page_name] = {
                 'page_name': page_name,
-                'content': {}
+                'content': {},
+                'struct': {}
                 } 
             
             self.save()

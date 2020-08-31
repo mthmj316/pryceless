@@ -9,7 +9,8 @@ setup(
     package_dir={'': 'src'},
     packages=['scripts', 'templates', 'tests', 'gui',
               'conf', 'utils', 'controller', 'main', 
-              'model', 'interfaces', 'main_window', 'controls'],
+              'model', 'interfaces', 'main_window', 'controls',
+              'dialogs'],
     package_data={'': ['*.template', '*.expected', '*.conf']},
     include_package_data=True,
 )
