@@ -10,6 +10,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 import json
 from tkinter import messagebox, simpledialog
 from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
+import time
 
 class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     '''
@@ -42,29 +43,42 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         '''
         if not result == None:
             
-            if self.__selected_sub == None:
+            split_selected_id = self.__selected_id.split('.')
+            selected_page_conf = self.__loaded_project_dict['pages'][split_selected_id[-1]]
+
+            if self.__selected_sub == None \
+                and 'root' in selected_page_conf['struct']:
                 # Check if root is already set
+                messagebox.showerror('Input Error', 'Root element already exists!')
+                return
                 
-                split_selected_id = self.__selected_id.split('.')
-                
-                selected_page_conf = self.__loaded_project_dict['pages'][split_selected_id[-1]]
-                
-                if 'root' in selected_page_conf['struct']:
-                    messagebox.showerror('Input Error', 'Root element already exists!')
-                else:
-                    self.__insert_tag(result)
+            self.__insert_tag(result, split_selected_id[-1])
                     
                     
-    def __insert_tag(self, tag_basic_data):
+    def __insert_tag(self, tag_basic_data, page_id):
+        
+        internal_id = time.time()
         
         tag = {
             '__id': tag_basic_data[0],
             'name': tag_basic_data[1]
         }
-            
+        
+        page = self.__loaded_project_dict['pages'][page_id]
+        
+        page['content'][internal_id] = tag
+        
+        self.__update_page_struct(tag_basic_data, internal_id, page['struct'])
+    
+    def __update_page_struct(self, tag_basic_data, internal_id, struct):
+        
+        if self.__selected_sub == None:
+            #New tag must be root
+            struct['root'] = internal_id
+            struct[internal_id] = ''    
     
     @overrides
-    def create_tag(self)->None:
+    def create_tag(self)-> bool:
         '''
         '''
         CreateTagDialog(self)
@@ -301,6 +315,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         children = struct_info[root_id].split(',')
         
         struct = [root_id]
+        
         struct += children
         
         while len(children) > 0:

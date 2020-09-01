@@ -190,7 +190,7 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
-    def create_tag(self) -> None:
+    def create_tag(self) -> bool:
         '''
         '''
     
