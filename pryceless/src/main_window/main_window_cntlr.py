@@ -281,6 +281,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         if event.event_source == MainWindowMenuKeys.KEY_ADD_CHILD:
             self.__model.create_tag()
+            self.__load_page_config()
         
     @overrides
     def on_delete(self, event:Event) -> None:

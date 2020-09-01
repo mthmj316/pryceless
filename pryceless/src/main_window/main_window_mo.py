@@ -60,7 +60,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         internal_id = time.time()
         
         tag = {
-            '__id': tag_basic_data[0],
+            'id': tag_basic_data[0],
             'name': tag_basic_data[1]
         }
         
@@ -312,7 +312,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             return []
         
         root_id = struct_info['root']
-        children = struct_info[root_id].split(',')
+        
+        root_children = struct_info[root_id]
+        
+        if root_children == '':
+            return [root_id]
+        
+        children = root_children.split(',')
         
         struct = [root_id]
         
