@@ -79,6 +79,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def on_save(self, event:Event) -> None:
         '''
         '''
+        self.__model.save()
         
     @overrides
     def on_open(self, event:Event) -> None:  # @UnusedVariable
@@ -168,6 +169,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         
         self.__gui.enable_menu_project_depending(self.__model.is_project_open())
         self.__gui.enable_menu_overview_depending(self.__model.is_selected())
+        self.__gui.enable_menu_conf_depending(self.__model.is_sub_selected())
         
     def __check_and_save_changes(self) -> bool:
         '''
@@ -284,6 +286,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         if event.event_source == MainWindowMenuKeys.KEY_ADD_CHILD:
             self.__model.create_tag()
+        elif event.event_source == MainWindowMenuKeys.KEY_ADD_ATTRIBUTE:
+            self.__model.add_property()
         
     @overrides
     def on_delete(self, event:Event) -> None:
@@ -319,8 +323,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def on_conf_selected(self, sub_id:str)->None:
         
         self.__model.select_sub(sub_id)
-        
         self.__properties.remove_all()
+        self.__enable_menu()
         
         if not sub_id == None:
             
@@ -328,13 +332,11 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
             for _property in properties:
                 self.__properties.insert(_property[0], _property[1], _property[2])
             
+            
         
     @overrides
     def on_property_selected(self, _id:str) -> None:
         '''
-        Is called after a page has been selected.
-        page_id -> id of the selected page
-        if the root element is selected None will be returned.
         '''
         if not _id == None:
             answer = simpledialog.askstring("Input", ''.join(['Set: ', _id.split('.')[-1]]), 

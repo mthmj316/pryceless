@@ -67,7 +67,17 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__create_attributes_fram()
         self.__create_page_config_frame()
         self.__create_page_overview_frame()
+    
+    @overrides
+    def enable_menu_conf_depending(self, enable:bool) -> None:
+        '''
+        Enables/disables al menu items which depend on
+        that a config item is selected:
+            HTML-Page/Add Attribute
+        '''
+        new_state = tk.NORMAL if enable else tk.DISABLED
         
+        self.__html_page_menu.entryconfig(mKey.KEY_ADD_ATTRIBUTE, state=new_state)
     
     @overrides
     def enable_menu_overview_depending(self, enable:bool) -> None:
@@ -180,7 +190,9 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_save(self):
-        pass
+        
+        self.__last_event.event_source = mKey.KEY_SAVE
+        self.notify_save()
     
     
     def __on_save_as(self):
@@ -225,7 +237,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         self.__file_menu.add_command(label=mKey.KEY_OPEN, command=lambda: self.__on_open())
         self.__file_menu.add_separator()
         self.__file_menu.add_command(label=mKey.KEY_SAVE, command=lambda: self.__on_save())
-        self.__file_menu.entryconfig(mKey.KEY_SAVE, state=tk.DISABLED)
+        #self.__file_menu.entryconfig(mKey.KEY_SAVE, state=tk.DISABLED)
         self.__file_menu.add_command(label=mKey.KEY_SAVE_AS, command=lambda: self.__on_save_as())
         self.__file_menu.entryconfig(mKey.KEY_SAVE_AS, state=tk.DISABLED)
                 
@@ -323,7 +335,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_add_attribute(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_ADD_ATTRIBUTE
+        self.notify_add()
     
     
     def __on_add_event(self):

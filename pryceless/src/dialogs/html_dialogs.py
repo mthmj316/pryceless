@@ -10,7 +10,7 @@ from tkinter import messagebox
 class ABSHTMLDialogObserver(ABC):
     
     @abstractmethod
-    def on_dialog_closed(self, result=None):
+    def on_create_tag_closed(self, result=None):
         '''
         '''
 
@@ -80,7 +80,7 @@ class CreateTagDialog():
             messagebox.showerror('Input Error', 'Position is not a number!')            
         else:
             self.__dialog.destroy()
-            self.__observer.on_dialog_closed((tag_id, tag, position))
+            self.__observer.on_create_tag_closed((tag_id, tag, position))
         
     def __on_cancel(self):
         self.__dialog.destroy()

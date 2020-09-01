@@ -18,6 +18,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     '''
     classdocs
     '''
+    __NONE_DISPLAY_PROPERTIES = ['internal_id', 'parent_id']
+    
     __observers: List[ABSMainWindowModelObserver] = []
     
     __last_project_folder: str =  '/home/mthoma/Dokumente/prycless-workspace'  #os.getenv('HOME')
@@ -40,9 +42,33 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         '''
         Constructor
         ''' 
+    @overrides
+    def is_sub_selected(self) -> bool:
+        '''
+        Returns True if a sub element is selcted. 
+        '''
+        return not self.__selected_sub == None
+        
+    @overrides
+    def delete_property(self, property_id:str):
+        '''
+        '''
+        print(property_id)
+        
+    @overrides
+    def add_property(self):
+        '''
+        '''
+        print('add')
+        
+    @overrides
+    def change_property(self, property_id:str):
+        '''
+        '''
+        print(property_id)
     
     @overrides
-    def on_dialog_closed(self, result=None):
+    def on_create_tag_closed(self, result=None):
         '''
         '''
         if not result == None:
@@ -88,11 +114,21 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             struct['root'] = internal_id
             struct[internal_id] = ''
         else:
+            
             # internal_id to the parent at the given position
-            children_for_parent_iid = struct[parent_iid].split(',')
-            # position must be decremented by 1
-            children_for_parent_iid.insert((position - 1), internal_id)
-            struct[parent_iid] = ','.join(children_for_parent_iid)        
+            if not struct[parent_iid] == '':
+                children_for_parent_iid = struct[parent_iid].split(',')
+            else :
+                children_for_parent_iid = []
+                
+            # position must be converted to str
+            # and decremented by 1
+            
+            idx = int(position) - 1
+            
+            children_for_parent_iid.insert(idx, internal_id)
+            struct[parent_iid] = ','.join(children_for_parent_iid)
+                    
             # add internal_id to to struct with empty child info
             struct[internal_id] = ''    
     
@@ -286,6 +322,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         properties = []
         
         for key,value in sub_data.items():
+            if key in self.__NONE_DISPLAY_PROPERTIES:
+                continue
             properties.append(('.'.join([self.__selected_sub, key]),key,value))
             
         return properties

@@ -157,10 +157,18 @@ class ABSMainWindowUI(ABSMainwindowObservable):
     classdocs
     '''
     @abstractmethod
+    def enable_menu_conf_depending(self, enable:bool) -> None:
+        '''
+        Enables/disables al menu items which depend on
+        that a config item is selected:
+            HTML-Page/Add Attribute
+        '''
+        
+    @abstractmethod
     def enable_menu_overview_depending(self, enable:bool) -> None:
         '''
         Enables/disables all menu items which depend on that a
-        page is selected:
+        overview item is selected:
             Rename Page
         '''
     
@@ -197,6 +205,26 @@ class ABSMainWindowMo(abc.ABC):
     '''
     
     '''
+    @abstractmethod
+    def is_sub_selected(self) -> bool:
+        '''
+        Returns True if a sub element is selcted. 
+        '''
+    
+    @abstractmethod
+    def delete_property(self, property_id:str):
+        '''
+        '''
+        
+    @abstractmethod
+    def add_property(self):
+        '''
+        '''
+    @abstractmethod
+    def change_property(self, property_id:str):
+        '''
+        '''
+    
     @abstractmethod
     def create_tag(self) -> bool:
         '''
