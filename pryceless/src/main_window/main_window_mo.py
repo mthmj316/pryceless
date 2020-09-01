@@ -4,18 +4,22 @@ Created on 04.08.2020
 @author: mthoma
 '''
 from overrides.overrides import overrides
-from main_window.abs_main_window import ABSMainWindowMo
+from main_window.abs_main_window import ABSMainWindowMo,\
+    ABSMainWindowModelObserver
 import os
 from tkinter.filedialog import askopenfilename, askdirectory
 import json
 from tkinter import messagebox, simpledialog
 from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
 import time
+from typing import List
 
 class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     '''
     classdocs
     '''
+    __observers: List[ABSMainWindowModelObserver] = []
+    
     __last_project_folder: str =  '/home/mthoma/Dokumente/prycless-workspace'  #os.getenv('HOME')
     
     __loaded_project_dict: dict = None
@@ -46,35 +50,50 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             split_selected_id = self.__selected_id.split('.')
             selected_page_conf = self.__loaded_project_dict['pages'][split_selected_id[-1]]
 
-            if self.__selected_sub == None \
-                and 'root' in selected_page_conf['struct']:
-                # Check if root is already set
-                messagebox.showerror('Input Error', 'Root element already exists!')
-                return
+            parent_iid = ''
+
+            if not self.__selected_sub == None:
+                parent_iid = self.__selected_sub.split('.')[-1]
+            else:
+                if 'root' in selected_page_conf['struct']:
+                    # Check if root is already set
+                    messagebox.showerror('Input Error', 'Root element already exists!')
+                    return
                 
-            self.__insert_tag(result, split_selected_id[-1])
+            self.__insert_tag(result, split_selected_id[-1], parent_iid)
+            self.__notify_observer()
                     
                     
-    def __insert_tag(self, tag_basic_data, page_id):
+    def __insert_tag(self, tag_basic_data, page_id, parent_iid):
         
-        internal_id = time.time()
+        internal_id = str(time.time()).replace('.', '_')
         
         tag = {
             'id': tag_basic_data[0],
-            'name': tag_basic_data[1]
+            'name': tag_basic_data[1],
+            'internal_id': internal_id,
+            'parent_id': parent_iid
         }
         
         page = self.__loaded_project_dict['pages'][page_id]
         
         page['content'][internal_id] = tag
         
-        self.__update_page_struct(tag_basic_data, internal_id, page['struct'])
+        self.__update_page_struct(tag_basic_data[2], internal_id, page['struct'], parent_iid)
     
-    def __update_page_struct(self, tag_basic_data, internal_id, struct):
+    def __update_page_struct(self, position, internal_id, struct, parent_iid):
         
         if self.__selected_sub == None:
             #New tag must be root
             struct['root'] = internal_id
+            struct[internal_id] = ''
+        else:
+            # internal_id to the parent at the given position
+            children_for_parent_iid = struct[parent_iid].split(',')
+            # position must be decremented by 1
+            children_for_parent_iid.insert((position - 1), internal_id)
+            struct[parent_iid] = ','.join(children_for_parent_iid)        
+            # add internal_id to to struct with empty child info
             struct[internal_id] = ''    
     
     @overrides
@@ -352,7 +371,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             # parent_id is the id of the element within the conf
             # not within the json file -> eg. css_rule has no parent_id
             
-            _id =  '.'.join([self.__selected_id, 'content', _data['id']])
+            internal_id =  '.'.join([self.__selected_id, 'content', _data['internal_id']])
             parent_id = None
             
             if 'parent_id' in _data and not _data['parent_id'] == '':
@@ -367,7 +386,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             else:
                 display_name = _data['id']        
             
-            return (_id, parent_id, display_name)
+            return (internal_id, parent_id, display_name)
         
         self.__iterate_this = {}
         raise StopIteration
@@ -386,6 +405,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         Sets the selected configuration item in the model.
         '''
         self.__selected_id = conf_id
+        self.__selected_sub = None
         
     @overrides
     def get_overview_data(self) -> dict:
@@ -643,3 +663,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         '''
         with open(file_name, 'r') as file:
             self.__loaded_project_dict = json.load(file)
+            
+    def __notify_observer(self):
+        '''
+        '''
+        for observer in self.__observers:
+            observer.on_model_changed()
+    
+    @overrides
+    def add_observer(self, observer:ABSMainWindowModelObserver) -> None:
+        '''
+        '''
+        self.__observers.append(observer)
+    
+    @overrides
+    def remove_observer(self, observer:ABSMainWindowModelObserver) -> None:
+        '''
+        '''
+        self.__observers.remove(observer)
+        
+    @overrides
+    def clear_observer(self) -> None:
+        '''
+        '''
+        self.__observers.clear()

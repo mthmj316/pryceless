@@ -5,7 +5,7 @@ Created on 04.08.2020
 '''
 import tkinter as tk
 from main_window.abs_main_window import ABSMainWindowUI, ABSMainWindowObserver,\
-    ABSMainWindowMo, MainWindowMenuKeys
+    ABSMainWindowMo, MainWindowMenuKeys, ABSMainWindowModelObserver
 from main_window.main_window_ui import MainWindowUI
 from overrides.overrides import overrides
 from utils.utils import Event
@@ -21,7 +21,8 @@ from tkinter import simpledialog
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver,
-                      PropertiesControlObserver):
+                      PropertiesControlObserver,
+                      ABSMainWindowModelObserver):
     '''
     classdocs
     '''
@@ -52,6 +53,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         
         self.__properties = PropertiesControl(self.__gui.get_attributes_frame())
         self.__properties.add_obeserver(self)
+        
+        self.__model.add_observer(self)
         
         
     def show(self, title:str='TITLE'):
@@ -281,7 +284,6 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         if event.event_source == MainWindowMenuKeys.KEY_ADD_CHILD:
             self.__model.create_tag()
-            self.__load_page_config()
         
     @overrides
     def on_delete(self, event:Event) -> None:
@@ -339,4 +341,10 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                                             parent=self.__root, initialvalue=self.__model.get_property_value(_id))
             
             print(answer)
+    
+    @overrides
+    def on_model_changed(self) -> None:
+        '''
+        '''
+        self.__load_data_in_view()
         

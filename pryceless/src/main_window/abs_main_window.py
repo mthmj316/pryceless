@@ -9,6 +9,14 @@ from abc import abstractmethod
 from utils.utils import Event
 
 
+class ABSMainWindowModelObserver(abc.ABC):
+    '''
+    '''
+    @abstractmethod
+    def on_model_changed(self) -> None:
+        '''
+        '''
+
 class ABSMainWindowObserver(abc.ABC):
     '''
     '''
@@ -333,7 +341,22 @@ class ABSMainWindowMo(abc.ABC):
         '''
         Save the current project setup to the file system.
         '''
+    
+    @abstractmethod
+    def add_observer(self, observer:ABSMainWindowModelObserver) -> None:
+        '''
+        '''
+    
+    @abstractmethod
+    def remove_observer(self, observer:ABSMainWindowModelObserver) -> None:
+        '''
+        '''
         
+    @abstractmethod
+    def clear_observer(self) -> None:
+        '''
+        '''
+           
 
 class MainWindowMenuKeys(object):
     '''
