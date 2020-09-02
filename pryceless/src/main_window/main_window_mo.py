@@ -24,7 +24,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     
     __observers: List[ABSMainWindowModelObserver] = []
     
-    __last_project_folder: str =  '/'.join([str(Path.home()), '/Dokumente/prycless-workspace'])
+    __last_project_folder: str =  os.path.join(str(Path.home()),'Dokumente','pryceless-workspace')
     
     __loaded_project_dict: dict = None
 
@@ -44,6 +44,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         '''
         Constructor
         ''' 
+        print(self.__last_project_folder)
+        
     @overrides
     def is_sub_selected(self) -> bool:
         '''

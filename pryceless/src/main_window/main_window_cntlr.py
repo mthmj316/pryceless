@@ -62,7 +62,11 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         self.__gui.pack(side="top", fill="both", expand=True)
         self.__gui.register_observer(self)        
         
-        self.__root.attributes('-zoomed', True)
+        try:
+            self.__root.attributes('-zoomed', True)
+        except:
+            pass
+            
         
         self.__base_title = title
         
