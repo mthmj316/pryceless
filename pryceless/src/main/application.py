@@ -8,4 +8,4 @@ from main_window.main_window_cntlr import MainWindowCNTLR
 if __name__ == '__main__':
     
     main_window = MainWindowCNTLR()
-    main_window.show('Pryceless v0.1')
+    main_window.show('Pryceless v0.2')
