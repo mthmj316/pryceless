@@ -13,7 +13,6 @@ class ABSHTMLDialogObserver(ABC):
     def on_create_tag_closed(self, result=None):
         '''
         '''
-
 class CreateTagDialog():
     '''
     '''

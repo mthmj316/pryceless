@@ -77,7 +77,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         '''
         new_state = tk.NORMAL if enable else tk.DISABLED
         
-        self.__html_page_menu.entryconfig(mKey.KEY_ADD_ATTRIBUTE, state=new_state)
     
     @overrides
     def enable_menu_overview_depending(self, enable:bool) -> None:
@@ -401,10 +400,6 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
         
         self.__html_page_menu.add_command(label=mKey.KEY_ADD_CHILD, command=lambda: self.__on_add_child())
         self.__html_page_menu.entryconfig(mKey.KEY_ADD_CHILD, state=tk.DISABLED)
-        self.__html_page_menu.add_command(label=mKey.KEY_ADD_ATTRIBUTE, command=lambda: self.__on_add_attribute())
-        self.__html_page_menu.entryconfig(mKey.KEY_ADD_ATTRIBUTE, state=tk.DISABLED)
-        self.__html_page_menu.add_command(label=mKey.KEY_ADD_EVENT, command=lambda: self.__on_add_event())
-        self.__html_page_menu.entryconfig(mKey.KEY_ADD_EVENT, state=tk.DISABLED)
         self.__html_page_menu.add_command(label=mKey.KEY_ADD_TEXT, command=lambda: self.__on_add_text())
         self.__html_page_menu.entryconfig(mKey.KEY_ADD_TEXT, state=tk.DISABLED)
         

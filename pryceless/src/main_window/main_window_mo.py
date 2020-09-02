@@ -13,6 +13,7 @@ from tkinter import messagebox, simpledialog
 from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
 import time
 from typing import List
+from scripts.configuration_loader import load_html_tag
 
 class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     '''
@@ -55,18 +56,6 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         '''
         print(property_id)
         
-    @overrides
-    def add_property(self):
-        '''
-        '''
-        print('add')
-        
-    @overrides
-    def change_property(self, property_id:str):
-        '''
-        '''
-        print(property_id)
-    
     @overrides
     def on_create_tag_closed(self, result=None):
         '''
@@ -303,7 +292,11 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         value = self.__loaded_project_dict
         
         for _id in split_property_id:
-            value = value[_id]
+            if _id in value:
+                value = value[_id]
+            else:
+                value = ''
+                break
             
         return value
             
@@ -326,6 +319,11 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
                 continue
             properties.append(('.'.join([self.__selected_sub, key]),key,value))
             
+        #Add other possible attributes
+        if split_sub_id[0] == 'pages':
+            for attribute in load_html_tag(sub_data['name'])['attributes']:
+                properties.append(('.'.join([self.__selected_sub, attribute]),attribute,''))
+                        
         return properties
     
     @overrides

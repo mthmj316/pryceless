@@ -217,15 +217,6 @@ class ABSMainWindowMo(abc.ABC):
         '''
         
     @abstractmethod
-    def add_property(self):
-        '''
-        '''
-    @abstractmethod
-    def change_property(self, property_id:str):
-        '''
-        '''
-    
-    @abstractmethod
     def create_tag(self) -> bool:
         '''
         '''
