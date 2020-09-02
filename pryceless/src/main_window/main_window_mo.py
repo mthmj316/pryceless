@@ -14,6 +14,7 @@ from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
 import time
 from typing import List
 from scripts.configuration_loader import load_html_tag
+from pathlib import Path
 
 class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     '''
@@ -23,7 +24,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     
     __observers: List[ABSMainWindowModelObserver] = []
     
-    __last_project_folder: str =  '/'.join([os.getenv('HOME'), '/Dokumente/prycless-workspace'])
+    __last_project_folder: str =  '/'.join([str(Path.home()), '/Dokumente/prycless-workspace'])
     
     __loaded_project_dict: dict = None
 
