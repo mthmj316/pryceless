@@ -332,7 +332,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def __load_properties(self):
         properties = self.__model.get_sub_data()
         for _property in properties:
-            self.__properties.insert(_property[0], _property[1], _property[2])       
+            self.__properties.insert(_property[0], _property[1], _property[2], _property[3])       
         
     @overrides
     def on_property_selected(self, _id:str) -> None:

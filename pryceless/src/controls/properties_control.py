@@ -48,13 +48,23 @@ class PropertiesControl(object):
             self.__properties.focus(_id)
             self.__properties.selection_set(_id)
         
-    def insert(self, _id:str, key:str, value:str):
+    def insert(self, _id:str, key:str, value:str, parent:str=None):
+        
+        tree_parent = self.__root_id
+        
+        if not parent == None:
+            tree_parent = parent
+            
+            if not parent in self.__inserted:
+                self.insert(parent, parent, parent)
         
         self.__inserted.append(_id)
-        self.__properties.insert(self.__root_id, 'end', _id, text=key, values=[value])
+        
+        self.__properties.insert(tree_parent, 'end', _id, text=key, values=[value])
         
     def __remove(self, tag_id):
-        self.__properties.delete(tag_id)
+        if self.__properties.exists(tag_id):
+            self.__properties.delete(tag_id)
         
     def remove_all(self):
         

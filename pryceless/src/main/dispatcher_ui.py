@@ -3,7 +3,7 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-from controller.main_window_cntlr import MainWindowCNTLR
+from main_window.main_window_cntlr import MainWindowCNTLR
 
 __main_window: MainWindowCNTLR = None
 

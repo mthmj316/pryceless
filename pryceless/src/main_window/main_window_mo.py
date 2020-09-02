@@ -23,7 +23,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     
     __observers: List[ABSMainWindowModelObserver] = []
     
-    __last_project_folder: str =  '/home/mthoma/Dokumente/prycless-workspace'  #os.getenv('HOME')
+    __last_project_folder: str =  '/'.join([os.getenv('HOME'), '/Dokumente/prycless-workspace'])
     
     __loaded_project_dict: dict = None
 
@@ -347,23 +347,33 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         
         properties = []
         
-        defined_attr = []
+        defined_property = []
         
         for key,value in sub_data.items():
             if key in self.__NONE_DISPLAY_PROPERTIES:
                 continue
-            properties.append(('.'.join([self.__selected_sub, key]),key,value))
-            defined_attr.append(key)
+            properties.append(('.'.join([self.__selected_sub, key]),key,value,None))
+            defined_property.append(key)
             
         #Add other possible attributes
+        
+        
         if split_sub_id[0] == 'pages':
-            for attribute in load_html_tag(sub_data['name'])['attributes']:
+            html_tag_data = load_html_tag(sub_data['name'])
+            for attribute in html_tag_data['attributes']:
                 
-                if attribute in defined_attr:
+                if attribute in defined_property:
                     continue
                                 
-                properties.append(('.'.join([self.__selected_sub, attribute]),attribute,''))
-                        
+                properties.append(('.'.join([self.__selected_sub, attribute]),attribute,'','Attributes'))
+                  
+            for event in html_tag_data['events']:
+                
+                if event in defined_property:
+                    continue
+                                
+                properties.append(('.'.join([self.__selected_sub, event]),event,'','Events'))
+                      
         return properties
     
     @overrides
