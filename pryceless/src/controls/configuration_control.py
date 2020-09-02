@@ -44,7 +44,12 @@ class ConfigurationControl(object):
         #self.__configuration.item(self.__root_id, open=True)
         self.__configuration.bind('<<TreeviewSelect>>', self.__notifiy_observer)
     
-    
+    def select(self, _id:str):
+        
+        if not _id == None:
+            self.__configuration.focus(_id)
+            self.__configuration.selection_set(_id)
+            
     def insert_conf(self, conf_id:str, conf_name:str, parent:str='confs', pos:str='end'):
         
         if parent == None:

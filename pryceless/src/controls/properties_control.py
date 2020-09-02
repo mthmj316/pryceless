@@ -41,6 +41,12 @@ class PropertiesControl(object):
         self.__properties.heading('#1',text='Value',anchor=tk.W)
         self.__properties.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
         self.__properties.bind('<Double-1>', self.__notifiy_observer)
+    
+    def select(self, _id:str):
+        
+        if not _id == None:
+            self.__properties.focus(_id)
+            self.__properties.selection_set(_id)
         
     def insert(self, _id:str, key:str, value:str):
         

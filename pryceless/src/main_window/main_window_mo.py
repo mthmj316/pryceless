@@ -76,7 +76,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
                     return
                 
             self.__insert_tag(result, split_selected_id[-1], parent_iid)
-            self.__notify_observer()
+            self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
                     
                     
     def __insert_tag(self, tag_basic_data, page_id, parent_iid):
@@ -284,6 +284,39 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             self.save()    
             
     @overrides
+    def set_property(self, property_id:str) -> None:
+        '''
+        '''
+        split_property_id = property_id.split('.')
+        answer = simpledialog.askstring("Input", ''.join(['Set: ', split_property_id[-1]]),
+                                        initialvalue=self.get_property_value(property_id))
+            
+        if answer == None:
+            return
+        
+        print(answer)
+            
+        #At the end this variable contains 
+        #the reference to configuration item for which
+        # the proerty must be set. 
+        conf = self.__loaded_project_dict
+        
+        #The index when the loop has to be left
+        #The loop must be left after the second to last item
+        break_idx = len(split_property_id) - 1
+        current_idx = 0
+        
+        while current_idx < break_idx:
+            conf = conf[split_property_id[current_idx]]
+            
+            current_idx += 1
+            
+        conf[split_property_id[-1]] = answer
+        
+        self.__notify_observer(ABSMainWindowModelObserver.PROPERTY_CHANGE_TYPE)
+            
+        
+    @overrides
     def get_property_value(self, property_id:str) -> str:
         '''
         '''
@@ -314,17 +347,30 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         
         properties = []
         
+        defined_attr = []
+        
         for key,value in sub_data.items():
             if key in self.__NONE_DISPLAY_PROPERTIES:
                 continue
             properties.append(('.'.join([self.__selected_sub, key]),key,value))
+            defined_attr.append(key)
             
         #Add other possible attributes
         if split_sub_id[0] == 'pages':
             for attribute in load_html_tag(sub_data['name'])['attributes']:
+                
+                if attribute in defined_attr:
+                    continue
+                                
                 properties.append(('.'.join([self.__selected_sub, attribute]),attribute,''))
                         
         return properties
+    
+    @overrides
+    def selected_sub(self) -> str:
+        '''
+        '''
+        return self.__selected_sub
     
     @overrides
     def select_sub(self, sub_id:str) -> None:
@@ -700,11 +746,11 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         with open(file_name, 'r') as file:
             self.__loaded_project_dict = json.load(file)
             
-    def __notify_observer(self):
+    def __notify_observer(self,change_typ):
         '''
         '''
         for observer in self.__observers:
-            observer.on_model_changed()
+            observer.on_model_changed(change_typ)
     
     @overrides
     def add_observer(self, observer:ABSMainWindowModelObserver) -> None:

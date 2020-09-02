@@ -17,7 +17,6 @@ from controls.configuration_control import ConfigurationControl,\
     ConfigurationControlObserver
 from controls.properties_control import PropertiesControl,\
     PropertiesControlObserver
-from tkinter import simpledialog
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver,
@@ -124,6 +123,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         self.__update_title()
         self.__load_page_config()
         self.__load_page_overview()
+        self.__configuration.select(self.__model.selected_sub())
         
     def __update_title(self):
         self.__root.title(' - '.join([self.__base_title,
@@ -327,26 +327,28 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         self.__enable_menu()
         
         if not sub_id == None:
+            self.__load_properties()
             
-            properties = self.__model.get_sub_data()
-            for _property in properties:
-                self.__properties.insert(_property[0], _property[1], _property[2])
-            
-            
+    def __load_properties(self):
+        properties = self.__model.get_sub_data()
+        for _property in properties:
+            self.__properties.insert(_property[0], _property[1], _property[2])       
         
     @overrides
     def on_property_selected(self, _id:str) -> None:
         '''
         '''
         if not _id == None:
-            answer = simpledialog.askstring("Input", ''.join(['Set: ', _id.split('.')[-1]]), 
-                                            parent=self.__root, initialvalue=self.__model.get_property_value(_id))
-            
-            print(answer)
+            self.__model.set_property(_id)
     
     @overrides
-    def on_model_changed(self) -> None:
+    def on_model_changed(self, change_typ:int) -> None:
         '''
         '''
+        if change_typ == ABSMainWindowModelObserver.PROPERTY_CHANGE_TYPE:
+            self.__properties.remove_all()
+            self.__load_properties()
+            return
+        
         self.__load_data_in_view()
         

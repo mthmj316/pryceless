@@ -12,8 +12,13 @@ from utils.utils import Event
 class ABSMainWindowModelObserver(abc.ABC):
     '''
     '''
+    
+    PROPERTY_CHANGE_TYPE = 0
+    
+    CONFIGURATION_CHANGE_TYPE = 0
+    
     @abstractmethod
-    def on_model_changed(self) -> None:
+    def on_model_changed(self, change_typ:int) -> None:
         '''
         '''
 
@@ -206,6 +211,11 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def set_property(self, property_id:str):
+        '''
+        '''
+        
+    @abstractmethod
     def is_sub_selected(self) -> bool:
         '''
         Returns True if a sub element is selcted. 
@@ -269,7 +279,12 @@ class ABSMainWindowMo(abc.ABC):
     def get_sub_data(self) -> dict:
         '''
         '''
-       
+    
+    @abstractmethod
+    def selected_sub(self) -> str:
+        '''
+        '''
+      
     @abstractmethod
     def selected(self) -> str:
         '''
