@@ -15,8 +15,9 @@ import time
 from typing import List
 from scripts.configuration_loader import load_html_tag
 from pathlib import Path
+from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
 
-class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
+class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver):
     '''
     classdocs
     '''
@@ -43,9 +44,22 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
     def __init__(self):
         '''
         Constructor
-        ''' 
+        '''
         print(self.__last_project_folder)
-        
+    
+    
+    @overrides
+    def on_text_selected(self, result=None):
+        '''
+        '''
+        print(result)
+    
+    @overrides
+    def set_text(self):
+        '''
+        '''
+        SelectText({}, self)
+    
     @overrides
     def is_sub_selected(self) -> bool:
         '''
@@ -81,10 +95,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             self.__insert_tag(result, split_selected_id[-1], parent_iid)
             self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
                     
+    
+    def __create_internal_id(self):
+        return str(time.time()).replace('.', '_')
                     
     def __insert_tag(self, tag_basic_data, page_id, parent_iid):
         
-        internal_id = str(time.time()).replace('.', '_')
+        internal_id = self.__create_internal_id()
         
         tag = {
             'id': tag_basic_data[0],
@@ -125,10 +142,63 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
             struct[internal_id] = ''    
     
     @overrides
-    def create_tag(self)-> bool:
+    def create_child(self)-> bool:
         '''
         '''
-        CreateTagDialog(self)
+        if self.__selected_id.startswith('pages'):
+            CreateTagDialog(self)
+        elif self.__selected_id.startswith('text'):
+            self.__create_new_text_element()
+    
+    def __create_new_text_element(self):
+        
+        name = ''
+        initial_value = name
+        
+        while name == '':
+        
+            name = simpledialog.askstring('New Text ...', 
+                                          'Enter the name of the text element:',
+                                          initialvalue=initial_value)
+        
+            conf = self.__current_conf()
+        
+            if name in conf:
+                messagebox.showerror('Name exists',
+                                     'Item "%s" already exists.' %(name))
+                initial_value = name
+                name = ''
+            elif name == None:
+                return
+            else:
+                internal_id = self.__create_internal_id()
+                new_text = {
+                    'id': name,
+                    'name': name,
+                    'internal_id': internal_id,
+                    'text': ''
+                }
+                conf['content'][internal_id] = new_text
+                self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
+                
+    
+    def __current_conf(self):
+        '''
+        Returns the content of the currently selected page, css rule, ...       
+        If nothing is selected None will be returned.
+        '''
+        
+        conf = None
+        
+        if self.is_selected():
+            
+            conf = self.__loaded_project_dict
+            split = self.__selected_id.split('.')
+            
+            for _id in split:
+                conf = conf[_id]
+        
+        return conf
     
     @overrides
     def rename(self)->None:
@@ -403,7 +473,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver):
         self.__iteration_current = 0
         
         selected_split = self.__selected_id.split(sep='.')
-        content = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['content']
+        content = self.__current_conf()['content']
         
         #Check if the dict to be iterated has a sub-dict: struct
         if 'struct' in self.__loaded_project_dict[selected_split[0]][selected_split[1]]:

@@ -76,6 +76,7 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
             HTML-Page/Add Attribute
         '''
         new_state = tk.NORMAL if enable else tk.DISABLED
+        self.__html_page_menu.entryconfig(mKey.KEY_ADD_TEXT, state=new_state)
         
     
     @overrides
@@ -343,7 +344,8 @@ class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     
     def __on_add_text(self):
-        pass
+        self.__last_event.event_source = mKey.KEY_ADD_TEXT
+        self.notify_add()
     
     
     def __on_move_up(self):

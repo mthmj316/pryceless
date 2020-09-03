@@ -211,6 +211,11 @@ class ABSMainWindowMo(abc.ABC):
     
     '''
     @abstractmethod
+    def set_text(self):
+        '''
+        '''
+        
+    @abstractmethod
     def set_property(self, property_id:str):
         '''
         '''
@@ -227,7 +232,7 @@ class ABSMainWindowMo(abc.ABC):
         '''
         
     @abstractmethod
-    def create_tag(self) -> bool:
+    def create_child(self) -> bool:
         '''
         '''
     
