@@ -18,32 +18,30 @@ class SelectText(object):
     '''
     classdocs
     '''
-    __observer: ABSTextDialogObserver = None
-     
-    __dialog: tk.Toplevel = None
-    
-    __id_var: tk.StringVar = None
-    
-    __tag_var: tk.StringVar = None
-    
-    __position_var: tk.StringVar = None
-    
-    __text_elements: dict = {}
 
     def __init__(self, text_elements, observer:ABSTextDialogObserver, master=None):
         '''
         Constructor
         '''
         self.__text_elements = text_elements
-        
         self.__observer = observer
         
-        self.__id_var = tk.StringVar()
-        self.__tag_var = tk.StringVar()
-        self.__position_var = tk.StringVar()
-
-        self.__text_select_dialog(master)
+        self.__selected_txt_coll_var = tk.StringVar()
+        self.__selected_txt_item_var = tk.StringVar()
         
+        print(text_elements)
+        
+        self.__text_collections = []
+        for _tuple in self.__text_elements:
+            if not _tuple[0] in self.__text_collections:
+                self.__text_collections.append(_tuple[0])
+                
+        print(self.__text_collections)
+        
+        self.__text_items = ['test']
+        self.__text_select_dialog(master)
+    
+    
     def __text_select_dialog(self, master):
         '''
         '''
@@ -54,13 +52,20 @@ class SelectText(object):
         top_frame = tk.Frame(self.__dialog)
         top_frame.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=10, pady=10)
         
-        possible_tags = ['text']
     
         tk.Label(top_frame, text='Text Collections:', anchor=tk.W).grid(row=0,column=0, padx=10, sticky=tk.W)
-        tk.OptionMenu(top_frame, self.__tag_var, *possible_tags).grid(row=0,column=1, columnspan=1,sticky=tk.W, padx=10)
+        text_collection_opm = tk.OptionMenu(top_frame, self.__selected_txt_coll_var, 
+                                            *self.__text_collections, 
+                                            command=self.__on_collection_select)
+        text_collection_opm.grid(row=0,column=1, columnspan=1,sticky=tk.W, padx=10)
         
-        tk.Label(top_frame, text='Text :', anchor=tk.W).grid(row=1,column=0, padx=10, sticky=tk.W)
-        tk.OptionMenu(top_frame, self.__tag_var, *possible_tags).grid(row=1,column=1, columnspan=1,sticky=tk.W, padx=10)
+        tk.Label(top_frame, text='Text Items:', anchor=tk.W).grid(row=1,column=0, padx=10, sticky=tk.W)
+        self.__text_items_opm = tk.OptionMenu(top_frame, self.__selected_txt_item_var, 
+                                              *self.__text_items)
+        self.__text_items_opm.grid(row=1,column=1, columnspan=1,sticky=tk.W, padx=10)
+        
+        if len(self.__text_collections) == 1:
+            text_collection_opm.set(self.__text_collections[0])
         
         buttons_frame = tk.Frame(self.__dialog)
         buttons_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20)
@@ -71,21 +76,14 @@ class SelectText(object):
     
     def __on_ok(self):
         
-        tag_id = self.__id_var.get()
-        tag = self.__tag_var.get()
-        position = self.__position_var.get()
+        selected_collection = self.__selected_txt_coll_var.get()
+        selected_text_item = self.__selected_txt_item_var.get()
 
-        if tag_id == '':
-            messagebox.showerror('Input Error', 'Tag ID not set!')
-        elif tag == '':
-            messagebox.showerror('Input Error', 'Tag not set!')
-        elif position == '':
-            messagebox.showerror('Input Error', 'Position not set!')            
-        elif not position.isdigit():
-            messagebox.showerror('Input Error', 'Position is not a number!')            
+        if selected_text_item == '':
+            messagebox.showerror('Input Error', 'Please select the text item!')
         else:
             self.__dialog.destroy()
-            self.__observer.on_text_selected((tag_id, tag, position))
+            self.__observer.on_text_selected((selected_collection, selected_text_item))
         
     def __on_cancel(self):
         self.__dialog.destroy()
@@ -96,3 +94,18 @@ class SelectText(object):
         '''
         '''
         del self.__observer   
+
+    def __on_collection_select(self, event):
+        '''
+        '''
+        self.__selected_txt_item_var.set('')
+        selected_collection = self.__selected_txt_coll_var.get()
+        self.__text_items_opm['menu'].delete(0, 'end')
+        
+        for _tuple in self.__text_elements:
+            if _tuple[0] == selected_collection:
+                self.__text_items_opm['menu'].add_command(label=_tuple[1], 
+                                                          command=tk._setit(self.__selected_txt_item_var, _tuple[1]))
+                
+                
+                

@@ -17,11 +17,15 @@ from scripts.configuration_loader import load_html_tag
 from pathlib import Path
 from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
 
+TEXT = 'text'
+INTERNAL_ID = 'internal_id'
+INNER_TEXT = 'inner_text'
+
 class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver):
     '''
     classdocs
     '''
-    __NONE_DISPLAY_PROPERTIES = ['internal_id', 'parent_id']
+    __NONE_DISPLAY_PROPERTIES = [INTERNAL_ID, 'parent_id']
     
     __observers: List[ABSMainWindowModelObserver] = []
     
@@ -53,12 +57,29 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         '''
         print(result)
-    
+        if not result == None:
+            
+            content = self.__current_content()
+            
+            print(content)
+            
+            
+               
     @overrides
     def set_text(self):
         '''
         '''
-        SelectText({}, self)
+        
+        text_elements = []
+
+        for text,text_conf in self.__loaded_project_dict[TEXT].items():
+            for text_frag_conf in text_conf['content'].values():
+                text_elements.append((text, text_frag_conf['id'], 
+                                      text_frag_conf[INTERNAL_ID], 
+                                      text_frag_conf[TEXT]))
+                
+        
+        SelectText(text_elements, self)
     
     @overrides
     def is_sub_selected(self) -> bool:
@@ -106,7 +127,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         tag = {
             'id': tag_basic_data[0],
             'name': tag_basic_data[1],
-            'internal_id': internal_id,
+            INTERNAL_ID: internal_id,
             'parent_id': parent_iid
         }
         
@@ -147,7 +168,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         if self.__selected_id.startswith('pages'):
             CreateTagDialog(self)
-        elif self.__selected_id.startswith('text'):
+        elif self.__selected_id.startswith(TEXT):
             self.__create_new_text_element()
     
     def __create_new_text_element(self):
@@ -161,9 +182,9 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                                           'Enter the name of the text element:',
                                           initialvalue=initial_value)
         
-            conf = self.__current_conf()
+            content = self.__current_content()
         
-            if name in conf:
+            if self.__exists_name(name, content):
                 messagebox.showerror('Name exists',
                                      'Item "%s" already exists.' %(name))
                 initial_value = name
@@ -175,30 +196,64 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 new_text = {
                     'id': name,
                     'name': name,
-                    'internal_id': internal_id,
-                    'text': ''
+                    INTERNAL_ID: internal_id,
+                    TEXT: ''
                 }
-                conf['content'][internal_id] = new_text
+                content[internal_id] = new_text
                 self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
                 
     
-    def __current_conf(self):
+    def __exists_name(self, name, content):
+        '''
+        Returns True if the given name exists
+        in the given content, otherwise False.
+        '''
+        
+        return True if name in self.__names_in_content(content) else False
+        
+    def __names_in_content(self, content):
+        '''
+        Returns all names within the given content,
+        or an empty array if none is conatined.
+        '''
+        
+        names = []
+        
+        for value in content.values():
+            names.append(value['name'])
+        
+        return names
+    
+    def __current_content(self):
         '''
         Returns the content of the currently selected page, css rule, ...       
         If nothing is selected None will be returned.
         '''
+        return self.__content_of(self.__selected_id)
+
+    def __content_of(self, id_path):
+        '''
+        Returns the content which can be found
+        at the given id_path (e.g.: pages.login_page)
+        If id_path == None or there is no content element
+        None will be returned
+        '''
+        content = None
         
-        conf = None
-        
-        if self.is_selected():
+        if not id_path == None:
             
-            conf = self.__loaded_project_dict
-            split = self.__selected_id.split('.')
+            content = self.__loaded_project_dict
+            split = id_path.split('.')
             
             for _id in split:
-                conf = conf[_id]
-        
-        return conf
+                content = content[_id]
+            
+            if 'content' in content:
+                content = content['content']
+            else:
+                content = None
+            
+        return content
     
     @overrides
     def rename(self)->None:
@@ -278,7 +333,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         text_name = ''
         
-        existing_texts = self.__loaded_project_dict['text'].keys()
+        existing_texts = self.__loaded_project_dict[TEXT].keys()
         while text_name == '':
             
             text_name = simpledialog.askstring("Create Text", 
@@ -297,7 +352,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 'name': text_name
             }
             
-            self.__loaded_project_dict['text'][text_name] = new_text
+            self.__loaded_project_dict[TEXT][text_name] = new_text
             self.save()
    
     @overrides
@@ -473,7 +528,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         self.__iteration_current = 0
         
         selected_split = self.__selected_id.split(sep='.')
-        content = self.__current_conf()['content']
+        content = self.__current_content()
         
         #Check if the dict to be iterated has a sub-dict: struct
         if 'struct' in self.__loaded_project_dict[selected_split[0]][selected_split[1]]:
@@ -536,7 +591,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             # parent_id is the id of the element within the conf
             # not within the json file -> eg. css_rule has no parent_id
             
-            internal_id =  '.'.join([self.__selected_id, 'content', _data['internal_id']])
+            internal_id =  '.'.join([self.__selected_id, 'content', _data[INTERNAL_ID]])
             parent_id = None
             
             if 'parent_id' in _data and not _data['parent_id'] == '':
@@ -586,7 +641,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             overview_data.update(self.__get_for_overview('pages'))
             overview_data.update(self.__get_for_overview('css_rules'))
             overview_data.update(self.__get_for_overview('javascripts'))
-            overview_data.update(self.__get_for_overview('text'))
+            overview_data.update(self.__get_for_overview(TEXT))
             overview_data.update(self.__get_for_overview('variables'))
             
             '''
@@ -705,7 +760,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                     'pages': {},
                     'css_rules': {},
                     'javascripts': {},
-                    'text': {},
+                    TEXT: {},
                     'variables': {}                         
                     }
                         
