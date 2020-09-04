@@ -25,7 +25,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     '''
     classdocs
     '''
-    __NONE_DISPLAY_PROPERTIES = [INTERNAL_ID, 'parent_id']
+    __NONE_DISPLAY_PROPERTIES = [INTERNAL_ID, 'parent_id', INNER_TEXT]
     
     __observers: List[ABSMainWindowModelObserver] = []
     
@@ -57,27 +57,35 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     def on_text_selected(self, result=None):
         '''
         '''
-        print('MainWindowMo.on_text_selected')
-        print('on_text_selected -> ' + str(result))
+        print('MainWindowMo.on_text_selected result=' + str(result))
         
         if not result == None:
-            
-            #the configuration of the selected id (__selected_id)
-            current_conf = self.__current_conf()
-            print('MainWindowMo.on_text_selected current_conf=' + str(current_conf))
             
             #contains all defined text collections
             text_collections = self.__loaded_project_dict[TEXT]
             
-            selected_text_col_id = None
-            for text_collection in text_collections.values():
-                if text_collection['name'] == result[0]:
-                    selected_text_col_id = text_collection[INTERNAL_ID]
+            #Search for the text collection which has bee 
+            #selected to get the internal_id 
+            internal_id_text_collection = None
+            for txtcol_id,txtcol_content in text_collections.items():
+                if txtcol_content['name'] == result[0]:
+                    for txt_id, txt_conf in txtcol_content['content'].items():
+                        if txt_conf['id'] == result[1]:
+                            internal_id_text_collection = '.'.join([TEXT, txtcol_id, 'content', txt_id])
                     break
                 
-            print('MainWindowMo.on_text_selected selected_text_col_id='
-                  + str(selected_text_col_id))                    
+            print('MainWindowMo.on_text_selected internal_id_text_collection='
+                  + str(internal_id_text_collection))
             
+            #the configuration of the selected sub element (__selected_sub)
+            sub_conf = self.__conf_of(self.__selected_sub)
+            print('MainWindowMo.on_text_selected sub_conf=' + str(sub_conf))                 
+            
+            sub_conf[INNER_TEXT] = internal_id_text_collection
+            
+            print('MainWindowMo.on_text_selected sub_conf=' + str(sub_conf))   
+            
+            self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
             
                
     @overrides
@@ -261,7 +269,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             names.append(value['name'])
         
         return names
-    
+        
     def __current_conf(self):
         '''
         Returns the configuration to 
