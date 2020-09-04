@@ -314,6 +314,9 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def on_page_selected(self, page_id:str)-> None:
         '''
         '''
+        
+        print('on_page_selected -> ' + page_id)
+        
         self.__model.select(page_id)
         self.__load_page_config()
         self.__enable_menu()

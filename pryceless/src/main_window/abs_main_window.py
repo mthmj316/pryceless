@@ -17,6 +17,8 @@ class ABSMainWindowModelObserver(abc.ABC):
     
     CONFIGURATION_CHANGE_TYPE = 1
     
+    OVERVIEW_CHANGE_TYPE = 2
+    
     @abstractmethod
     def on_model_changed(self, change_typ:int) -> None:
         '''
