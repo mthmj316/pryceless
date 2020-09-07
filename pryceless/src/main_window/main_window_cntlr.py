@@ -222,12 +222,6 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                 return
             
             self.__model.create_new_project()
-
-            if self.__model.is_project_open():  
-                #Only needed when project has been actually created.
-                self.__load_page_overview()
-                
-            self.__enable_menu()
             
         elif event.event_source == MainWindowMenuKeys.KEY_HTML_PAGE:
             self.__model.create_page()

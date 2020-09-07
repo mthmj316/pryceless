@@ -310,7 +310,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             split = id_path.split('.')
             
             for _id in split:
-                conf = conf[_id]
+                if _id in conf:
+                    conf = conf[_id]
         
         print('MainWindowMo.__conf_of    ' +
               'conf=' + str(conf))
@@ -682,8 +683,15 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             
             if 'parent_id' in _data and not _data['parent_id'] == '':
                 parent_id = '.'.join([self.__selected_id, 'content', _data['parent_id']])
+                
+            appendix = ''
             
-            display_name = display_name = ''.join([_data['name'],' (', _data['id'] ,')'])
+            if self.__selected_id.startswith(TEXT):
+                appendix = _data[TEXT]
+            else:
+                appendix = _data['id']
+            
+            display_name = display_name = ''.join([_data['name'],' (', appendix ,')'])
             
             if INNER_TEXT in _data:
                 print('MainWindowMo.__next__    has inner_text')
@@ -838,18 +846,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         If so the user is asked to change the name.
         After that the project file is created.
         '''
+        print('MainWindowMo.create_new_project')
+        
         selected_dir = askdirectory(initialdir = self.__last_project_folder,
                                     title = 'Select Project Folder')
+        
+        print('MainWindowMo.create_new_project    selected_dir=' + str(selected_dir))
         
         if len(selected_dir) > 0:
             self.__last_project_folder = selected_dir
             
-            project_names = self.__name_project('Project Name', 
+            project_names  = self.__name_project('Project Name', 
                                                 'Please enter an unique name for the new project.')
+            
+            print('MainWindowMo.create_new_project    project_names=' + str(project_names))
             
             if not project_names == None:
                 
                 self.__full_project_path = project_names[1]
+                print('MainWindowMo.create_new_project    __full_project_path=' + str(self.__full_project_path))
+                
+                
                 self.__loaded_project_dict = {
                     'project_name': project_names[0],
                     'pages': {},
@@ -858,11 +875,15 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                     TEXT: {},
                     'variables': {}                         
                     }
+                
+                print('MainWindowMo.create_new_project    __loaded_project_dict=' + str(self.__loaded_project_dict))
                         
                 self.save()
                 
                 self.__selected_id = None
                 self.__has_changes = False
+                
+                self.__notify_observer(ABSMainWindowModelObserver.PROJECT_CREATED)
                 
                 return
         
@@ -940,7 +961,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Returns True if a project is open,
         otherwise False
         '''
-        return self.__loaded_project_dict != None
+        return not self.__loaded_project_dict == None
     
     @overrides
     def open_project(self) -> bool:
