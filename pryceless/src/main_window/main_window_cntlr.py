@@ -315,7 +315,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         '''
         
-        print('on_page_selected -> ' + page_id)
+        print('MainWindowCNTLR.on_page_selected    ' + str(page_id))
         
         self.__model.select(page_id)
         self.__load_page_config()

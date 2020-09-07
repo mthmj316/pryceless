@@ -50,14 +50,14 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Constructor
         '''
         print('MainWindowMo.__init__')
-        print(self.__last_project_folder)
+        print('MainWindowMo.__init__    __last_project_folder= ' + str(self.__last_project_folder))
     
     
     @overrides
     def on_text_selected(self, result=None):
         '''
         '''
-        print('MainWindowMo.on_text_selected result=' + str(result))
+        print('MainWindowMo.on_text_selected    result=' + str(result))
         
         if not result == None:
             
@@ -74,16 +74,16 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                             internal_id_text_collection = '.'.join([TEXT, txtcol_id, 'content', txt_id])
                     break
                 
-            print('MainWindowMo.on_text_selected internal_id_text_collection='
+            print('MainWindowMo.on_text_selected    internal_id_text_collection='
                   + str(internal_id_text_collection))
-            
+
             #the configuration of the selected sub element (__selected_sub)
             sub_conf = self.__conf_of(self.__selected_sub)
-            print('MainWindowMo.on_text_selected sub_conf=' + str(sub_conf))                 
+            print('MainWindowMo.on_text_selected    sub_conf=' + str(sub_conf))                 
             
             sub_conf[INNER_TEXT] = internal_id_text_collection
             
-            print('MainWindowMo.on_text_selected sub_conf=' + str(sub_conf))   
+            print('MainWindowMo.on_text_selected    sub_conf=' + str(sub_conf))   
             
             self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
             
@@ -109,8 +109,9 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         Returns True if a sub element is selcted. 
         '''
-        print('MainWindowMo.is_sub_selected')
-        return not self.__selected_sub == None
+        _is = not self.__selected_sub == None
+        print('MainWindowMo.is_sub_selected    ' + str(_is))
+        return _is
         
     @overrides
     def delete_property(self, property_id:str):
@@ -127,7 +128,10 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         if not result == None:
             
             split_selected_id = self.__selected_id.split('.')
+            print('MainWindowMo.on_create_tag_closed    split_selected_id' + str(split_selected_id))
+            
             selected_page_conf = self.__loaded_project_dict['pages'][split_selected_id[-1]]
+            print('MainWindowMo.on_create_tag_closed    selected_page_conf' + str(selected_page_conf))
 
             parent_iid = ''
 
@@ -138,23 +142,29 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                     # Check if root is already set
                     messagebox.showerror('Input Error', 'Root element already exists!')
                     return
-                
+            
+            print('MainWindowMo.on_create_tag_closed    parent_iid=' + str(parent_iid))
+            
             self.__insert_tag(result, split_selected_id[-1], parent_iid)
             self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
                     
     
     def __create_internal_id(self):
-        print('MainWindowMo.__create_internal_id')
-        return str(time.time()).replace('.', '_')
+        
+        internal_id = str(time.time()).replace('.', '_')
+        print('MainWindowMo.__create_internal_id    ' + internal_id)
+        
+        return internal_id
                     
     def __insert_tag(self, tag_basic_data, page_id, parent_iid):
         
-        print('MainWindowMo.__insert_tag tag_basic_data=' 
+        print('MainWindowMo.__insert_tag    tag_basic_data=' 
               + str(tag_basic_data) + 
               ' page_id=' + str(page_id) + 
               ' parent_iid=' + str(parent_iid))
         
         internal_id = self.__create_internal_id()
+        print('MainWindowMo.__insert_tag    internal_id' + str(internal_id))
         
         tag = {
             'id': tag_basic_data[0],
@@ -162,16 +172,20 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             INTERNAL_ID: internal_id,
             'parent_id': parent_iid
         }
+        print('MainWindowMo.__insert_tag    tag' + str(tag))
         
         page = self.__loaded_project_dict['pages'][page_id]
+        print('MainWindowMo.__insert_tag    page=' + str(page))
         
         page['content'][internal_id] = tag
+        print('MainWindowMo.__insert_tag    page=' + str(page))
         
         self.__update_page_struct(tag_basic_data[2], internal_id, page['struct'], parent_iid)
     
     def __update_page_struct(self, position, internal_id, struct, parent_iid):
+        # logging next
         
-        print('MainWindowMo.__update_page_struct position=' 
+        print('MainWindowMo.__update_page_struct    position=' 
               + str(position) + 
               ' internal_id=' + str(internal_id) +
               ' struct=' + str(struct) +
@@ -285,8 +299,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Returns the configuration to which
         the given id_path points.
         '''
-        print('MainWindowMo.__conf_of ' +
-              ' id_path=' + str(id_path))
+        print('MainWindowMo.__conf_of    ' +
+              'id_path=' + str(id_path))
         
         conf = None
         
@@ -297,7 +311,10 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             
             for _id in split:
                 conf = conf[_id]
-            
+        
+        print('MainWindowMo.__conf_of    ' +
+              'conf=' + str(conf))
+        
         return conf
     
     def __current_content(self):
@@ -644,9 +661,16 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     @overrides
     def __next__(self):
         
+        print('MainWindowMo.__next__')
+        
         if self.__iteration_current < len(self.__iterate_this):
             
+            print('MainWindowMo.__next__    __iteration_current=' + str(self.__iteration_current))
+            
             _data = list(self.__iterate_this.values())[self.__iteration_current]
+            
+            print('MainWindowMo.__next__    _data=' + str(_data))
+            
             self.__iteration_current += 1
             
             #ret_val = (id, parent_id, display_name)
@@ -659,18 +683,21 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             if 'parent_id' in _data and not _data['parent_id'] == '':
                 parent_id = '.'.join([self.__selected_id, 'content', _data['parent_id']])
             
-            display_name = ''
-                
-            if 'tag' in _data:
-                display_name = ''.join([_data['tag'],' (', _data['id'] ,')'])
-            elif 'type' in _data:
-                display_name = ''.join([_data['id'],' (', _data['type'] ,')'])
-            else:
-                display_name = _data['id']        
+            display_name = display_name = ''.join([_data['name'],' (', _data['id'] ,')'])
+            
+            if INNER_TEXT in _data:
+                print('MainWindowMo.__next__    has inner_text')
+                display_name = ''.join([display_name, ' [', 
+                                        self.__conf_of(_data[INNER_TEXT])[TEXT], ']'])
+            
+            print('MainWindowMo.__next__    internal_id=' + str(internal_id) 
+                  + ' parent_id=' + str(parent_id) + ' display_name=' + display_name)
             
             return (internal_id, parent_id, display_name)
         
         self.__iterate_this = {}
+        
+        print('MainWindowMo.__next__    stop iteration')
         raise StopIteration
     
     @overrides
@@ -716,6 +743,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         
     def __get_for_overview(self, base):
         
+        print('MainWindowMo.__get_for_overview    base=' + str(base))
+        
         _data = {}
         
         if base in self.__loaded_project_dict:
@@ -725,7 +754,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             for _id in items.keys():
                 _data['.'.join([base, _id])] = items[_id]['name']
          
-        print('__get_for_overview' + str(_data))   
+        print('MainWindowMo.__get_for_overview    _data=' + str(_data))   
         return _data
                 
     @overrides
@@ -921,10 +950,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         If for the first time the is opened the user home
         directory will be the root. 
         '''
+        print('MainWindowMo.open_project')
         # Open file selection dialog
         file_name = askopenfilename(initialdir = self.__last_project_folder,
                                     title = 'Select Project',
                                     filetypes =(('json files','*.json'),))
+        
+        print('MainWindowMo.open_project    file_name=' + str(file_name))
         
         # check if file has been select or the process cancelled
         if file_name:
@@ -940,19 +972,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             self.__selected_id = None
             self.__has_changes = None
             
+            print('MainWindowMo.open_project    True')
+            
             return True
+        
+        print('MainWindowMo.open_project    False')
         
         return False
     
     def __load_project(self, file_name):
         '''
         '''
+        print('MainWindowMo.__load_project    file_name=' + str(file_name))
         with open(file_name, 'r') as file:
             self.__loaded_project_dict = json.load(file)
+        print('MainWindowMo.__load_project    __loaded_project=' + str(self.__loaded_project_dict))
             
     def __notify_observer(self,change_typ):
         '''
         '''
+        print('MainWindowMo.__notify_observer    change_type=' + str(change_typ))
+
         for observer in self.__observers:
             observer.on_model_changed(change_typ)
     
