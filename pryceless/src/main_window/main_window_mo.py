@@ -16,12 +16,14 @@ from typing import List
 from scripts.configuration_loader import load_html_tag
 from pathlib import Path
 from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
+from dialogs.css_dialogs import CreateCssRuleSet, ABSCreateCssRuleSetObserver
 
 TEXT = 'text'
 INTERNAL_ID = 'internal_id'
 INNER_TEXT = 'inner_text'
+PAGES = 'pages'
 
-class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver):
+class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver, ABSCreateCssRuleSetObserver):
     '''
     classdocs
     '''
@@ -130,7 +132,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             split_selected_id = self.__selected_id.split('.')
             print('MainWindowMo.on_create_tag_closed    split_selected_id' + str(split_selected_id))
             
-            selected_page_conf = self.__loaded_project_dict['pages'][split_selected_id[-1]]
+            selected_page_conf = self.__loaded_project_dict[PAGES][split_selected_id[-1]]
             print('MainWindowMo.on_create_tag_closed    selected_page_conf' + str(selected_page_conf))
 
             parent_iid = ''
@@ -174,7 +176,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         }
         print('MainWindowMo.__insert_tag    tag' + str(tag))
         
-        page = self.__loaded_project_dict['pages'][page_id]
+        page = self.__loaded_project_dict[PAGES][page_id]
         print('MainWindowMo.__insert_tag    page=' + str(page))
         
         page['content'][internal_id] = tag
@@ -220,10 +222,12 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         print('MainWindowMo.create_child')
         
-        if self.__selected_id.startswith('pages'):
+        if self.__selected_id.startswith(PAGES):
             CreateTagDialog(self)
         elif self.__selected_id.startswith(TEXT):
             self.__create_new_text_element()
+        elif self.__selected_id.startswith('css_rules'):
+            CreateCssRuleSet(self)
     
     def __create_new_text_element(self):
         
@@ -566,7 +570,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         #Add other possible attributes
         
         
-        if split_sub_id[0] == 'pages':
+        if split_sub_id[0] == PAGES:
             html_tag_data = load_html_tag(sub_data['name'])
             for attribute in html_tag_data['attributes']:
                 
@@ -735,16 +739,16 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         
 
         if self.is_project_open():
-            overview_data.update(self.__get_for_overview('pages'))
+            overview_data.update(self.__get_for_overview(PAGES))
             overview_data.update(self.__get_for_overview('css_rules'))
             overview_data.update(self.__get_for_overview('javascripts'))
             overview_data.update(self.__get_for_overview(TEXT))
             overview_data.update(self.__get_for_overview('variables'))
             
             '''
-            items = self.__loaded_project_dict['pages']
+            items = self.__loaded_project_dict[PAGES]
             for page_id in items.keys():
-                overview_data['.'.join(['pages', page_id])] = page_id
+                overview_data['.'.join([PAGES, page_id])] = page_id
             '''
             
         return overview_data
@@ -777,7 +781,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             
             internal_id = self.__create_internal_id()
             
-            self.__loaded_project_dict['pages'][internal_id] = {
+            self.__loaded_project_dict[PAGES][internal_id] = {
                 'name': page_name,
                 'content': {},
                 'struct': {}
@@ -799,7 +803,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             if not page_name == None:
                 # Check if the name already exists
                 
-                pages = self.__loaded_project_dict['pages']
+                pages = self.__loaded_project_dict[PAGES]
                 
                 if not page_name in pages:
                     
@@ -869,7 +873,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 
                 self.__loaded_project_dict = {
                     'project_name': project_names[0],
-                    'pages': {},
+                    PAGES: {},
                     'css_rules': {},
                     'javascripts': {},
                     TEXT: {},
@@ -1034,3 +1038,10 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         '''
         self.__observers.clear()
+        
+    @overrides
+    def on_create_css_rule_set_closed(self, result=None):
+        
+        print('MainWindowMo.on_create_css_rule_set_closed    result=' + str(result))
+        
+        
