@@ -19,7 +19,9 @@ class CreateCssRuleSet(object):
     classdocs
     '''
     __ELEMENT_CLASS_SELECTOR = 'Element Class Selector'
+    
     __ELEMENT_ID_SELECTOR = 'Element ID Selector'
+    
     __selectors = ['Class Selector', 'ID Selector', 'Element Selector', 
                    __ELEMENT_CLASS_SELECTOR, __ELEMENT_ID_SELECTOR]
 
@@ -46,7 +48,7 @@ class CreateCssRuleSet(object):
         
         print('CreateCssRuleSet.__on_selector_type_selected    event=' + str(event))
         
-        if event in [CreateCssRuleSet.__ELEMENT_CLASS_SELECTOR, CreateCssRuleSet.__ELEMENT_ID_SELECTOR]:
+        if self.__is_compound(event):
             
             print('CreateCssRuleSet.__on_selector_type_selected    second selector input visible')
                     
@@ -71,14 +73,40 @@ class CreateCssRuleSet(object):
             self.__selector_part_2_lbl.grid_forget()
             self.__selector_part_2_entry.grid_forget()
         
+    def __is_compound(self, selector_type):
+        
+        if selector_type in [CreateCssRuleSet.__ELEMENT_CLASS_SELECTOR, CreateCssRuleSet.__ELEMENT_ID_SELECTOR]:
+            return True
+        else:
+            return False
         
     
     def __on_ok(self):
-        pass
-    
+        
+        print('CreateCssRuleSet.__on_ok')
+        
+        selector_type = self.__selector_type_var.get()
+        print('CreateCssRuleSet.__on_ok    selector_type=' + str(selector_type))
+        
+        selector = self.__selector_var.get()
+        print('CreateCssRuleSet.__on_ok    selector=' + str(selector))
+        
+        if selector == '':
+            messagebox.showerror('Input Error', 'Selector not set!')
+            
+        elif self.__is_compound(selector_type):
+            selector_part_2 = self.__selector_sec_part_var.get()
+            print('CreateCssRuleSet.__on_ok    selector_part_2=' + str(selector_part_2))
+            
+            if selector_part_2 == '':         
+                messagebox.showerror('Input Error', 'Selector second part not set!')
     
     def __on_cancel(self):
-        pass
+        
+        print('CreateCssRuleSet.__on_cancel')
+        
+        self.__dialog.destroy()
+        self.__observer.on_create_css_rule_set_closed()
     
     
     def __css_dialog(self, master):
