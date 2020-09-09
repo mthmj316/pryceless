@@ -1044,4 +1044,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         
         print('MainWindowMo.on_create_css_rule_set_closed    result=' + str(result))
         
+        if not result == None:
+            
+            internal_id = self.__create_internal_id()
+            print('MainWindowMo.on_create_css_rule_set_closed    internal_id=' + str(internal_id))
+            
+            name = ''.join([result[1],result[4],result[2]])
+            print('MainWindowMo.on_create_css_rule_set_closed    name=' + str(name))
+            
+            new_css_rule_set = {
+                INTERNAL_ID: internal_id,
+                'is_compound': result[3],
+                'selector_type': result[0],
+                'selector_element': result[1],
+                'selector_specifier': result[2],
+                'selector_sep': result[4],
+                'name': name,
+                'id': name
+                }
+            print('MainWindowMo.on_create_css_rule_set_closed    new_css_rule_set=' + str(new_css_rule_set))
+            
+        else:
+            print('MainWindowMo.on_create_css_rule_set_closed    result is None, process is cancelled')
+        
         

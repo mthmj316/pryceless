@@ -18,14 +18,36 @@ class CreateCssRuleSet(object):
     '''
     classdocs
     '''
+    
+    __CLASS_SELECTOR = 'Class Selector'
+    
+    __ID_SELECTOR = 'ID Selector'
+    
+    __ELEMENT_SELECTOR = 'Element Selector'
+    
     __ELEMENT_CLASS_SELECTOR = 'Element Class Selector'
     
     __ELEMENT_ID_SELECTOR = 'Element ID Selector'
     
-    __selectors = ['Class Selector', 'ID Selector', 'Element Selector', 
+    __selectors = [__CLASS_SELECTOR, __ID_SELECTOR, __ELEMENT_SELECTOR, 
                    __ELEMENT_CLASS_SELECTOR, __ELEMENT_ID_SELECTOR]
-
-
+    
+    __SELECTOR_TYPE_MAP = {
+        __CLASS_SELECTOR: 'class',
+        __ID_SELECTOR: 'id',
+        __ELEMENT_SELECTOR: 'element',
+        __ELEMENT_CLASS_SELECTOR: 'element.class',
+        __ELEMENT_ID_SELECTOR: 'element#id'
+        }
+    
+    __SELECTOR_TYPE_SEP = {
+        __CLASS_SELECTOR: '.',
+        __ID_SELECTOR: '#',
+        __ELEMENT_SELECTOR: '',
+        __ELEMENT_CLASS_SELECTOR: '.',
+        __ELEMENT_ID_SELECTOR: '#'
+        }
+    
     def __init__(self, observer:ABSCreateCssRuleSetObserver, master=None):
         '''
         Constructor
@@ -34,7 +56,7 @@ class CreateCssRuleSet(object):
         print('CreateCssRuleSet.__init__    observer=' + str(observer) + 
               ' master' + str(master))
         
-        self.observer = observer
+        self.__observer = observer
         self.__selector_type_var = tk.StringVar(master)
         self.__selector_type_var.set('Class Selector')
         
@@ -88,19 +110,69 @@ class CreateCssRuleSet(object):
         selector_type = self.__selector_type_var.get()
         print('CreateCssRuleSet.__on_ok    selector_type=' + str(selector_type))
         
-        selector = self.__selector_var.get()
-        print('CreateCssRuleSet.__on_ok    selector=' + str(selector))
+        is_compound = self.__is_compound(selector_type)
+        print('CreateCssRuleSet.__on_ok    is_compound=' + str(is_compound))
         
-        if selector == '':
-            messagebox.showerror('Input Error', 'Selector not set!')
+        if not self.__check_user_input(is_compound):
+            print('CreateCssRuleSet.__on_ok    user input check failed')
+            return
             
-        elif self.__is_compound(selector_type):
-            selector_part_2 = self.__selector_sec_part_var.get()
-            print('CreateCssRuleSet.__on_ok    selector_part_2=' + str(selector_part_2))
-            
-            if selector_part_2 == '':         
-                messagebox.showerror('Input Error', 'Selector second part not set!')
+        
+        selector_element = self.__get_selector_element(selector_type)
+        print('CreateCssRuleSet.__on_ok    selector_element=' + str(selector_element))
+        
+        selector_specifier = self.__get_selector_specifier(selector_type, is_compound)
+        print('CreateCssRuleSet.__on_ok    selector_specifier=' + str(selector_specifier))
+        
+        self.__dialog.destroy()
+        
+        self.__observer.on_create_css_rule_set_closed((self.__SELECTOR_TYPE_MAP[selector_type], 
+                                                       selector_element, 
+                                                       selector_specifier, 
+                                                       is_compound,
+                                                       self.__SELECTOR_TYPE_SEP.get(selector_type)))
     
+    def __check_user_input(self, is_compound):
+        
+        print('CreateCssRuleSet.__check_user_input    is_compound' + str(is_compound))
+        
+        if self.__selector_var.get() == '':
+            
+            messagebox.showerror('Input Error', 'Selector not set!')
+
+            return False
+        
+        
+        if is_compound and self.__selector_sec_part_var.get() == '':
+            messagebox.showerror('Input Error', 'Selector second part not set!')
+            return False
+        
+        return True
+            
+        
+    
+    def __get_selector_specifier(self, selector_type, is_compound):
+        
+        print('CreateCssRuleSet.__get_selector_specifier    selector_type' + str(selector_type) +
+              ' is_compound=' + str(is_compound))
+        
+        if not selector_type.startswith('Element'):
+            return self.__selector_var.get()
+        else:
+            return self.__selector_sec_part_var.get() if is_compound else ''
+        
+    
+    def __get_selector_element(self, selector_type):
+        
+        print('CreateCssRuleSet.__get_selector_element    selector_type' + str(selector_type))
+        
+        if not selector_type.startswith('Element'):
+            return ''
+        else:
+            return self.__selector_var.get()
+        
+        
+        
     def __on_cancel(self):
         
         print('CreateCssRuleSet.__on_cancel')
