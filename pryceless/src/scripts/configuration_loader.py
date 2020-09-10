@@ -11,6 +11,22 @@ HTML_TAG_CONF = None
 ATTRIBUTES_CONF = None
 LOADED_HTML_TAGS = {}
 LOADED_HTML_ATTRIBUTES = {}
+CSS_PROPERTIES = {}
+
+def load_css_properties_conf():
+    '''
+    Loads the css properties from the css_properties file.
+    The data will be written into CSS_PROPERTIES dict:
+    CSS_PROPERTIES = {
+        'font':{
+            'default': 'normal'
+        }
+    }
+    '''
+    
+    global CSS_PROPERTIES
+    
+
 
 def load_attribute(attribute_name):
     '''
