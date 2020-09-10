@@ -13,7 +13,7 @@ from tkinter import messagebox, simpledialog
 from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
 import time
 from typing import List
-from scripts.configuration_loader import load_html_tag
+from scripts.configuration_loader import load_html_tag, get_css_properties
 from pathlib import Path
 from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
 from dialogs.css_dialogs import CreateCssRuleSet, ABSCreateCssRuleSetObserver
@@ -27,8 +27,10 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     '''
     classdocs
     '''
-    __NONE_DISPLAY_PROPERTIES = [INTERNAL_ID, 'parent_id', INNER_TEXT]
-    
+    __NONE_DISPLAY_PROPERTIES = [INTERNAL_ID, 'parent_id', INNER_TEXT, 'is_compound', 
+                                 'selector_type', 'selector_element', 'selector_specifier', 
+                                 'selector_sep']
+        
     __observers: List[ABSMainWindowModelObserver] = []
     
     __last_project_folder: str =  os.path.join(str(Path.home()),'Dokumente','pryceless-workspace')
@@ -498,15 +500,21 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     @overrides
     def set_property(self, property_id:str) -> None:
         '''
+        
+        :param property_id:
         '''
+        
+        print('MainWindowMo.set_property    property_id=' + property_id)
+        
         split_property_id = property_id.split('.')
+        
         answer = simpledialog.askstring("Input", ''.join(['Set: ', split_property_id[-1]]),
                                         initialvalue=self.get_property_value(property_id))
+        
+        print('MainWindowMo.set_property    answer=' + answer)
             
         if answer == None:
             return
-        
-        print(answer)
             
         #At the end this variable contains 
         #the reference to configuration item for which
@@ -516,14 +524,19 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         #The index when the loop has to be left
         #The loop must be left after the second to last item
         break_idx = len(split_property_id) - 1
+        print('MainWindowMo.set_property    break_idx=' + str(break_idx))
+        
         current_idx = 0
         
         while current_idx < break_idx:
-            conf = conf[split_property_id[current_idx]]
-            
+            conf = conf[split_property_id[current_idx]]            
             current_idx += 1
-            
+
+        print('MainWindowMo.set_property    conf=' + str(conf))
+        
         conf[split_property_id[-1]] = answer
+        
+        print('MainWindowMo.set_property    conf=' + str(conf))
         
         self.__notify_observer(ABSMainWindowModelObserver.PROPERTY_CHANGE_TYPE)
             
@@ -585,6 +598,15 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                     continue
                                 
                 properties.append(('.'.join([self.__selected_sub, event]),event,'','Events'))
+        
+        elif split_sub_id[0] == 'css_rules':
+            
+            for css_property in get_css_properties():
+                
+                if css_property in defined_property:
+                    continue
+                
+                properties.append(('.'.join([self.__selected_sub, css_property]), css_property, '', 'Properties'))
                       
         return properties
     
@@ -662,6 +684,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             tmp = []
             
         return struct
+
     
     @overrides
     def __next__(self):
@@ -1064,7 +1087,21 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 }
             print('MainWindowMo.on_create_css_rule_set_closed    new_css_rule_set=' + str(new_css_rule_set))
             
+            css_file_content = self.__current_content()
+            css_file_content[internal_id] = new_css_rule_set
+            
+            print('MainWindowMo.on_create_css_rule_set_closed    css rule set added')
+            
+            self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
+            
         else:
             print('MainWindowMo.on_create_css_rule_set_closed    result is None, process is cancelled')
+        
+        
+        print('MainWindowMo.on_create_css_rule_set_closed    leave')
+        
+        
+        
+        
         
         

@@ -13,6 +13,17 @@ LOADED_HTML_TAGS = {}
 LOADED_HTML_ATTRIBUTES = {}
 CSS_PROPERTIES = {}
 
+def get_css_properties():
+    '''
+    Returns the names of all css properties.
+    '''
+    
+    print('configuration_loader.get_css_properties')
+    
+    load_css_properties_conf()
+    
+    return CSS_PROPERTIES.keys()
+
 def load_css_properties_conf():
     '''
     Loads the css properties from the css_properties file.
@@ -23,8 +34,39 @@ def load_css_properties_conf():
         }
     }
     '''
+    print('configuration_loader.load_css_properties_conf')
     
     global CSS_PROPERTIES
+    
+    if len(CSS_PROPERTIES) > 0:
+        return 
+    
+    conf_file = io.StringIO(load_conf_files('css_properties.conf'))
+    
+    for line in conf_file:
+        
+        line = line.strip()
+        
+        print('configuration_loader.load_css_properties_conf    load=' + line)
+        
+        split_line = line.split(']::')
+        
+        css_property = split_line[0][1:]
+        
+        print('configuration_loader.load_css_properties_conf    css_property=' + css_property)
+        
+        css_property_attr = split_line[1].split(';')
+        
+        css_property_dict = {
+            'default_value': css_property_attr[0]
+            }
+        print('configuration_loader.load_css_properties_conf    css_property_dict=' + str(css_property_dict))
+        
+        CSS_PROPERTIES[css_property] = css_property_dict
+        
+    conf_file.close()
+    
+    print('configuration_loader.load_css_properties_conf    leave')
     
 
 
@@ -98,8 +140,12 @@ def load_conf_files(conf_file_name):
     Loads the conf-file with the given conf_file_name
     and returns it as string
     '''
+    print('configuration_loader.load_conf_files    conf_file_name=' + conf_file_name)
     path_to_templates = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
                                      '../conf/' + conf_file_name)
+    
+    
+    print('configuration_loader.load_conf_files    path_to_templates=' + path_to_templates)
     
     with open(path_to_templates, 'r') as file:
         return file.read()
@@ -165,7 +211,11 @@ def __load_html_tag_rel_tag(tag_conf):
 
     return rel
 
-def __load_html_tag_events(event_conf):
+def __load_html_tag_events(event_conf):  # @DontTrace
+    '''
+    
+    :param event_conf:
+    '''
     
     events = []
     
@@ -205,6 +255,10 @@ def __load_html_tag_events(event_conf):
     return events
     
 def __load_html_tag_attr(attr_conf):
+    '''
+    
+    :param attr_conf:
+    '''
     
     attributes = []
     
