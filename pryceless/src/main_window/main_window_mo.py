@@ -13,7 +13,7 @@ from tkinter import messagebox, simpledialog
 from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
 import time
 from typing import List
-from scripts.configuration_loader import load_html_tag, get_css_properties
+import scripts.configuration_loader as conf_loader
 from pathlib import Path
 from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
 from dialogs.css_dialogs import CreateCssRuleSet, ABSCreateCssRuleSetObserver
@@ -580,34 +580,69 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             properties.append(('.'.join([self.__selected_sub, key]),key,value,None))
             defined_property.append(key)
             
-        #Add other possible attributes
-        
-        
+        #Add other possible attributes/properties for which no value is defined.
         if split_sub_id[0] == PAGES:
-            html_tag_data = load_html_tag(sub_data['name'])
-            for attribute in html_tag_data['attributes']:
-                
-                if attribute in defined_property:
-                    continue
-                                
-                properties.append(('.'.join([self.__selected_sub, attribute]),attribute,'','Attributes'))
-                  
-            for event in html_tag_data['events']:
-                
-                if event in defined_property:
-                    continue
-                                
-                properties.append(('.'.join([self.__selected_sub, event]),event,'','Events'))
+            
+            properties += self.__prepare_html_attr_sub_data(defined_property, sub_data['name'])
         
         elif split_sub_id[0] == 'css_rules':
             
-            for css_property in get_css_properties():
+            properties += self.__prepare_css_sub_data(defined_property)
+                      
+        return properties
+    
+    def __prepare_html_attr_sub_data(self, defined_properties, tag_name):
+        '''
+        Prepares the html attributes for which no value is defined
+        :param defined_properties: the names of the attributes for which a value is defined
+        :param tag_name: name of the html tag for the attributes shall be prepared.
+        '''
+        print('MainWindowMo.__prepare_html_attr_sub_data    defined_properties=' + str(defined_properties)
+              + ' tag_name=' + tag_name)
+        
+        properties = []
+        
+        html_tag_data = conf_loader.load_html_tag(tag_name)
+        for attribute in html_tag_data['attributes']:
                 
-                if css_property in defined_property:
+            if attribute in defined_properties:
+                continue
+                                
+            properties.append(('.'.join([self.__selected_sub, attribute]),attribute,'','Attributes'))
+                  
+        for event in html_tag_data['events']:
+                
+            if event in defined_properties:
+                continue
+                                
+            properties.append(('.'.join([self.__selected_sub, event]),event,'','Events'))
+            
+        
+        print('MainWindowMo.__prepare_html_attr_sub_data    leave:' + str(properties))
+        
+        return properties
+    
+    def __prepare_css_sub_data(self, defined_properties):
+        '''
+        Returns all css properties for which is not a value defined.
+        :param defined_properties: Contains the names of these properties for which a value is defined.
+        '''
+        
+        print('MainWindowMo.__prepare_css_sub_data    defined_properties=' + str(defined_properties))
+        
+        properties = []
+        
+        for css_property in conf_loader.get_css_properties():
+            if css_property in defined_properties:
                     continue
                 
-                properties.append(('.'.join([self.__selected_sub, css_property]), css_property, '', 'Properties'))
-                      
+            shorthand = conf_loader.get_css_shorthand(css_property)
+                
+            properties.append(('.'.join([self.__selected_sub, css_property]), css_property, '', 
+                               'Properties' if shorthand == '' else '.'.join([self.__selected_sub, shorthand])))
+        
+        print('MainWindowMo.__prepare_css_sub_data    leave:' + str(properties))
+        
         return properties
     
     @overrides

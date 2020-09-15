@@ -13,6 +13,21 @@ LOADED_HTML_TAGS = {}
 LOADED_HTML_ATTRIBUTES = {}
 CSS_PROPERTIES = {}
 
+def get_css_shorthand(property_name):
+    
+    print('configuration_loader.get_css_shorthand    property_name=' + property_name)
+    
+    __property = CSS_PROPERTIES[property_name]
+    
+    print('configuration_loader.get_css_shorthand    __property=' + str(__property))
+    
+    shorthand = __property.get('shorthand', '')
+    
+    print('configuration_loader.get_css_shorthand    leave:' + shorthand)
+    
+    return shorthand
+    
+
 def get_css_properties():
     '''
     Returns the names of all css properties.
@@ -31,6 +46,7 @@ def load_css_properties_conf():
     CSS_PROPERTIES = {
         'font':{
             'default': 'normal'
+            'shorthand':
         }
     }
     '''
@@ -58,7 +74,8 @@ def load_css_properties_conf():
         css_property_attr = split_line[1].split(';')
         
         css_property_dict = {
-            'default_value': css_property_attr[0]
+            'default_value': css_property_attr[0],
+            'shorthand': css_property_attr[1]
             }
         print('configuration_loader.load_css_properties_conf    css_property_dict=' + str(css_property_dict))
         

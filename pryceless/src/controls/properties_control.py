@@ -50,17 +50,27 @@ class PropertiesControl(object):
         
     def insert(self, _id:str, key:str, value:str, parent:str=None):
         
+        print('PropertiesControl.insert    _id=' + _id
+              + ' key=' + key
+              + ' value=' + value
+              + ' parent=' + str(parent))
+        
         tree_parent = self.__root_id
+        
+        print('PropertiesControl.insert    tree_parent=' + tree_parent)
         
         if not parent == None:
             tree_parent = parent
+            print('PropertiesControl.insert    tree_parent=' + tree_parent)
             
             if not parent in self.__inserted:
                 self.insert(parent, parent, parent)
-        
+
         self.__inserted.append(_id)
         
         self.__properties.insert(tree_parent, 'end', _id, text=key, values=[value])
+        
+        print('PropertiesControl.insert    leave')
         
     def __remove(self, tag_id):
         if self.__properties.exists(tag_id):
