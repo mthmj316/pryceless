@@ -511,7 +511,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         answer = simpledialog.askstring("Input", ''.join(['Set: ', split_property_id[-1]]),
                                         initialvalue=self.get_property_value(property_id))
         
-        print('MainWindowMo.set_property    answer=' + answer)
+        print('MainWindowMo.set_property    answer=' + str(answer))
             
         if answer == None:
             return

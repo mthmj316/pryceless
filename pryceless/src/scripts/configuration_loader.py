@@ -23,6 +23,10 @@ def get_css_shorthand(property_name):
     
     shorthand = __property.get('shorthand', '')
     
+    if ',' in shorthand:
+        print('configuration_loader.get_css_shorthand    shorthand=' + shorthand)
+        shorthand = shorthand.split(',')[0]
+    
     print('configuration_loader.get_css_shorthand    leave:' + shorthand)
     
     return shorthand
