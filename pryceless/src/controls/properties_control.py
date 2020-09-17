@@ -63,9 +63,11 @@ class PropertiesControl(object):
             tree_parent = parent
             print('PropertiesControl.insert    tree_parent=' + tree_parent)
             
+        '''
             if not parent in self.__inserted:
                 self.insert(parent, parent, parent)
-
+        '''
+        
         self.__inserted.append(_id)
         
         self.__properties.insert(tree_parent, 'end', _id, text=key, values=[value])

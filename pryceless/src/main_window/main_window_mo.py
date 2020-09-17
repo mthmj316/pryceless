@@ -601,6 +601,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
               + ' tag_name=' + tag_name)
         
         properties = []
+        properties.append(('Attributes','Attributes','Attributes',None))
+        properties.append(('Events','Events','Events',None))
         
         html_tag_data = conf_loader.load_html_tag(tag_name)
         for attribute in html_tag_data['attributes']:
@@ -631,6 +633,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         print('MainWindowMo.__prepare_css_sub_data    defined_properties=' + str(defined_properties))
         
         properties = []
+        properties.append(('Properties','Properties','Properties',None))
         
         for css_property in conf_loader.get_css_properties():
             if css_property in defined_properties:
