@@ -5,20 +5,54 @@ Created on 25.09.2020
 '''
 from _datetime import datetime
 
+def log_error(__source, __function, msg:str='', e:Exception=None):
+    
+    time_stamp = __create_timestamp()
+    source_function_str = __create_source_function_str(__source, __function)
+    
+    return ' '.join(['ERR', time_stamp, source_function_str, msg, str(e)])
+
+def log_msg(__source, __function, msg:str=''):
+    
+    time_stamp = __create_timestamp()
+    source_function_str = __create_source_function_str(__source, __function)
+    
+    return ' '.join(['DBG', time_stamp, source_function_str, msg])
+
+def log_set_var(__source, __function, name, value):
+    
+    time_stamp = __create_timestamp()
+    source_function_str = __create_source_function_str(__source, name)
+    
+    return ' '.join(['DBG', time_stamp, 'SET VAR', source_function_str, __create_key_value_str(name, value)])
+
+def log_delete(__source, name):
+    
+    time_stamp = __create_timestamp()
+    source_function_str = __create_source_function_str(__source, name)
+    
+    return ' '.join(['DBG', time_stamp, 'DEL', source_function_str])
 
 def log_setter(__source, name, value):
     
     time_stamp = __create_timestamp()
     source_function_str = __create_source_function_str(__source, name)
     
-    return ' '.join(['DBG', time_stamp, 'SET', source_function_str, value])
+    return ' '.join(['DBG', time_stamp, 'SET', source_function_str, str(value)])
 
 def log_getter(__source, name, value):
     
     time_stamp = __create_timestamp()
     source_function_str = __create_source_function_str(__source, name)
     
-    return ' '.join(['DBG', time_stamp, 'GET', source_function_str, value])
+    return ' '.join(['DBG', time_stamp, 'GET', source_function_str, str(value)])
+
+def log_leave_func(__source, __function, value):
+    
+    time_stamp = __create_timestamp()
+    source_function_str = __create_source_function_str(__source, __function)
+    
+    return ' '.join(['DBG', time_stamp, 'LEAVE', source_function_str, value])
 
 def log_enter_func(__source, __function, parameters:dict):
     
@@ -50,7 +84,7 @@ def __create_parameter_str(parameters:dict):
     return parameter_str
  
 def __create_key_value_str(key, value):   
-    return '='.join([key,value])
+    return '='.join([key,str(value)])
     
 def __create_timestamp():
     

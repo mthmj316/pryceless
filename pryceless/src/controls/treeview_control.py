@@ -5,6 +5,8 @@ Created on 25.09.2020
 '''
 from abc import ABC, abstractmethod
 from enum import Enum
+from utils.logger import log_getter, log_setter, log_delete
+
 
 class TreeViewItem():
     '''
@@ -21,20 +23,149 @@ class TreeViewItem():
         self.__parent_id = None
         
     @property
-    def id(self):
+    def parent_id(self):
+        '''
+        returns the __parent_id
+        '''
+        log_getter('TreeViewItem', '__parent_id', self.__parent_id)
+        return self.__key
+    
+    @parent_id.setter
+    def parent_id(self, value):
+        '''
+        sets the __parent_id
+        '''
+        log_setter('TreeViewItem', '__parent_id', self.__parent_id)
+        self.__parent_id = value
+        
+    @parent_id.delete
+    def parent_id(self):
+        '''
+        Deletes the __parent_id attribute
+        '''
+        log_delete('TreeViewItem', '__parent_id')
+        del self.__parent_id
+        
+    @property
+    def value(self):
+        '''
+        returns the __value
+        '''
+        log_getter('TreeViewItem', '__value', self.__value)
+        return self.__key
+    
+    @value.setter
+    def value(self, value):
+        '''
+        sets the __value
+        '''
+        log_setter('TreeViewItem', '__value', self.__value)
+        self.__value = value
+        
+    @value.delete
+    def value(self):
+        '''
+        Deletes the __value attribute
+        '''
+        log_delete('TreeViewItem', '__value')
+        del self.__value
+
+    @property
+    def key(self):
+        '''
+        returns the __key
+        '''
+        log_getter('TreeViewItem', '__key', self.__key)
+        return self.__key
+    
+    @key.setter
+    def key(self, value):
+        '''
+        sets the __key
+        '''
+        log_setter('TreeViewItem', '__key', self.__key)
+        self.__key = value
+        
+    @key.delete
+    def key(self):
+        '''
+        Deletes the __key attribute
+        '''
+        log_delete('TreeViewItem', '__key')
+        del self.__key
+        
+    @property
+    def is_selectable(self):
+        '''
+        returns the __is_selectable
+        '''
+        log_getter('TreeViewItem', '__is_selectable', self.__is_selectable)
+        return self.__is_selectable
+    
+    @is_selectable.setter
+    def is_selectable(self, value):
+        '''
+        sets the __is_selectable
+        '''
+        log_setter('TreeViewItem', '__is_selectable', self.__is_selectable)
+        self.__is_selectable = value
+        
+    @is_selectable.delete
+    def is_selectable(self):
+        '''
+        Deletes the __is_selectable attribute
+        '''
+        log_delete('TreeViewItem', '__is_selectable')
+        del self.__is_selectable
+      
+    @property
+    def is_double_clickable(self):
+        '''
+        returns the __is_double_clickable
+        '''
+        log_getter('TreeViewItem', '__is_double_clickable', self.__is_double_clickable)
+        return self.__is_double_clickable
+    
+    @is_double_clickable.setter
+    def is_double_clickable(self, value):
+        '''
+        sets the __is_double_clickable
+        '''
+        log_setter('TreeViewItem', '__is_double_clickable', self.__is_double_clickable)
+        self.__is_double_clickable = value
+        
+    @is_double_clickable.delete
+    def is_double_clickable(self):
+        '''
+        Deletes the __is_double_clickable attribute
+        '''
+        log_delete('TreeViewItem', '__is_double_clickable')
+        del self.__is_double_clickable
+        
+    @property
+    def id(self):  # @DontTrace
         '''
         returns the id
         '''
+        log_getter('TreeViewItem', '__id', self.__id)
         return self.__id
     
     @id.setter
-    def id(self, value):
+    def id(self, value):  # @DontTrace
         '''
         sets the id
         '''
-        print('TreeViewItem')
+        log_setter('TreeViewItem', '__id', self.__id)
+        self.__id = value
         
-    
+    @id.delete
+    def id(self):  # @DontTrace
+        '''
+        Deletes the id attribute
+        '''
+        log_delete('TreeViewItem', '__id')
+        del self.__id
+        
 
 class TreeViewState(Enum):
     '''
