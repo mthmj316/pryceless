@@ -3,10 +3,12 @@ Created on 23.08.2020
 
 @author: mthoma
 '''
+from abc import ABC, abstractmethod
+from typing import List
+
 import tkinter as tk
 from tkinter.ttk import Treeview
-from typing import List
-from abc import ABC, abstractmethod
+
 
 class PropertiesControlObserver(ABC):
 

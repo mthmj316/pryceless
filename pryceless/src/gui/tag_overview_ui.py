@@ -3,13 +3,15 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-import tkinter as tk
 from typing import List
+
+from interfaces.abs_tag_overview import ABSTagOverviewUI, TagOverviewObserver, \
+    TagOverviewObservable
 from overrides import overrides
 from tkinter import scrolledtext, Listbox, Scrollbar
-from interfaces.abs_tag_overview import ABSTagOverviewUI, TagOverviewObserver,\
-    TagOverviewObservable
+import tkinter as tk
 from utils.utils import Event
+
 
 class TagOverviewUI(tk.Frame, ABSTagOverviewUI, TagOverviewObservable):
     '''

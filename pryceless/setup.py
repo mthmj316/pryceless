@@ -3,6 +3,7 @@
 '''
 from setuptools import setup
 
+
 setup(
     name='pryceless',
     version="0.1",

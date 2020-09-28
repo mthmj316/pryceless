@@ -3,10 +3,12 @@ Created on 31.08.2020
 
 @author: mthoma
 '''
-import tkinter as tk
 from abc import ABC, abstractmethod
-from tkinter import messagebox
+
 from scripts.configuration_loader import load_html_description
+from tkinter import messagebox
+import tkinter as tk
+
 
 class ABSHTMLDialogObserver(ABC):
     

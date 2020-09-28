@@ -3,10 +3,11 @@ Created on 30.06.2020
 
 @author: mthoma
 '''
-from scripts.selenium_testcase_template import create_selenium_unittest_class
-from scripts.selenium_testcase_creator import create_unittest_tag_name,\
-    create_unittest_parent, create_unittest_siblings,\
+from scripts.selenium_testcase_creator import create_unittest_tag_name, \
+    create_unittest_parent, create_unittest_siblings, \
     create_unittest_attribute, create_unittest_css_rule
+from scripts.selenium_testcase_template import create_selenium_unittest_class
+
 
 class SeleniumTestClassCreator:
     '''

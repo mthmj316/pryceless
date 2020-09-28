@@ -7,6 +7,7 @@ import abc as abc
 from scripts.html_element import HTMLElement
 from utils.observable import Observable
 
+
 class ABSHTMLPageConfigUI(abc.ABC, Observable):
     '''
     Interface for HTML

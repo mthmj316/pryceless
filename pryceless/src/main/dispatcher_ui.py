@@ -5,6 +5,7 @@ Created on 04.08.2020
 '''
 from main_window.main_window_cntlr import MainWindowCNTLR
 
+
 __main_window: MainWindowCNTLR = None
 
 def dispatch_main_window():

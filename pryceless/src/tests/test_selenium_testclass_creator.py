@@ -3,13 +3,15 @@ Created on 07.07.2020
 
 @author: mthoma
 '''
-import unittest
 import os
-from scripts.selenium_testclass_creator import SeleniumTestClassCreator
-from scripts.html_page import HTMLPage
-from scripts.html_element import HTMLElement
 from re import RegexFlag
 import re
+import unittest
+
+from scripts.html_element import HTMLElement
+from scripts.html_page import HTMLPage
+from scripts.selenium_testclass_creator import SeleniumTestClassCreator
+
 
 SELENIUM_TEST_CLASS_2_TESTCASE = 'selenium_class.2.expected'
 SELENIUM_TEST_CLASS_3_TESTCASE = 'selenium_class.3.expected'

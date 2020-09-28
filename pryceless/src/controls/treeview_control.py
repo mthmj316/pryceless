@@ -5,6 +5,7 @@ Created on 25.09.2020
 '''
 from abc import ABC, abstractmethod
 from enum import Enum
+
 from utils.logger import log_getter, log_setter, log_delete
 
 

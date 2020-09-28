@@ -3,9 +3,10 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
+from abc import abstractmethod
+
 import abc as abc
 import tkinter as tk
-from abc import abstractmethod
 from utils.utils import Event
 
 

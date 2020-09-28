@@ -3,9 +3,8 @@ Created on 19.07.2020
 
 @author: mthoma
 '''
-from tkinter import Listbox, Scrollbar
-
 from scripts import configuration_loader
+from tkinter import Listbox, Scrollbar
 
 
 html_tag_dict = {}

@@ -4,7 +4,9 @@ Created on 22.07.2020
 @author: mthoma
 '''
 import unittest
+
 from scripts import configuration_loader
+
 
 H1_EXPECTED_RESULT = '[GLOBAL_ATTRIBUTES];[ALL_EVENTS];[HEADING_CONTENT];[PHRASING_CONTENT],[HEADING_CONTENT];true'
 GLOBAL_ATTRIBUTES_EXPECTED_RESULT = 'accesskey,class,contenteditable,dir,draggable,hidden,id,lang,spellcheck,style,tabindex,title,translate'

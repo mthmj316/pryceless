@@ -4,7 +4,9 @@ Created on 03.08.2020
 @author: mthoma
 '''
 from abc import ABC, abstractmethod
+
 from utils.observable import Observable
+
 
 class Observer(ABC):
     """

@@ -3,14 +3,16 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-import tkinter as tk
-import tkinter.ttk as ttk
+from gi import overrides
+from typing import List
+
 from gui.abs_html_page_config_ui import ABSHTMLPageConfigUI
 from scripts.html_element import HTMLElement
-from gi import overrides
-from utils.observer import Observer
-from typing import List
+import tkinter as tk
 from tkinter.ttk import Treeview
+import tkinter.ttk as ttk
+from utils.observer import Observer
+
 
 class HTMLPageConfigUI(tk.Frame, ABSHTMLPageConfigUI):
     '''

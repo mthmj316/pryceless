@@ -10,17 +10,17 @@ The following test case can be created by this script:
 @author: mthoma
 '''
 
-from scripts.selenium_testcase_template import create_tag_under_unittest_var_assignment,\
-    create_unittest_method, create_assert_equals,\
-    create_selenium_webelement_declaration, create_selenium_find_element,\
-    create_selenium_by_xpath, create_assert_throws,\
-    create_parameterized_unittest_method, create_csvsource_annotation
-from scripts.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION,\
-    SELENIUM_GET_ATTRIBUTE, NO_SUCH_ELEMENT_EXCEPTION_CLASS,\
-    JAVA_DOC_TEST_PARENT, JAVA_DOC_TEST_TAG_NAME, JAVA_DOC_TEST_SIBLINGS,\
-    JAVA_DOC_TEST_ATTRIBUTES, SELENIUM_GET_VARIABLE_ATTRIBUTE,\
-    JUNIT_ASSERT_EQUALS, SELENIUM_GET_CSS_VALUE, JAVA_DOC_TEST_CSS_RULES,\
+from scripts.generator_constants import SIBLING_CSV_SOURCE_ANNOTATION, \
+    SELENIUM_GET_ATTRIBUTE, NO_SUCH_ELEMENT_EXCEPTION_CLASS, \
+    JAVA_DOC_TEST_PARENT, JAVA_DOC_TEST_TAG_NAME, JAVA_DOC_TEST_SIBLINGS, \
+    JAVA_DOC_TEST_ATTRIBUTES, SELENIUM_GET_VARIABLE_ATTRIBUTE, \
+    JUNIT_ASSERT_EQUALS, SELENIUM_GET_CSS_VALUE, JAVA_DOC_TEST_CSS_RULES, \
     JAVA_DOC_TEST_ATTRIBUTES_NO_VALUE, JUNIT_ASSERT_NOT_NULL
+from scripts.selenium_testcase_template import create_tag_under_unittest_var_assignment, \
+    create_unittest_method, create_assert_equals, \
+    create_selenium_webelement_declaration, create_selenium_find_element, \
+    create_selenium_by_xpath, create_assert_throws, \
+    create_parameterized_unittest_method, create_csvsource_annotation
 
 
 def create_unittest_css_rule(tag_id, css_rule_directory):

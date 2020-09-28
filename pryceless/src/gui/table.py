@@ -3,8 +3,9 @@ Created on 24.07.2020
 
 @author: mthoma
 '''
-import tkinter as tk
 from scripts import configuration_loader
+import tkinter as tk
+
 
 TABLE_COLOR_BACK = '#D9D9D9'
 TABLE_COLOR_GRID = '#000000'

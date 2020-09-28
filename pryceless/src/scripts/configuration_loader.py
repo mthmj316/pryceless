@@ -3,9 +3,11 @@ Created on 20.07.2020
 
 @author: mthoma
 '''
-import os
 import io
+import os
+
 import collections as coll
+
 
 HTML_TAG_CONF = None
 ATTRIBUTES_CONF = None

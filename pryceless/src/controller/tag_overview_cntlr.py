@@ -6,6 +6,7 @@ Created on 04.08.2020
 from gui.tag_overview_ui import TagOverviewUI
 from interfaces.abs_tag_overview import ABSTagOverviewUI
 
+
 class TagOverviewCNTLR(object):
     '''
     classdocs

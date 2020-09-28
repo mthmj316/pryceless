@@ -3,20 +3,23 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-from overrides.overrides import overrides
-from main_window.abs_main_window import ABSMainWindowMo,\
-    ABSMainWindowModelObserver
-import os
-from tkinter.filedialog import askopenfilename, askdirectory
 import json
-from tkinter import messagebox, simpledialog
-from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
+import os
+from pathlib import Path
 import time
 from typing import List
-import scripts.configuration_loader as conf_loader
-from pathlib import Path
-from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
+
 from dialogs.css_dialogs import CreateCssRuleSet, ABSCreateCssRuleSetObserver
+from dialogs.html_dialogs import CreateTagDialog, ABSHTMLDialogObserver
+from dialogs.text_dialogs import ABSTextDialogObserver, SelectText
+from main_window.abs_main_window import ABSMainWindowMo, \
+    ABSMainWindowModelObserver
+from overrides.overrides import overrides
+import scripts.configuration_loader as conf_loader
+from tkinter import messagebox, simpledialog
+from tkinter.filedialog import askopenfilename, askdirectory
+from utils.logger import log_enter_func
+
 
 TEXT = 'text'
 INTERNAL_ID = 'internal_id'
@@ -61,7 +64,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     def on_text_selected(self, result=None):
         '''
         '''
-        print('MainWindowMo.on_text_selected    result=' + str(result))
+        log_enter_func('MainWindowMo', 'on_text_selected', {'result':result})
         
         if not result == None:
             

@@ -3,20 +3,21 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-import tkinter as tk
-from main_window.abs_main_window import ABSMainWindowUI, ABSMainWindowObserver,\
+from controls.configuration_control import ConfigurationControl, \
+    ConfigurationControlObserver
+from controls.overview_control import OverviewControl, \
+    OverviewControlObserver
+from controls.properties_control import PropertiesControl, \
+    PropertiesControlObserver
+from main_window.abs_main_window import ABSMainWindowUI, ABSMainWindowObserver, \
     ABSMainWindowMo, MainWindowMenuKeys, ABSMainWindowModelObserver
+from main_window.main_window_mo import MainWindowMo
 from main_window.main_window_ui import MainWindowUI
 from overrides.overrides import overrides
-from utils.utils import Event
-from main_window.main_window_mo import MainWindowMo
+import tkinter as tk
 from tkinter.messagebox import askyesnocancel
-from controls.overview_control import OverviewControl,\
-    OverviewControlObserver
-from controls.configuration_control import ConfigurationControl,\
-    ConfigurationControlObserver
-from controls.properties_control import PropertiesControl,\
-    PropertiesControlObserver
+from utils.utils import Event
+
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver,

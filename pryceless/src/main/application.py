@@ -3,8 +3,10 @@ Created on 04.08.2020
 
 @author: mthoma
 '''
-from main_window.main_window_cntlr import MainWindowCNTLR
 from datetime import datetime
+
+from main_window.main_window_cntlr import MainWindowCNTLR
+
 
 VERSION = ' v0.3'
 

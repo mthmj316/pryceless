@@ -3,9 +3,11 @@ Created on 08.09.2020
 
 @author: mthoma
 '''
-import tkinter as tk
 from abc import ABC, abstractmethod
+
 from tkinter import messagebox
+import tkinter as tk
+
 
 class ABSCreateCssRuleSetObserver(ABC):
     

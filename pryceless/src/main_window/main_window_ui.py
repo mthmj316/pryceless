@@ -3,19 +3,22 @@ Created on 13.07.2020
 
 @author: mthoma
 '''
-import tkinter as tk
-from overrides import overrides
-from main_window.abs_main_window import ABSMainWindowUI,\
-    ABSMainWindowObserver
-from utils.utils import Event
+'''
+
+
+'''
+
 from typing import List
+
+from main_window.abs_main_window import ABSMainWindowUI, \
+    ABSMainWindowObserver
 from main_window.abs_main_window import MainWindowMenuKeys as mKey
+from overrides import overrides
+import tkinter as tk
 from tkinter.ttk import Frame
+from utils.utils import Event
 
-'''
 
-
-'''
 class MainWindowUI(tk.Frame, ABSMainWindowUI):
     
     __page_config_frame: tk.Frame = None

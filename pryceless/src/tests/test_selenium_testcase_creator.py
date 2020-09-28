@@ -4,14 +4,14 @@ Created on 25.06.2020
 @author: mthoma
 '''
 import unittest
-from scripts.selenium_testcase_creator import create_unittest_css_rule,\
-    create_unittest_attribute, create_unittest_siblings,\
-    create_unittest_parent, create_unittest_tag_name,\
-    convert_tag_id_to_name_in_method
 
-from tests.prycelesstest_constants import MULTIPLE_CSS_RULE_TEST,\
-    SINGLE_CSS_RULE_TEST, MULTIPLE_TEST_ATTRIBUTES, SINGLE_TEST_ATTRIBUTES,\
-    NO_SIBLING_EXPECTED_RESULT, NO_FOLLOWING_SIBLING_EXPECTED_RESULT,\
+from scripts.selenium_testcase_creator import create_unittest_css_rule, \
+    create_unittest_attribute, create_unittest_siblings, \
+    create_unittest_parent, create_unittest_tag_name, \
+    convert_tag_id_to_name_in_method
+from tests.prycelesstest_constants import MULTIPLE_CSS_RULE_TEST, \
+    SINGLE_CSS_RULE_TEST, MULTIPLE_TEST_ATTRIBUTES, SINGLE_TEST_ATTRIBUTES, \
+    NO_SIBLING_EXPECTED_RESULT, NO_FOLLOWING_SIBLING_EXPECTED_RESULT, \
     NO_PRECIDING_SIBLING_EXPECTED_RESULT, SIBLING_EXPECTED_RESULT
 
 

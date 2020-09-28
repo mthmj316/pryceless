@@ -5,7 +5,8 @@ Created on 18.08.2020
 '''
 from abc import ABC, abstractmethod
 from typing import List
-        
+
+
 class ABSMemento(ABC):
     '''
     Empty interface

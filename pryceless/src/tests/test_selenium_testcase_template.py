@@ -4,6 +4,7 @@ Created on 23.06.2020
 @author: mthoma
 '''
 
+import os
 import unittest
 
 from scripts.selenium_testcase_template import \
@@ -14,7 +15,7 @@ from scripts.selenium_testcase_template import \
     create_unittest_method, create_parameterized_unittest_method, \
     create_method_parameter_list, create_annotation, create_csvsource_annotation, \
     create_selenium_unittest_class
-import os
+
 
 SELENIUM_TEST_CLASS_1_TESTCASE = 'selenium_class.1.expected'
 

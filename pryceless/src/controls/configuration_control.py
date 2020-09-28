@@ -3,12 +3,14 @@ Created on 27.08.2020
 
 @author: mthoma
 '''
-from tkinter import Frame
 from abc import ABC, abstractmethod
 from typing import List
-from tkinter.ttk import Treeview
-from tkinter.constants import BOTH
+
+from tkinter import Frame
 import tkinter
+from tkinter.constants import BOTH
+from tkinter.ttk import Treeview
+
 
 class ConfigurationControlObserver(ABC):
 

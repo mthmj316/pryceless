@@ -4,8 +4,9 @@ Created on 22.06.2020
 @author: mthoma
 '''
 
-from string import Template
 import os
+from string import Template
+
 
 ASSERT_EQUALS_TEMPLATE = 'assert-equals.template'
 ASSERT_NOTNULL_TEMPLATE = 'assert-notnull.template'
