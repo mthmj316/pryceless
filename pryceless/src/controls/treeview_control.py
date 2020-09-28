@@ -6,7 +6,8 @@ Created on 25.09.2020
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from utils.logger import log_getter, log_setter, log_delete
+from utils.logger import log_getter, log_setter, log_delete,\
+    create_key_value_str
 
 
 class TreeViewItem():
@@ -146,7 +147,7 @@ class TreeViewItem():
     @property
     def id(self):  # @DontTrace
         '''
-        returns the id
+        returns the __id
         '''
         log_getter('TreeViewItem', '__id', self.__id)
         return self.__id
@@ -166,6 +167,14 @@ class TreeViewItem():
         '''
         log_delete('TreeViewItem', '__id')
         del self.__id
+        
+    def __str__(self):
+        return ' '.join([create_key_value_str('__id', self.__id),
+                         create_key_value_str('__is_double_clickable', self.__is_double_clickable),
+                         create_key_value_str('__is_selectable', self.__is_selectable),
+                         create_key_value_str('key', self.__key),
+                         create_key_value_str('value', self.__value),
+                         create_key_value_str('__parent_id', self.__parent_id)])
         
 
 class TreeViewState(Enum):
