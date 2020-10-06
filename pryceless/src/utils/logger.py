@@ -47,14 +47,14 @@ def log_getter(__source, name, value):
     
     print(' '.join(['DBG', time_stamp, 'GET', source_function_str, str(value)]))
 
-def log_leave_func(__source, __function, value):
+def log_leave_func(__source, __function, value=None):
     
     time_stamp = __create_timestamp()
     source_function_str = __create_source_function_str(__source, __function)
     
     print(' '.join(['DBG', time_stamp, 'LEAVE', source_function_str, value]))
 
-def log_enter_func(__source, __function, parameters:dict):
+def log_enter_func(__source, __function, parameters:dict=None):
     
     time_stamp = __create_timestamp()          
     parameter_str = __create_parameter_str(parameters)

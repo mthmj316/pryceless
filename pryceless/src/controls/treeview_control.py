@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 from utils.logger import log_getter, log_setter, log_delete,\
-    create_key_value_str, log_enter_func
+    create_key_value_str, log_enter_func, log_leave_func
 
 
 class TreeViewItem():
@@ -258,7 +258,7 @@ class TreeViewConfiguration():
         :param name: Column name to be added
         :param idx: The index of the column. If idx < 0 the name will be appended.
         '''
-        
+        log_enter_func('TreeViewConfiguration', 'add_column_name', {'name':name,'idx':idx})
         if idx < 0:
             self.__column_names.append(name)
         else:
@@ -293,3 +293,85 @@ class TreeViewConfiguration():
         return ' '.join([create_key_value_str('__column_count', self.__column_count),
                          create_key_value_str('__column_names', self.__column_names)])
 
+
+class TreeViewControl():
+    '''
+    
+    '''
+    def __init__(self, treeview_config:TreeViewConfiguration=None):
+        '''
+        
+        :param tree_config: TreeViewConfiguration
+        '''
+        log_enter_func('TreeViewControl', '__init__', {'tree_config':treeview_config})
+        
+        #Contains all TreeViewItems added to the TreeView
+        self.__added_treeview_items = []
+        #Is the item which is currently about to be added to the tree. 
+        self.__current_treeview_item = None
+        #Contains the error message if the state is set to ERROR.
+        #This is optional! It is not said that there is an message if an error occurs.
+        self.__error_message = None
+        #State of the TreeViewControl
+        self.__treeview_state
+        #Contains all registered observers.
+        self.__observers = []
+        #This array contains all TreeViewItem for which the parent element was not added
+        #at the time as they were added.
+        self.__parentless_items = []
+        #UI Treeview element.
+        self.__treeview = None
+        #Contains the mapping of the treeview_id and the corresponding TreeViewItem.
+        self.__treeview_id_dict = {}
+
+    ### public methods ###################################################################
+        
+    ######################################################################################
+        
+    ### private methods ##################################################################
+    def __build_tree(self, treeview_config):
+        '''
+        Build the basic setup of the treeview by considering treeview_config.
+        :param treeview_config:
+        '''
+        log_enter_func('TreeViewControl', '__build_tree', {'tree_config':treeview_config})
+        
+        log_leave_func('TreeViewControl', '__build_tree')
+        
+    
+    def __create_treeview_id(self):
+        '''
+        Creates the temporary id and sets it in the current TreeViewItem.
+        '''
+        log_enter_func('TreeViewControl', '__create_treeview_id')
+        
+        log_leave_func('TreeViewControl', '__create_treeview_id')
+    
+    
+    def __get_treeview_id(self, _id) -> str:
+        '''
+        Searches the __treeview_id_dict mapping for the TreeViewItem (value) for 
+        item with TreeViewItem.id == __id, and, if found, returns the key of the
+        mapping entry.
+        :param _id: The id of the TreeViewItem 
+        '''
+        log_enter_func('TreeViewControl', '__get_treeview_id', {'_id':_id})
+        
+        treeview_id = None
+        
+        log_leave_func('TreeViewControl', '__get_treeview_id', treeview_id)
+        
+    def __notify_on_double_click(self, event):
+        '''
+        Event handler for the double click event.
+        Calls the just the __notify_on_selection_event with is_double_click == True.
+        :param event: Double click event, contains the treeview_id of the double clicked TreeViewItem
+        '''
+        log_enter_func('TreeViewControl', '__notify_on_double_click', {'event':event})
+        
+        
+        log_leave_func('TreeViewControl', '__notify_on_double_click')
+    
+    ######################################################################################
+        
+        
