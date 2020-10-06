@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 from utils.logger import log_getter, log_setter, log_delete,\
-    create_key_value_str
+    create_key_value_str, log_enter_func
 
 
 class TreeViewItem():
@@ -17,6 +17,8 @@ class TreeViewItem():
     def __init__(self):
         '''
         '''
+        log_enter_func('TreeViewItem', '__init__')
+        
         self.__id = None
         self.__is_double_clickable = True
         self.__is_selectable = True
@@ -217,4 +219,77 @@ class TreeViewObserver(ABC):
         '''
         Is called after the state of the treeview has been set to ERROR. 
         :param error_msg: The error message.
+    '''
+
+
+class TreeViewConfiguration():
+    '''
+    Defines the configuration of the TreeView UI.
+    Currently only the number of columns and their headers can be defined.
+    '''
+    
+    def __init__(self):
         '''
+        '''
+        log_enter_func('TreeViewConfiguration', '__init__')
+        
+        self.__column_count:int = 0
+        self.__column_names:str = []
+    
+    @property
+    def column_names(self):  # @DontTrace
+        '''
+        returns the __column_names
+        '''
+        log_getter('TreeViewConfiguration', '__column_names', self.__column_names)
+        return self.__column_names
+    
+    @column_names.delete
+    def column_names(self):  # @DontTrace
+        '''
+        Deletes the __column_names attribute
+        '''
+        log_delete('TreeViewConfiguration', '__column_names')
+        self.__column_names = []
+        
+    def add_column_name(self, name:str, idx:int):
+        '''
+        Adds the given name to the column name array
+        :param name: Column name to be added
+        :param idx: The index of the column. If idx < 0 the name will be appended.
+        '''
+        
+        if idx < 0:
+            self.__column_names.append(name)
+        else:
+            self.__column_names.insert(idx, name)
+        
+        
+    @property
+    def column_count(self):  # @DontTrace
+        '''
+        returns the __column_count
+        '''
+        log_getter('TreeViewConfiguration', '__column_count', self.__column_count)
+        return self.__column_count
+    
+    @column_count.setter
+    def column_count(self, value):  # @DontTrace
+        '''
+        sets the __column_count
+        '''
+        log_setter('TreeViewConfiguration', '__column_count', self.__column_count)
+        self.__column_count = value
+        
+    @column_count.delete
+    def column_count(self):  # @DontTrace
+        '''
+        Deletes the __column_count attribute
+        '''
+        log_delete('TreeViewConfiguration', '__column_count')
+        del self.__column_count
+        
+    def __str__(self):
+        return ' '.join([create_key_value_str('__column_count', self.__column_count),
+                         create_key_value_str('__column_names', self.__column_names)])
+
