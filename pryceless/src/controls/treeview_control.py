@@ -371,7 +371,78 @@ class TreeViewControl():
         
         
         log_leave_func('TreeViewControl', '__notify_on_double_click')
+        
+    def __notify_on_error(self):
+        '''
+        Notifies all registered observers that an error has occurred.
+        '''
+        log_enter_func('TreeViewControl', '__notify_on_error')
+        
+        
+        log_leave_func('TreeViewControl', '__notify_on_error')
+    
+    def __notify_on_select(self, event):
+        '''
+        Event handler for the select event.
+        Calls the just the __notify_on_selection_event with is_double_click == False.
+        :param event: Select event, contains the treeview_id of the selected TreeViewItem
+        '''
+        log_enter_func('TreeViewControl', '__notify_on_select', {'event':event})
+        
+        
+        log_leave_func('TreeViewControl', '__notify_on_select')
+        
+    def __notify_on_selection_event(self, event, is_double_click):
+        '''
+        Calls for the given event the corresponding observer method.
+        is_double_click == True -> on_double_click
+        is_double_click == False -> on_select
+        :param event: Select or the double click event
+        :param is_double_click: is True if the event was a double click event, otherwise False.
+        '''
+        log_enter_func('TreeViewControl', '__notify_on_selection_event', {'event':event, 'is_double_click':is_double_click})
+        
+        
+        log_leave_func('TreeViewControl', '__notify_on_selection_event')
+        
+    def __revise_parentlesses(self):
+        '''
+        Checks for each parentless TreeViewItem if now the parent is in the tree.
+        If the parentless TreeViewItem will be move under the proper superior element
+        it will be removed from __parentless_items array. 
+        '''
+        log_enter_func('TreeViewControl', '__revise_parentlesses')
+        
+        
+        log_leave_func('TreeViewControl', '__revise_parentlesses')
+        
+    def __search_parent(self):
+        '''
+        Searches in the __added_treeview_items for the parent of the element
+        which is currently assigned to the __current_treeview_item. 
+        If found it'll return the parent TreeViewItem otherwise None.
+        '''
+        log_enter_func('TreeViewControl', '__search_parent')
+        
+        parent = None
+        
+        log_leave_func('TreeViewControl', '__search_parent', parent)
+        
+    def __set_error_state(self, error_message):
+        '''
+        Sets the state and the error message of the TreeViewControl and triggers the error notification of observers.
+        :param error_message: The error message
+        '''
+        log_enter_func('TreeViewControl', '__set_error_state', {'error_message':error_message})
+        
+        
+        log_leave_func('TreeViewControl', '__set_error_state')
+        
+    def __validate_input(self):
+        '''
+        '''
     
     ######################################################################################
-        
+    ######################################################################################
+    ######################################################################################        
         
