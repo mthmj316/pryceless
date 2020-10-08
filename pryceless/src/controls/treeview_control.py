@@ -8,6 +8,7 @@ from enum import Enum
 
 from utils.logger import log_getter, log_setter, log_delete,\
     create_key_value_str, log_enter_func, log_leave_func
+import uuid
 
 
 class TreeViewItem():
@@ -313,7 +314,7 @@ class TreeViewControl():
         #This is optional! It is not said that there is an message if an error occurs.
         self.__error_message = None
         #State of the TreeViewControl
-        self.__treeview_state
+        self.__treeview_state = TreeViewState.OK
         #Contains all registered observers.
         self.__observers = []
         #This array contains all TreeViewItem for which the parent element was not added
@@ -325,6 +326,42 @@ class TreeViewControl():
         self.__treeview_id_dict = {}
 
     ### public methods ###################################################################
+    
+    
+    ### Public Observer methods ##########################################################
+    
+    def remove_observer(self, observer:TreeViewObserver) -> None:
+        '''
+        Removes the given TreeViewObserver from the TreeViewControl.
+        :param observer: TreeViewObserver to be removed.
+        '''
+        log_enter_func('TreeViewControl', 'remove_observer', {'observer':observer})
+        
+        self.__observers.remove(observer)
+        
+        log_leave_func('TreeViewControl', 'remove_observer')
+        
+    def clear_observers(self) -> None:
+        '''
+        Removes all registered observers.
+        '''
+        log_enter_func('TreeViewControl', 'clear_observers')
+        
+        self.__observers.clear()
+        
+        log_leave_func('TreeViewControl', 'clear_observers')
+        
+    
+    def add_observer(self, observer:TreeViewObserver) -> None:
+        '''
+        Adds the given observer to the TreeViewcontrol.
+        :param observer: TreeViewObserver to be added.
+        '''
+        log_enter_func('TreeViewControl', 'add_observer', {'observer':observer})
+        
+        self.__observers.append(observer)
+        
+        log_leave_func('TreeViewControl', 'add_observer')
         
     ######################################################################################
         
@@ -345,10 +382,14 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__create_treeview_id')
         
-        log_leave_func('TreeViewControl', '__create_treeview_id')
+        treeview_id = uuid.uuid1()
+        
+        log_leave_func('TreeViewControl', '__create_treeview_id', treeview_id)
+        
+        return treeview_id
     
     
-    def __get_treeview_id(self, _id) -> str:
+    def __get_treeview_id(self, _id):
         '''
         Searches the __treeview_id_dict mapping for the TreeViewItem (value) for 
         item with TreeViewItem.id == __id, and, if found, returns the key of the
@@ -357,9 +398,16 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__get_treeview_id', {'_id':_id})
         
-        treeview_id = None
+        searched_treeview_id = None
         
-        log_leave_func('TreeViewControl', '__get_treeview_id', treeview_id)
+        for treeview_id, treeview_item in self.__treeview_id_dict:
+            if treeview_item.id == _id:
+                searched_treeview_id = treeview_id
+                break
+        
+        log_leave_func('TreeViewControl', '__get_treeview_id', searched_treeview_id)
+        
+        return searched_treeview_id
         
     def __notify_on_double_click(self, event):
         '''
@@ -369,6 +417,7 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__notify_on_double_click', {'event':event})
         
+        self.__notify_on_selection_event(event, True)
         
         log_leave_func('TreeViewControl', '__notify_on_double_click')
         
@@ -378,6 +427,8 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__notify_on_error')
         
+        for observer in self.__observers:
+            observer.on_error(self.__error_message)
         
         log_leave_func('TreeViewControl', '__notify_on_error')
     
@@ -389,6 +440,7 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__notify_on_select', {'event':event})
         
+        self.__notify_on_selection_event(event, False)
         
         log_leave_func('TreeViewControl', '__notify_on_select')
         
@@ -402,6 +454,13 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__notify_on_selection_event', {'event':event, 'is_double_click':is_double_click})
         
+        selected_treeview_item = self.__treeview_id_dict[event]
+        
+        for observer in self.__observers:
+            if is_double_click:
+                observer.on_double_click(selected_treeview_item)
+            else:
+                observer.on_select(selected_treeview_item)
         
         log_leave_func('TreeViewControl', '__notify_on_selection_event')
         
@@ -426,7 +485,14 @@ class TreeViewControl():
         
         parent = None
         
+        for treeview_item in self.__added_treeview_items:
+            if treeview_item.id == self.__current_treeview_item.parent_id:
+                parent = treeview_item
+                break
+        
         log_leave_func('TreeViewControl', '__search_parent', parent)
+        
+        return parent
         
     def __set_error_state(self, error_message):
         '''
@@ -435,12 +501,24 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__set_error_state', {'error_message':error_message})
         
+        self.__error_message = error_message
+        self.__treeview_state = TreeViewState.ERROR
+        self.__notify_on_error()
         
         log_leave_func('TreeViewControl', '__set_error_state')
         
     def __validate_input(self):
         '''
+        Set the treview_state to TreeViewState.OK.
+        Checks if the parent id of the __current_treeview_item is set and if so it searches
+        for the parent in the __added_treeview_items array. If it finds the item the treeview_state remains unchanged.
+        If the parent couldn't be found the treeview_state will be changed to TreeViewState.PARENT_NOT_EXISTS.
+        If the parent id of the __current_treeview_item is not set the __treeview_state is set to TreeViewState.NO_PARENT.
         '''
+        log_enter_func('TreeViewControl', '__validate_input')
+        
+        
+        log_leave_func('TreeViewControl', '__validate_input')
     
     ######################################################################################
     ######################################################################################
