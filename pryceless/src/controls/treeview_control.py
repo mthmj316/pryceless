@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 from utils.logger import log_getter, log_setter, log_delete,\
-    create_key_value_str, log_enter_func, log_leave_func
+    create_key_value_str, log_enter_func, log_leave_func, log_set_var
 import uuid
 
 
@@ -326,7 +326,27 @@ class TreeViewControl():
         self.__treeview_id_dict = {}
 
     ### public methods ###################################################################
-    
+    def select(self, treeview_item:TreeViewItem):
+        '''
+        Removes the focus and the selection form the currently selected treeview item.
+        If treeview_item and the id in the treeview_itme is NOT None
+        then the corresponding item in the tree will be selected and focused.
+        If treeview_item or its attribute is None, then after removing the focus
+        and the selection the method will be left.
+        :param treeview_item: The treeview item to be selected.
+        '''
+        log_enter_func('TreeViewControl', 'select', {'treeview_item':treeview_item})
+        
+        if len(self.__treeview) > 0:
+            self.__treeview.selection_remove(self.__treeview.selection()[0])
+        
+        self.__treeview.focus('')
+        
+        if not treeview_item == None and not treeview_item.id == None:
+            pass 
+        
+        log_leave_func('TreeViewControl', 'select')
+        
     
     ### Public Observer methods ##########################################################
     
@@ -516,6 +536,21 @@ class TreeViewControl():
         If the parent id of the __current_treeview_item is not set the __treeview_state is set to TreeViewState.NO_PARENT.
         '''
         log_enter_func('TreeViewControl', '__validate_input')
+        
+        self.__treeview_state = TreeViewState.OK
+        
+        if not self.__current_treeview_item.parent_id == None:
+            
+            parent_item = self.__search_parent()
+            
+            if parent_item == None:
+                self.__treeview_state = TreeViewState.PARENT_NOT_EXISTS
+            
+        else:
+            self.__treeview_state = TreeViewState.NO_PARENT
+            
+        
+        log_set_var('TreeViewControl', '__validate_input', '__treeview_state', self.__treeview_state)
         
         
         log_leave_func('TreeViewControl', '__validate_input')
