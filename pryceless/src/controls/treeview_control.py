@@ -326,6 +326,35 @@ class TreeViewControl():
         self.__treeview_id_dict = {}
 
     ### public methods ###################################################################
+    def remove(self, treeview_item:TreeViewItem=None):
+        '''
+        Removes the given treeview_item and all its children from the TreeViewControl.
+        If treeview_item == None, then the whole TreeViewControl will be cleared.
+        :param treeview_item: TreeViewItem to be deleted form tree.
+        '''
+        log_enter_func('TreeViewControl', 'remove', {'treeview_item':treeview_item})
+        
+        if treeview_item == None:
+            # Clear the whole tree
+            self.__treeview.delete(*self.__treeview_id_dict.keys())
+            self.__added_treeview_items.clear()
+            self.__treeview_id_dict.clear()
+            self.__parentless_items.clear()
+            
+        else:
+            #Remove the given item and its children from the tree.
+            for child in self.__find_children(treeview_item.parent_id):
+                self.remove(child)
+                
+            treeview_id = self.__get_treeview_id(treeview_item.id)
+            
+            self.__treeview.delete(treeview_id)
+            self.__added_treeview_items.remove(treeview_item)
+            del self.__treeview_id_dict[treeview_id]
+            self.__parentless_items.remove(treeview_item)
+        
+        log_leave_func('TreeViewControl', 'remove')
+        
     def select(self, treeview_item:TreeViewItem):
         '''
         Removes the focus and the selection form the currently selected treeview item.
@@ -387,6 +416,22 @@ class TreeViewControl():
     ######################################################################################
         
     ### private methods ##################################################################
+    def __find_children(self, parent_id):
+        '''
+        Searches the __added_treeview_items array for items with item.parent_id == parent_id
+        :param parent_id: Id (not treeview_id) of the parent.
+        '''
+        log_enter_func('TreeViewControl', '__find_children', {'parent_id':parent_id})
+        
+        children = []
+        
+        for treeview_item in self.__added_treeview_items:
+            if treeview_item.parent_id == parent_id:
+                children.append(treeview_item)
+        
+        log_leave_func('TreeViewControl', '__find_children', children)
+        
+    
     def __build_tree(self, treeview_config):
         '''
         Build the basic setup of the treeview by considering treeview_config.
