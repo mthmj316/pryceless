@@ -343,7 +343,8 @@ class TreeViewControl():
         self.__treeview.focus('')
         
         if not treeview_item == None and not treeview_item.id == None:
-            pass 
+            self.__treeview.focus(treeview_item.id)
+            self.__treeview.selection_set(treeview_item.id)
         
         log_leave_func('TreeViewControl', 'select')
         
