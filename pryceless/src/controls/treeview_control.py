@@ -299,6 +299,9 @@ class TreeViewControl():
     '''
     
     '''
+    PARENTLESS_ROOT_ID:str = 'parentless_root_id'
+    PARENTLESS_ROOT_KEY:str = 'Parentless'
+    
     def __init__(self, treeview_config:TreeViewConfiguration=None):
         '''
         
@@ -326,6 +329,55 @@ class TreeViewControl():
         self.__treeview_id_dict = {}
 
     ### public methods ###################################################################
+    def insert(self, treeview_item:TreeViewItem) -> None:
+        '''
+        Add the given treeview_item to the TreeViewcontrol.
+        If the parent_id of the treeview_item is set, the given treeview_item will inserted
+        under TreeViewItem with the corresponding ID.
+        If the parent_id of the treeview_item is set, but there is no item with that ID
+        in the TreeViewControl, the given treeview_item will be inserted under the "Parentless"
+        top level element.
+        As soon as the parent is added the parentless TreeViewItem will be moved from the 
+        "Parentless" element to its actual parent.
+        :param treeview_item:TreeViewItem the item to be added to the TreeViewcontrol
+        '''
+        log_enter_func('TreeViewControl', 'insert', {'treeview_item':treeview_item})
+        
+        self.__current_treeview_item = treeview_item
+        
+        new_treeview_id = self.__create_treeview_id()
+        log_set_var('TreeViewControl', 'insert', 'new_treeview_id', new_treeview_id)
+
+        self.__treeview_id_dict[new_treeview_id]: treeview_item
+        self.__added_treeview_items.append(treeview_item)
+        
+        self.__validate_input()
+        
+        parent_id = '' #This would insert the item as root element
+        
+        if self.__treeview_state == TreeViewState.OK:
+            parent_id = self.__get_treeview_id(treeview_item.parent_id)
+        elif self.__treeview_state == TreeViewState.PARENT_NOT_EXISTS:
+            #Add current_treeview_item to parentless items
+            self.__parentless_items.append(treeview_item)
+            parent_id = TreeViewControl.PARENTLESS_ROOT_ID
+            
+            #Check if parentless node exists
+            if not self.__treeview.exists(parent_id):
+                #If not add it.
+                self.__treeview.insert('', 'end', parent_id, text=TreeViewControl.PARENTLESS_ROOT_KEY)
+        
+        values = []
+        
+        if not treeview_item.value == None:
+            values.append(treeview_item.value)
+        
+        self.__treeview.insert(parent_id, 'end', new_treeview_id, text=treeview_item.key, values=values)
+        
+        self.__revise_parentlesses()
+        
+        log_leave_func('TreeViewControl', 'insert')
+    
     def remove(self, treeview_item:TreeViewItem=None):
         '''
         Removes the given treeview_item and all its children from the TreeViewControl.
@@ -355,7 +407,7 @@ class TreeViewControl():
         
         log_leave_func('TreeViewControl', 'remove')
         
-    def select(self, treeview_item:TreeViewItem):
+    def select(self, treeview_item:TreeViewItem) -> None:
         '''
         Removes the focus and the selection form the currently selected treeview item.
         If treeview_item and the id in the treeview_itme is NOT None
