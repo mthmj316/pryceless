@@ -10,6 +10,9 @@ from utils.logger import log_getter, log_setter, log_delete,\
     create_key_value_str, log_enter_func, log_leave_func, log_set_var
 import uuid
 
+import tkinter as tk
+from tkinter.ttk import Treeview
+
 
 class TreeViewItem():
     '''
@@ -43,7 +46,7 @@ class TreeViewItem():
         log_setter('TreeViewItem', '__parent_id', self.__parent_id)
         self.__parent_id = value
         
-    @parent_id.delete
+    @parent_id.deleter
     def parent_id(self):
         '''
         Deletes the __parent_id attribute
@@ -67,7 +70,7 @@ class TreeViewItem():
         log_setter('TreeViewItem', '__value', self.__value)
         self.__value = value
         
-    @value.delete
+    @value.deleter
     def value(self):
         '''
         Deletes the __value attribute
@@ -91,7 +94,7 @@ class TreeViewItem():
         log_setter('TreeViewItem', '__key', self.__key)
         self.__key = value
         
-    @key.delete
+    @key.deleter
     def key(self):
         '''
         Deletes the __key attribute
@@ -115,7 +118,7 @@ class TreeViewItem():
         log_setter('TreeViewItem', '__is_selectable', self.__is_selectable)
         self.__is_selectable = value
         
-    @is_selectable.delete
+    @is_selectable.deleter
     def is_selectable(self):
         '''
         Deletes the __is_selectable attribute
@@ -139,7 +142,7 @@ class TreeViewItem():
         log_setter('TreeViewItem', '__is_double_clickable', self.__is_double_clickable)
         self.__is_double_clickable = value
         
-    @is_double_clickable.delete
+    @is_double_clickable.deleter
     def is_double_clickable(self):
         '''
         Deletes the __is_double_clickable attribute
@@ -163,7 +166,7 @@ class TreeViewItem():
         log_setter('TreeViewItem', '__id', self.__id)
         self.__id = value
         
-    @id.delete
+    @id.deleter
     def id(self):  # @DontTrace
         '''
         Deletes the id attribute
@@ -245,7 +248,7 @@ class TreeViewConfiguration():
         log_getter('TreeViewConfiguration', '__column_names', self.__column_names)
         return self.__column_names
     
-    @column_names.delete
+    @column_names.deleter
     def column_names(self):  # @DontTrace
         '''
         Deletes the __column_names attribute
@@ -282,7 +285,7 @@ class TreeViewConfiguration():
         log_setter('TreeViewConfiguration', '__column_count', self.__column_count)
         self.__column_count = value
         
-    @column_count.delete
+    @column_count.deleter
     def column_count(self):  # @DontTrace
         '''
         Deletes the __column_count attribute
@@ -302,12 +305,12 @@ class TreeViewControl():
     PARENTLESS_ROOT_ID:str = 'parentless_root_id'
     PARENTLESS_ROOT_KEY:str = 'Parentless'
     
-    def __init__(self, treeview_config:TreeViewConfiguration=None):
+    def __init__(self, master:tk.Frame, treeview_config:TreeViewConfiguration=None):
         '''
         
         :param tree_config: TreeViewConfiguration
         '''
-        log_enter_func('TreeViewControl', '__init__', {'tree_config':treeview_config})
+        log_enter_func('TreeViewControl', '__init__', {'master':master, 'tree_config':treeview_config})
         
         #Contains all TreeViewItems added to the TreeView
         self.__added_treeview_items = []
@@ -327,6 +330,10 @@ class TreeViewControl():
         self.__treeview = None
         #Contains the mapping of the treeview_id and the corresponding TreeViewItem.
         self.__treeview_id_dict = {}
+        #build the treeview
+        self.__build_tree(master, treeview_config) 
+        
+        log_leave_func('TreeViewControl', '__init__')
 
     ### public methods ###################################################################
     def insert(self, treeview_item:TreeViewItem) -> None:
@@ -484,12 +491,23 @@ class TreeViewControl():
         log_leave_func('TreeViewControl', '__find_children', children)
         
     
-    def __build_tree(self, treeview_config):
+    def __build_tree(self,master, treeview_config):
         '''
         Build the basic setup of the treeview by considering treeview_config.
         :param treeview_config:
         '''
-        log_enter_func('TreeViewControl', '__build_tree', {'tree_config':treeview_config})
+        log_enter_func('TreeViewControl', '__build_tree', {'master':master, 'tree_config':treeview_config})
+        
+        self.__treeview = Treeview(master=master, columns=('#%s' %(treeview_config.column_count)))
+        self.__treeview.column('#0', stretch=tk.NO)
+        
+        for idx,col_name in enumerate(treeview_config.column_names):
+            self.__treeview.heading('#%s' %(idx),text=col_name,anchor=tk.W)
+            
+        self.__treeview.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+        
+        self.__treeview.bind('<<TreeviewSelect>>', self.__notify_on_select)
+        self.__treeview.bind('<Double-1>', self.__notify_on_double_click)
         
         log_leave_func('TreeViewControl', '__build_tree')
         
@@ -590,6 +608,18 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__revise_parentlesses')
         
+        for parentless_item in self.__parentless_items:
+            self.__current_treeview_item = parentless_item
+            self.__validate_input()
+            if self.__treeview_state == TreeViewState.OK:
+                treeview_id = self.__get_treeview_id(parentless_item.id)
+                parent_id = self.__get_treeview_id(parentless_item.parent_id)
+                
+                self.__properties.move(treeview_id, parent_id, 'end')
+                self.__parentless_items.remove(parentless_item)
+                
+        if len(self.__parentless_items) == 0:
+            self.__treeview.delete(TreeViewControl.PARENTLESS_ROOT_ID)
         
         log_leave_func('TreeViewControl', '__revise_parentlesses')
         

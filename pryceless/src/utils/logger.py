@@ -52,7 +52,7 @@ def log_leave_func(__source, __function, value=None):
     time_stamp = __create_timestamp()
     source_function_str = __create_source_function_str(__source, __function)
     
-    print(' '.join(['DBG', time_stamp, 'LEAVE', source_function_str, value]))
+    print(' '.join(['DBG', time_stamp, 'LEAVE', source_function_str, str(value)]))
 
 def log_enter_func(__source, __function, parameters:dict=None):
     
@@ -71,7 +71,7 @@ def __create_parameter_str(parameters:dict):
     key_value = ''
     #create key value string
     if not parameters == None:
-        for key,value in dict.items():
+        for key,value in parameters.items():
             
             key_value = create_key_value_str(key, value)
             
@@ -90,4 +90,4 @@ def __create_timestamp():
     
     now = datetime.now()
     
-    return now
+    return str(now)

@@ -7,8 +7,6 @@ from controls.configuration_control import ConfigurationControl, \
     ConfigurationControlObserver
 from controls.overview_control import OverviewControl, \
     OverviewControlObserver
-from controls.properties_control import PropertiesControl, \
-    PropertiesControlObserver
 from main_window.abs_main_window import ABSMainWindowUI, ABSMainWindowObserver, \
     ABSMainWindowMo, MainWindowMenuKeys, ABSMainWindowModelObserver
 from main_window.main_window_mo import MainWindowMo
@@ -17,11 +15,14 @@ from overrides.overrides import overrides
 import tkinter as tk
 from tkinter.messagebox import askyesnocancel
 from utils.utils import Event
+from controls.treeview_control import TreeViewObserver, TreeViewConfiguration,\
+    TreeViewControl, TreeViewItem
+from utils.logger import log_enter_func, log_leave_func
 
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                       ConfigurationControlObserver,
-                      PropertiesControlObserver,
+                      TreeViewObserver,
                       ABSMainWindowModelObserver):
     '''
     classdocs
@@ -36,8 +37,6 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     
     __configuration: ConfigurationControl = None
     
-    __properties: PropertiesControl = None
-    
     #Window title which is displayed directly after application start.
     __base_title: str = None
 
@@ -51,8 +50,13 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         self.__configuration = ConfigurationControl(self.__gui.get_page_config_frame())
         self.__configuration.add_obeserver(self)
         
-        self.__properties = PropertiesControl(self.__gui.get_attributes_frame())
-        self.__properties.add_obeserver(self)
+        treeview_conf = TreeViewConfiguration()
+        treeview_conf.column_count = 2
+        treeview_conf.add_column_name('Property', 0)
+        treeview_conf.add_column_name('Value', 1)
+        
+        self.__properties = TreeViewControl(self.__gui.get_attributes_frame(), treeview_conf)
+        self.__properties.add_observer(self)
         
         self.__model.add_observer(self)
         
@@ -139,7 +143,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         Loads the model data into the view
         '''
         self.__configuration.remove_all()
-        self.__properties.remove_all()
+        self.__properties.remove()
         
         if not self.__model.selected() == None:
             for item in self.__model:
@@ -327,7 +331,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def on_conf_selected(self, sub_id:str)->None:
         
         self.__model.select_sub(sub_id)
-        self.__properties.remove_all()
+        self.__properties.remove()
         self.__enable_menu()
         
         if not sub_id == None:
@@ -336,15 +340,37 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def __load_properties(self):
         properties = self.__model.get_sub_data()
         for _property in properties:
-            self.__properties.insert(_property[0], _property[1], _property[2], _property[3])       
+            treeview_item = TreeViewItem()
+            treeview_item.id = _property[0]
+            treeview_item.key =  _property[1]
+            treeview_item.value =  _property[2]
+            treeview_item.parent_id =  _property[3]
+            self.__properties.insert(treeview_item)       
         
+
     @overrides
-    def on_property_selected(self, _id:str) -> None:
-        '''
-        '''
-        if not _id == None:
-            self.__model.set_property(_id)
+    def on_error(self, error_msg:str)->None:
+        log_enter_func('MainWindowCNTLR', 'on_error', {'error_msg':error_msg})
+        
+        log_leave_func('MainWindowCNTLR', 'on_error')
+
+    @overrides
+    def on_select(self, item:TreeViewItem)->None:
+        log_enter_func('MainWindowCNTLR', 'on_select', {'item':item})
+        
+        log_leave_func('MainWindowCNTLR', 'on_select')
+        
+
+    @overrides
+    def on_double_click(self, item:TreeViewItem)->None:
+        
+        log_enter_func('MainWindowCNTLR', 'on_double_click', {'item':item})
+        
+        if not item == None:
+            self.__model.set_property(item.id)
     
+        log_leave_func('MainWindowCNTLR', 'on_double_click')
+        
     @overrides
     def on_model_changed(self, change_typ:int) -> None:
         '''
