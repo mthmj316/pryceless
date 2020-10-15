@@ -30,21 +30,23 @@ class TreeViewItem():
         self.__value = None
         self.__parent_id = None
         
+        log_leave_func('TreeViewItem', '__init__')
+        
     @property
     def parent_id(self):
         '''
         returns the __parent_id
         '''
         log_getter('TreeViewItem', '__parent_id', self.__parent_id)
-        return self.__key
+        return self.__parent_id
     
     @parent_id.setter
     def parent_id(self, value):
         '''
         sets the __parent_id
         '''
-        log_setter('TreeViewItem', '__parent_id', self.__parent_id)
         self.__parent_id = value
+        log_setter('TreeViewItem', '__parent_id', self.__parent_id)
         
     @parent_id.deleter
     def parent_id(self):
@@ -60,15 +62,15 @@ class TreeViewItem():
         returns the __value
         '''
         log_getter('TreeViewItem', '__value', self.__value)
-        return self.__key
+        return self.__value
     
     @value.setter
     def value(self, value):
         '''
         sets the __value
         '''
-        log_setter('TreeViewItem', '__value', self.__value)
         self.__value = value
+        log_setter('TreeViewItem', '__value', self.__value)
         
     @value.deleter
     def value(self):
@@ -91,8 +93,8 @@ class TreeViewItem():
         '''
         sets the __key
         '''
-        log_setter('TreeViewItem', '__key', self.__key)
         self.__key = value
+        log_setter('TreeViewItem', '__key', self.__key)
         
     @key.deleter
     def key(self):
@@ -115,8 +117,8 @@ class TreeViewItem():
         '''
         sets the __is_selectable
         '''
-        log_setter('TreeViewItem', '__is_selectable', self.__is_selectable)
         self.__is_selectable = value
+        log_setter('TreeViewItem', '__is_selectable', self.__is_selectable)
         
     @is_selectable.deleter
     def is_selectable(self):
@@ -139,8 +141,8 @@ class TreeViewItem():
         '''
         sets the __is_double_clickable
         '''
-        log_setter('TreeViewItem', '__is_double_clickable', self.__is_double_clickable)
         self.__is_double_clickable = value
+        log_setter('TreeViewItem', '__is_double_clickable', self.__is_double_clickable)
         
     @is_double_clickable.deleter
     def is_double_clickable(self):
@@ -163,8 +165,8 @@ class TreeViewItem():
         '''
         sets the id
         '''
-        log_setter('TreeViewItem', '__id', self.__id)
         self.__id = value
+        log_setter('TreeViewItem', '__id', self.__id)
         
     @id.deleter
     def id(self):  # @DontTrace
@@ -282,8 +284,8 @@ class TreeViewConfiguration():
         '''
         sets the __column_count
         '''
-        log_setter('TreeViewConfiguration', '__column_count', self.__column_count)
         self.__column_count = value
+        log_setter('TreeViewConfiguration', '__column_count', self.__column_count)
         
     @column_count.deleter
     def column_count(self):  # @DontTrace
@@ -353,9 +355,8 @@ class TreeViewControl():
         self.__current_treeview_item = treeview_item
         
         new_treeview_id = self.__create_treeview_id()
-        log_set_var('TreeViewControl', 'insert', 'new_treeview_id', new_treeview_id)
 
-        self.__treeview_id_dict[new_treeview_id]: treeview_item
+        self.__treeview_id_dict[new_treeview_id] = treeview_item
         self.__added_treeview_items.append(treeview_item)
         
         self.__validate_input()
@@ -374,10 +375,10 @@ class TreeViewControl():
                 #If not add it.
                 self.__treeview.insert('', 'end', parent_id, text=TreeViewControl.PARENTLESS_ROOT_KEY)
         
-        values = []
+        values = ['']
         
         if not treeview_item.value == None:
-            values.append(treeview_item.value)
+            values = [treeview_item.value]
         
         self.__treeview.insert(parent_id, 'end', new_treeview_id, text=treeview_item.key, values=values)
         
@@ -522,7 +523,7 @@ class TreeViewControl():
         
         log_leave_func('TreeViewControl', '__create_treeview_id', treeview_id)
         
-        return treeview_id
+        return str(treeview_id)
     
     
     def __get_treeview_id(self, _id):
@@ -536,7 +537,7 @@ class TreeViewControl():
         
         searched_treeview_id = None
         
-        for treeview_id, treeview_item in self.__treeview_id_dict:
+        for treeview_id, treeview_item in self.__treeview_id_dict.items():
             if treeview_item.id == _id:
                 searched_treeview_id = treeview_id
                 break
@@ -590,7 +591,7 @@ class TreeViewControl():
         '''
         log_enter_func('TreeViewControl', '__notify_on_selection_event', {'event':event, 'is_double_click':is_double_click})
         
-        selected_treeview_item = self.__treeview_id_dict[event]
+        selected_treeview_item = self.__treeview_id_dict[event.widget.selection()[0]]
         
         for observer in self.__observers:
             if is_double_click:
@@ -618,7 +619,7 @@ class TreeViewControl():
                 self.__properties.move(treeview_id, parent_id, 'end')
                 self.__parentless_items.remove(parentless_item)
                 
-        if len(self.__parentless_items) == 0:
+        if len(self.__parentless_items) == 0 and self.__treeview.exists(TreeViewControl.PARENTLESS_ROOT_ID):
             self.__treeview.delete(TreeViewControl.PARENTLESS_ROOT_ID)
         
         log_leave_func('TreeViewControl', '__revise_parentlesses')

@@ -604,8 +604,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
               + ' tag_name=' + tag_name)
         
         properties = []
-        properties.append(('Attributes','Attributes','Attributes',None))
-        properties.append(('Events','Events','Events',None))
+        properties.append(('Attributes','Attributes',None,None))
+        properties.append(('Events','Events',None,None))
         
         html_tag_data = conf_loader.load_html_tag(tag_name)
         for attribute in html_tag_data['attributes']:
