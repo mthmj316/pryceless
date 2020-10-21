@@ -18,7 +18,8 @@ from overrides.overrides import overrides
 import scripts.configuration_loader as conf_loader
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, askdirectory
-from utils.logger import log_enter_func
+from utils.logger import log_enter_func, log_leave_func, log_set_var
+from controls.treeview_control import TreeViewItem
 
 
 TEXT = 'text'
@@ -563,24 +564,46 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             
         
     @overrides
-    def get_sub_data(self) -> dict:
+    def get_sub_data(self) -> [TreeViewItem]:
         '''
         '''
+        log_enter_func('MainWindowMo', 'get_sub_data')
+        
         split_sub_id = self.__selected_sub.split('.')
+        
+        log_set_var('MainWindowMo', 'get_sub_data','split_sub_id', split_sub_id)
         
         sub_data = self.__loaded_project_dict
         
         for _id in split_sub_id:
             sub_data = sub_data[_id]
+            
+        log_set_var('MainWindowMo', 'get_sub_data','sub_data', sub_data)
         
         properties = []
         
         defined_property = []
         
+        '''
+        treeview_item = TreeViewItem()
+            treeview_item.id = _property[0]
+            treeview_item.key =  _property[1]
+            treeview_item.value =  _property[2]
+            treeview_item.parent_id =  _property[3]
+            treev
+        '''
+        
         for key,value in sub_data.items():
             if key in self.__NONE_DISPLAY_PROPERTIES:
                 continue
-            properties.append(('.'.join([self.__selected_sub, key]),key,value,None))
+            
+            treeview_item = TreeViewItem()
+            treeview_item.id = '.'.join([self.__selected_sub, key])
+            treeview_item.key =  key
+            treeview_item.value = value
+            
+            properties.append(treeview_item)
+            # properties.append(('.'.join([self.__selected_sub, key]),key,value,None))
             defined_property.append(key)
             
         #Add other possible attributes/properties for which no value is defined.
@@ -591,6 +614,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         elif split_sub_id[0] == 'css_rules':
             
             properties += self.__prepare_css_sub_data(defined_property)
+            
+        log_leave_func('MainWindowMo', 'get_sub_data', properties)
                       
         return properties
     
@@ -600,30 +625,61 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         :param defined_properties: the names of the attributes for which a value is defined
         :param tag_name: name of the html tag for the attributes shall be prepared.
         '''
-        print('MainWindowMo.__prepare_html_attr_sub_data    defined_properties=' + str(defined_properties)
-              + ' tag_name=' + tag_name)
+        log_enter_func('MainWindowMo', '__prepare_html_attr_sub_data', 
+                       {'defined_properties':defined_properties, 'tag_name':tag_name})
         
         properties = []
-        properties.append(('Attributes','Attributes',None,None))
-        properties.append(('Events','Events',None,None))
+        
+        treeview_item = TreeViewItem()
+        treeview_item.id = 'Attributes'
+        treeview_item.key =  'Attributes'
+        treeview_item.value = None
+        treeview_item.is_double_clickable = False
+        treeview_item.is_selectable = False
+            
+        properties.append(treeview_item)
+        
+        #properties.append(('Attributes','Attributes',None,None))
+        
+        treeview_item = TreeViewItem()
+        treeview_item.id = 'Events'
+        treeview_item.key =  'Events'
+        treeview_item.value = None
+        treeview_item.is_double_clickable = False
+        treeview_item.is_selectable = False
+            
+        properties.append(treeview_item)
+        #properties.append(('Events','Events',None,None))
         
         html_tag_data = conf_loader.load_html_tag(tag_name)
         for attribute in html_tag_data['attributes']:
                 
             if attribute in defined_properties:
                 continue
-                                
-            properties.append(('.'.join([self.__selected_sub, attribute]),attribute,'','Attributes'))
+            treeview_item = TreeViewItem()
+            treeview_item.id = '.'.join([self.__selected_sub, attribute])
+            treeview_item.key =  attribute
+            treeview_item.value = None
+            treeview_item.parent_id = 'Attributes'
+            
+            properties.append(treeview_item)
+                              
+            #properties.append(('.'.join([self.__selected_sub, attribute]),attribute,'','Attributes'))
                   
         for event in html_tag_data['events']:
                 
             if event in defined_properties:
                 continue
-                                
-            properties.append(('.'.join([self.__selected_sub, event]),event,'','Events'))
+            treeview_item = TreeViewItem()
+            treeview_item.id = '.'.join([self.__selected_sub, event])
+            treeview_item.key =  event
+            treeview_item.value = None
+            treeview_item.parent_id = 'Events'
             
-        
-        print('MainWindowMo.__prepare_html_attr_sub_data    leave:' + str(properties))
+            properties.append(treeview_item)                   
+            #properties.append(('.'.join([self.__selected_sub, event]),event,'','Events'))
+            
+        log_leave_func('MainWindowMo', '__prepare_html_attr_sub_data', properties)
         
         return properties
     
@@ -632,22 +688,42 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Returns all css properties for which is not a value defined.
         :param defined_properties: Contains the names of these properties for which a value is defined.
         '''
-        
-        print('MainWindowMo.__prepare_css_sub_data    defined_properties=' + str(defined_properties))
+       
+        log_enter_func('MainWindowMo', '__prepare_html_attr_sub_data', 
+                       {'defined_properties':defined_properties}) 
         
         properties = []
-        properties.append(('Properties','Properties','Properties',None))
+        
+        treeview_item = TreeViewItem()
+        treeview_item.id = 'Properties'
+        treeview_item.key =  'Properties'
+        treeview_item.value = None
+        treeview_item.is_double_clickable = False
+        treeview_item.is_selectable = False
+            
+        properties.append(treeview_item)
+        
+        #properties.append(('Properties','Properties','Properties',None))
         
         for css_property in conf_loader.get_css_properties():
             if css_property in defined_properties:
                     continue
                 
             shorthand = conf_loader.get_css_shorthand(css_property)
+            
+            log_set_var('MainWindowMo', '__prepare_css_sub_data', 'shorthand', shorthand)
+            
+            treeview_item = TreeViewItem()
+            treeview_item.id = '.'.join([self.__selected_sub, css_property])
+            treeview_item.key =  css_property
+            treeview_item.value = None
+            treeview_item.parent_id = 'Properties' if shorthand == '' else '.'.join([self.__selected_sub, shorthand])
+            
+            properties.append(treeview_item)
                 
-            properties.append(('.'.join([self.__selected_sub, css_property]), css_property, '', 
-                               'Properties' if shorthand == '' else '.'.join([self.__selected_sub, shorthand])))
+            #properties.append(('.'.join([self.__selected_sub, css_property]), css_property, '', 'Properties' if shorthand == '' else '.'.join([self.__selected_sub, shorthand])))
         
-        print('MainWindowMo.__prepare_css_sub_data    leave:' + str(properties))
+        log_leave_func('MainWindowMo', '__prepare_css_sub_data', properties)
         
         return properties
     

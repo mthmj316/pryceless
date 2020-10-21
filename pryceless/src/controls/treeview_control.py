@@ -594,10 +594,11 @@ class TreeViewControl():
         selected_treeview_item = self.__treeview_id_dict[event.widget.selection()[0]]
         
         for observer in self.__observers:
-            if is_double_click:
+            if is_double_click and selected_treeview_item.is_double_clickable:
                 observer.on_double_click(selected_treeview_item)
             else:
-                observer.on_select(selected_treeview_item)
+                if selected_treeview_item.is_selectable:
+                    observer.on_select(selected_treeview_item)
         
         log_leave_func('TreeViewControl', '__notify_on_selection_event')
         

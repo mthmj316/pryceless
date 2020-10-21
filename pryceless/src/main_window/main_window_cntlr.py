@@ -338,13 +338,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
             self.__load_properties()
             
     def __load_properties(self):
-        properties = self.__model.get_sub_data()
-        for _property in properties:
-            treeview_item = TreeViewItem()
-            treeview_item.id = _property[0]
-            treeview_item.key =  _property[1]
-            treeview_item.value =  _property[2]
-            treeview_item.parent_id =  _property[3]
+        
+        for treeview_item in self.__model.get_sub_data():
             self.__properties.insert(treeview_item)       
         
 
@@ -376,7 +371,7 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         '''
         if change_typ == ABSMainWindowModelObserver.PROPERTY_CHANGE_TYPE:
-            self.__properties.remove_all()
+            self.__properties.remove()
             self.__load_properties()
             return
         
