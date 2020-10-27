@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 
 from tkinter import messagebox
 import tkinter as tk
+from utils.logger import log_enter_func, log_leave_func, log_msg, log_set_var,\
+    log_error
 
 
 class ABSCreateCssRuleSetObserver(ABC):
@@ -55,8 +57,7 @@ class CreateCssRuleSet(object):
         Constructor
         '''
         
-        print('CreateCssRuleSet.__init__    observer=' + str(observer) + 
-              ' master' + str(master))
+        log_enter_func('CreateCssRuleSet', '__init__', {'observer':observer, 'master':master})
         
         self.__observer = observer
         self.__selector_type_var = tk.StringVar(master)
@@ -67,64 +68,76 @@ class CreateCssRuleSet(object):
         
         self.__css_dialog(master)
         
+        log_leave_func('CreateCssRuleSet', '__init__')
+        
 
     def __on_selector_type_selected(self, event):
         
-        print('CreateCssRuleSet.__on_selector_type_selected    event=' + str(event))
+        log_enter_func('CreateCssRuleSet', '__on_selector_type_selected', {'event':event})
         
         if self.__is_compound(event):
             
-            print('CreateCssRuleSet.__on_selector_type_selected    second selector input visible')
+            log_msg('CreateCssRuleSet', '__on_selector_type_selected', 'second selector input visible')
                     
             self.__selector_part_2_lbl.grid(row=0,column=2, padx=0, sticky=tk.W)
             self.__selector_part_2_entry.grid(row=0,column=3, columnspan=1,sticky=tk.W, padx=0)
             
             if event == CreateCssRuleSet.__ELEMENT_CLASS_SELECTOR:
-                
-                print('CreateCssRuleSet.__on_selector_type_selected    selector compound separator=.')
+            
+                log_msg('CreateCssRuleSet', '__on_selector_type_selected', 'selector compound separator="."')
             
                 self.__selector_part_2_lbl.config(text='.')
             else:
-                
-                print('CreateCssRuleSet.__on_selector_type_selected    selector compound=#')
+            
+                log_msg('CreateCssRuleSet', '__on_selector_type_selected', 'selector compound="#"')
                 
                 self.__selector_part_2_lbl.config(text='#')
             
         else:
             
-            print('CreateCssRuleSet.__on_selector_type_selected    second selector input invisible')
+            log_msg('CreateCssRuleSet', '__on_selector_type_selected', 'second selector input invisible')
             
             self.__selector_part_2_lbl.grid_forget()
             self.__selector_part_2_entry.grid_forget()
         
+        log_leave_func('CreateCssRuleSet', '__on_selector_type_selected')
+        
     def __is_compound(self, selector_type):
         
-        if selector_type in [CreateCssRuleSet.__ELEMENT_CLASS_SELECTOR, CreateCssRuleSet.__ELEMENT_ID_SELECTOR]:
-            return True
-        else:
-            return False
+        log_enter_func('CreateCssRuleSet', '__is_compound', {'selector_type':selector_type})
         
+        is_compound = False
+        
+        if selector_type in [CreateCssRuleSet.__ELEMENT_CLASS_SELECTOR, CreateCssRuleSet.__ELEMENT_ID_SELECTOR]:
+        
+            is_compound = True
+        
+        log_leave_func('CreateCssRuleSet', '__is_compound', is_compound)
+        
+        return is_compound
     
     def __on_ok(self):
         
-        print('CreateCssRuleSet.__on_ok')
+        log_enter_func('CreateCssRuleSet', '__on_ok')
         
         selector_type = self.__selector_type_var.get()
-        print('CreateCssRuleSet.__on_ok    selector_type=' + str(selector_type))
+        log_set_var('CreateCssRuleSet', '__on_ok', 'selector_type', selector_type)
         
         is_compound = self.__is_compound(selector_type)
-        print('CreateCssRuleSet.__on_ok    is_compound=' + str(is_compound))
+        log_set_var('CreateCssRuleSet', '__on_ok', 'is_compound', is_compound)
         
         if not self.__check_user_input(is_compound):
-            print('CreateCssRuleSet.__on_ok    user input check failed')
-            return
             
+            log_error('CreateCssRuleSet', '__on_ok', 'user input check failed')
+            log_leave_func('CreateCssRuleSet', '__on_ok')
+            
+            return
         
         selector_element = self.__get_selector_element(selector_type)
-        print('CreateCssRuleSet.__on_ok    selector_element=' + str(selector_element))
+        log_set_var('CreateCssRuleSet', '__on_ok', 'selector_element', selector_element)
         
         selector_specifier = self.__get_selector_specifier(selector_type, is_compound)
-        print('CreateCssRuleSet.__on_ok    selector_specifier=' + str(selector_specifier))
+        log_set_var('CreateCssRuleSet', '__on_ok', 'selector_specifier', selector_specifier)
         
         self.__dialog.destroy()
         
@@ -133,76 +146,99 @@ class CreateCssRuleSet(object):
                                                        selector_specifier, 
                                                        is_compound,
                                                        self.__SELECTOR_TYPE_SEP.get(selector_type)))
+        
+        log_leave_func('CreateCssRuleSet', '__on_ok')
     
     def __check_user_input(self, is_compound):
         
-        print('CreateCssRuleSet.__check_user_input    is_compound' + str(is_compound))
+        log_enter_func('CreateCssRuleSet', '__check_user_input', {'is_compound':is_compound})
+        
+        user_input_ok = True
         
         if self.__selector_var.get() == '':
             
+            log_error('CreateCssRuleSet', '__check_user_input', 'Selector not set!', None)
+            
             messagebox.showerror('Input Error', 'Selector not set!')
 
-            return False
+            user_input_ok = False
         
         
         if is_compound and self.__selector_sec_part_var.get() == '':
-            messagebox.showerror('Input Error', 'Selector second part not set!')
-            return False
+            
+            log_error('CreateCssRuleSet', '__check_user_input', 'Selector second part not set!', None)
+            
+            user_input_ok = False
+            
+        log_leave_func('CreateCssRuleSet', '__check_user_input', user_input_ok)
         
-        return True
+        return user_input_ok
             
         
     
     def __get_selector_specifier(self, selector_type, is_compound):
         
-        print('CreateCssRuleSet.__get_selector_specifier    selector_type' + str(selector_type) +
-              ' is_compound=' + str(is_compound))
+        log_enter_func('CreateCssRuleSet', '__get_selector_specifier', 
+                       {'selector_type':selector_type, 'is_compound':is_compound})
+        
+        selector_specifier = None
         
         if not selector_type.startswith('Element'):
-            return self.__selector_var.get()
+            selector_specifier = self.__selector_var.get()
         else:
-            return self.__selector_sec_part_var.get() if is_compound else ''
+            selector_specifier = self.__selector_sec_part_var.get() if is_compound else ''
+        
+        log_leave_func('CreateCssRuleSet', '__get_selector_specifier', selector_specifier)
+        
+        return selector_specifier
         
     
     def __get_selector_element(self, selector_type):
         
-        print('CreateCssRuleSet.__get_selector_element    selector_type' + str(selector_type))
+        log_enter_func('CreateCssRuleSet', '__get_selector_element', {'selector_type':selector_type})
+        
+        selector_element = None
         
         if not selector_type.startswith('Element'):
-            return ''
+            selector_element = ''
         else:
-            return self.__selector_var.get()
+            selector_element = self.__selector_var.get()
+        
+        log_leave_func('CreateCssRuleSet', '__get_selector_element', selector_element)
+        
+        return selector_element
         
         
         
     def __on_cancel(self):
         
-        print('CreateCssRuleSet.__on_cancel')
+        log_enter_func('CreateCssRuleSet', '__on_cancel')
         
         self.__dialog.destroy()
         self.__observer.on_create_css_rule_set_closed()
+        
+        log_leave_func('CreateCssRuleSet', '__on_cancel')
     
     
     def __css_dialog(self, master):
         '''
         '''
         
-        print('CreateCssRuleSet.__css_dialog    master=' + str(master))
+        log_enter_func('CreateCssRuleSet', '__css_dialog', {'master':master})
         
         self.__dialog = tk.Toplevel(master)
         self.__dialog.title('Create New CSS Rule Set')
         self.__top_frame = tk.Frame(self.__dialog)
         self.__top_frame.pack(fill=tk.BOTH, side=tk.TOP, expand=True, padx=10, pady=10)
+            
+        log_msg('CreateCssRuleSet', '__css_dialog', 'topLevel and main frame created')
         
-        print('CreateCssRuleSet.__css_dialog    topLevel and main frame created')
-
         tk.Label(self.__top_frame, text='Selector Type:', anchor=tk.W).grid(row=0,column=0, padx=10, sticky=tk.W)
         tk.OptionMenu(self.__top_frame, self.__selector_type_var, 
                       *CreateCssRuleSet.__selectors,
                       command=self.__on_selector_type_selected).grid(row=0,column=1, columnspan=3,sticky=tk.EW, padx=10)
         
-        
-        print('CreateCssRuleSet.__css_dialog    selector type selection created')
+        log_msg('CreateCssRuleSet', '__css_dialog', 'selector type selection created')
         
         selector_frame = tk.Frame(self.__top_frame)
         selector_frame.grid(row=1,column=0, columnspan=2, padx=10, sticky=tk.W)
@@ -214,7 +250,7 @@ class CreateCssRuleSet(object):
         self.__selector_part_2_lbl = tk.Label(selector_frame, text='#', anchor=tk.W)
         self.__selector_part_2_entry = tk.Entry(selector_frame, textvariable=self.__selector_sec_part_var)
         
-        print('CreateCssRuleSet.__css_dialog    selector input created')
+        log_msg('CreateCssRuleSet', '__css_dialog', 'selector input created')
         
         buttons_frame = tk.Frame(self.__dialog)
         buttons_frame.pack(fill=tk.X, side=tk.BOTTOM, padx=20)
@@ -222,5 +258,9 @@ class CreateCssRuleSet(object):
         tk.Button(buttons_frame, text='Ok', command=self.__on_ok).pack(side=tk.LEFT, padx=1)
         tk.Button(buttons_frame, text='Cancel', command=self.__on_cancel).pack(side=tk.LEFT, padx=1)
         
-        print('CreateCssRuleSet.__css_dialog    button row created')
+        log_leave_func('CreateCssRuleSet', '__css_dialog')
+        
+    ###################################################################
+    ###################################################################
+    ###################################################################
         
