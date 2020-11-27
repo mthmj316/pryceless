@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from scripts.configuration_loader import load_html_description
 from tkinter import messagebox
 import tkinter as tk
+from utils.logger import log_enter_func, log_leave_func
 
 
 class ABSHTMLDialogObserver(ABC):
@@ -30,7 +31,9 @@ class CreateTagDialog():
     __position_var: tk.StringVar = None
     
     def __init__(self, observer:ABSHTMLDialogObserver, master=None):
-         
+        
+        log_enter_func('CreateTagDialog', '__init__', {'observer':observer, 'master':master})
+                 
         self.__observer = observer
         
         self.__id_var = tk.StringVar()
@@ -38,10 +41,14 @@ class CreateTagDialog():
         self.__position_var = tk.StringVar()
 
         self.__tag_dialog(master)
+        
+        log_leave_func('CreateTagDialog', '__init__')
 
     def __tag_dialog(self, master):
+        
         '''
         '''
+        log_enter_func('CreateTagDialog', '__tag_dialog', {'master':master})
         
         self.__dialog = tk.Toplevel(master)
         self.__dialog.title('Create New Tag')
@@ -72,7 +79,11 @@ class CreateTagDialog():
         tk.Button(buttons_frame, text='Ok', command=self.__on_ok).pack(side=tk.LEFT, padx=1)
         tk.Button(buttons_frame, text='Cancel', command=self.__on_cancel).pack(side=tk.LEFT, padx=1)
         
+        log_leave_func('CreateTagDialog', '__tag_dialog')
+        
     def __on_ok(self):
+        
+        log_enter_func('CreateTagDialog', '__on_ok')
         
         tag_id = self.__id_var.get()
         tag = self.__tag_var.get()
@@ -90,12 +101,29 @@ class CreateTagDialog():
             self.__dialog.destroy()
             self.__observer.on_create_tag_closed((tag_id, tag, position))
         
+        log_leave_func('CreateTagDialog', '__on_ok')
+        
     def __on_cancel(self):
+        
+        log_enter_func('CreateTagDialog', '__on_cancel')
+        
         self.__dialog.destroy()
         self.__observer.on_create_tag_closed()
+        
+        log_leave_func('CreateTagDialog', '__on_cancel')
         
     
     def unregister_observer(self):
         '''
         '''
+        
+        log_enter_func('CreateTagDialog', 'unregister_observer')
+        
         del self.__observer
+        
+        log_leave_func('CreateTagDialog', 'unregister_observer')
+        
+###################################################################
+###################################################################
+###################################################################
+        

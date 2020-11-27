@@ -17,7 +17,7 @@ from tkinter.messagebox import askyesnocancel
 from utils.utils import Event
 from controls.treeview_control import TreeViewObserver, TreeViewConfiguration,\
     TreeViewControl, TreeViewItem
-from utils.logger import log_enter_func, log_leave_func
+from utils.logger import log_enter_func, log_leave_func, log_set_var
 
 
 class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
@@ -44,6 +44,9 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         '''
         Constructor
         '''
+        log_enter_func('MainWindowCNTLR', '__init__')
+        
+        
         self.__overview = OverviewControl(self.__gui.get_page_overview_frame())
         self.__overview.add_obeserver(self)
         
@@ -54,16 +57,23 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         treeview_conf.column_count = 2
         treeview_conf.add_column_name('Property', 0)
         treeview_conf.add_column_name('Value', 1)
+                
+        log_set_var('MainWindowCNTLR', '__init__', 'treeview_conf', treeview_conf)
         
         self.__properties = TreeViewControl(self.__gui.get_attributes_frame(), treeview_conf)
         self.__properties.add_observer(self)
         
         self.__model.add_observer(self)
         
+        log_leave_func('MainWindowCNTLR', '__init__')
+        
         
     def show(self, title:str='TITLE'):
         '''
-        '''   
+        '''  
+        log_enter_func('MainWindowCNTLR', 'show', {'title':title})
+        
+        
         self.__gui.pack(side="top", fill="both", expand=True)
         self.__gui.register_observer(self)        
         
@@ -78,21 +88,29 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         self.__root.title(self.__base_title)
         self.__root.mainloop()
         
+        log_leave_func('MainWindowCNTLR', 'show')
+        
     @overrides
     def on_save_as(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_save_as', {'event':event})
+        
+        log_leave_func('MainWindowCNTLR', 'on_save_as')
         
     @overrides
     def on_save(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_save', {'event':event})
         self.__model.save()
+        log_leave_func('MainWindowCNTLR', 'on_save')
         
     @overrides
     def on_open(self, event:Event) -> None:  # @UnusedVariable
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_open', {'event':event})
         # if project is open:
         #    if project is changed
         #        open askyesno: save changes
@@ -108,6 +126,8 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         #    load data into the main window
         
         is_project_open = self.__model.is_project_open()
+                
+        log_set_var('MainWindowCNTLR', 'on_open', 'is_project_open', is_project_open)
         
         open_askopenfilename = False
         
@@ -120,36 +140,53 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
             
         
         if open_askopenfilename:
-            is_project_open = self.__model.open_project()
+            is_project_open = self.__model.open_project()       
+            log_set_var('MainWindowCNTLR', 'on_open', 'is_project_open', is_project_open)
 
         if is_project_open:
             #Load data into the ui
             self.__load_data_in_view()
         
         self.__enable_menu()
+        
+        log_leave_func('MainWindowCNTLR', 'on_open')
     
     def __load_data_in_view(self):
+        log_enter_func('MainWindowCNTLR', '__load_data_in_view')
+        
         self.__update_title()
         self.__load_page_config()
         self.__load_page_overview()
         self.__configuration.select(self.__model.selected_sub())
         
+        log_leave_func('MainWindowCNTLR', '__load_data_in_view')
+        
     def __update_title(self):
+        log_enter_func('MainWindowCNTLR', '__update_title')
+        
         self.__root.title(' - '.join([self.__base_title,
                                       self.__model.get_project_name()]))
+        
+        log_leave_func('MainWindowCNTLR', '__update_title')
     
     def __load_page_config(self):
         '''
         Loads the model data into the view
         '''
+        log_enter_func('MainWindowCNTLR', '__load_page_config')
+        
         self.__configuration.remove_all()
         self.__properties.remove()
         
         if not self.__model.selected() == None:
             for item in self.__model:
                 self.__configuration.insert_conf(item[0], item[2], item[1])
+        
+        log_leave_func('MainWindowCNTLR', '__load_page_config')
     
     def __load_page_overview(self):
+        log_enter_func('MainWindowCNTLR', '__load_page_overview')
+        
         self.__overview.remove_all()
         
         overview = self.__model.get_overview_data()
@@ -157,7 +194,9 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         for page_id in overview.keys():
             self.__overview.insert(page_id, overview[page_id])
             
-        self.__overview.select(self.__model.selected())    
+        self.__overview.select(self.__model.selected())   
+        
+        log_leave_func('MainWindowCNTLR', '__load_page_overview') 
                 
         
     def __enable_menu(self):
@@ -175,10 +214,13 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         #Generate -> Project must be opend
         #Add ... -> Tag must be selected
         # Delete ... -> dto 
+        log_enter_func('MainWindowCNTLR', '__enable_menu')
         
         self.__gui.enable_menu_project_depending(self.__model.is_project_open())
         self.__gui.enable_menu_overview_depending(self.__model.is_selected())
         self.__gui.enable_menu_conf_depending(self.__model.is_sub_selected())
+        
+        log_leave_func('MainWindowCNTLR', '__enable_menu') 
         
     def __check_and_save_changes(self) -> bool:
         '''
@@ -193,10 +235,15 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         Note: Only if this method returns True the process may be continued.
         If False is returned the process must be discontinued
         '''
+        log_enter_func('MainWindowCNTLR', '__check_and_save_changes')
+        
         if self.__model.has_changes():
             #Model is changed -> ask user if changes shall be saved.                
                 user_answer = askyesnocancel('Save on close', 
-                                     'Save changes before closing the project?')
+                                     'Save changes before closing the project?')  
+                              
+                log_set_var('MainWindowCNTLR', '__check_and_save_changes', 'user_answer', user_answer)
+                
                 if not user_answer == None:
                     #Either 'yes' or 'no' has been pressed
                     #Hence True must be returned
@@ -205,20 +252,27 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
                         #Save project and open a new one
                         self.__model.save()
                         
+                    log_leave_func('MainWindowCNTLR', '__check_and_save_changes', True) 
                     return True
                 else:
                     # cancel has been pressed 
                     #-> process must be discontinued
+                    log_leave_func('MainWindowCNTLR', '__check_and_save_changes', False) 
                     return False
         else:
             #Model is unchanged
+            log_leave_func('MainWindowCNTLR', '__check_and_save_changes', True) 
             return True
+        
         
     @overrides
     def on_new(self, event:Event) -> None:
         '''
         '''
-        print(event.event_source)
+        log_enter_func('MainWindowCNTLR', 'on_new', {'event':event})
+        
+        log_set_var('MainWindowCNTLR', 'on_new', 'event.event_source', event.event_source)
+        
         if event.event_source == MainWindowMenuKeys.KEY_PROJECT:
             
             if self.__model.is_project_open() \
@@ -243,17 +297,22 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         elif event.event_source == MainWindowMenuKeys.KEY_VARIABLE:
             self.__model.create_variable()
             self.__load_data_in_view()
+        
+        log_leave_func('MainWindowCNTLR', 'on_new') 
             
             
     @overrides
     def on_exit(self, event:Event) -> None:  # @UnusedVariable
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_exit', {'event':event})
         
         perform_exit = True
         
         if self.__model.is_project_open():
             perform_exit = self.__check_and_save_changes()
+        
+        log_set_var('MainWindowCNTLR', 'on_exit', 'perform_exit', perform_exit)
         
         #if perform_exit == False, then the user has canceled
         # the exit during the check and save changes process.
@@ -261,15 +320,24 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
             self.__gui.unregister_observer(self)
             self.__root.quit()
         
+        log_leave_func('MainWindowCNTLR', 'on_exit') 
+        
     @overrides
     def on_undo(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_undo', {'event':event})
+        
+        log_leave_func('MainWindowCNTLR', 'on_undo') 
     
     @overrides
     def on_rename(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_rename', {'event':event})
+        
+        log_set_var('MainWindowCNTLR', 'on_rename', 'event.event_source', event.event_source)
+        
         if event.event_source == MainWindowMenuKeys.KEY_RENAME_PROJECT:
             self.__model.rename_project()
             self.__load_data_in_view()
@@ -277,58 +345,72 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         elif event.event_source == MainWindowMenuKeys.KEY_RENAME:
             self.__model.rename()
             self.__load_data_in_view()
+            
+        log_leave_func('MainWindowCNTLR', 'on_rename') 
         
     @overrides
     def on_edit(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_edit', {'event':event})
+        
+        log_leave_func('MainWindowCNTLR', 'on_edit') 
         
     @overrides
     def on_add(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_add', {'event':event})
+        
         if event.event_source == MainWindowMenuKeys.KEY_ADD_CHILD:
             self.__model.create_child()
         elif event.event_source == MainWindowMenuKeys.KEY_ADD_ATTRIBUTE:
             self.__model.add_property()
         elif event.event_source == MainWindowMenuKeys.KEY_ADD_TEXT:
             self.__model.set_text()
+            
+        log_leave_func('MainWindowCNTLR', 'on_add') 
         
     @overrides
     def on_delete(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_edit', {'event':event})
+        
+        log_leave_func('MainWindowCNTLR', 'on_edit') 
         
     @overrides
     def on_generate(self, event:Event) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_generate', {'event':event})
+        
+        log_leave_func('MainWindowCNTLR', 'on_generate') 
         
     @overrides
     def on_move(self, event:Event) -> None:
         '''
         '''  
+        log_enter_func('MainWindowCNTLR', 'on_move', {'event':event})
+        
+        log_leave_func('MainWindowCNTLR', 'on_move') 
     
     @overrides
     def on_page_selected(self, page_id:str)-> None:
         '''
         '''
-        
-        print('MainWindowCNTLR.on_page_selected    ' + str(page_id))
+        log_enter_func('MainWindowCNTLR', 'on_page_selected', {'page_id':page_id})
         
         self.__model.select(page_id)
         self.__load_page_config()
         self.__enable_menu()
         
-        '''
-        print(page_id)
-        
-        for item in self.__model:
-            print(item)  
-        '''
+        log_leave_func('MainWindowCNTLR', 'on_page_selected') 
         
     @overrides
     def on_conf_selected(self, sub_id:str)->None:
+        
+        log_enter_func('MainWindowCNTLR', 'on_conf_selected', {'sub_id':sub_id})
         
         self.__model.select_sub(sub_id)
         self.__properties.remove()
@@ -337,10 +419,16 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
         if not sub_id == None:
             self.__load_properties()
             
+        log_leave_func('MainWindowCNTLR', 'on_conf_selected') 
+            
     def __load_properties(self):
         
+        log_enter_func('MainWindowCNTLR', '__load_properties')
+        
         for treeview_item in self.__model.get_sub_data():
-            self.__properties.insert(treeview_item)       
+            self.__properties.insert(treeview_item)    
+            
+        log_leave_func('MainWindowCNTLR', '__load_properties')    
         
 
     @overrides
@@ -370,10 +458,18 @@ class MainWindowCNTLR(ABSMainWindowObserver, OverviewControlObserver,
     def on_model_changed(self, change_typ:int) -> None:
         '''
         '''
+        log_enter_func('MainWindowCNTLR', 'on_model_changed', {'change_typ':change_typ})
+        
         if change_typ == ABSMainWindowModelObserver.PROPERTY_CHANGE_TYPE:
             self.__properties.remove()
             self.__load_properties()
             return
         
         self.__load_data_in_view()
+        
+        log_leave_func('MainWindowCNTLR', 'on_model_changed')
+        
+###################################################################
+###################################################################
+###################################################################
         
