@@ -57,8 +57,9 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         Constructor
         '''
-        print('MainWindowMo.__init__')
-        print('MainWindowMo.__init__    __last_project_folder= ' + str(self.__last_project_folder))
+        log_enter_func('MainWindowMo', '__init__')
+        
+        log_leave_func('MainWindowMo', '__init__')
     
     
     @overrides
@@ -81,26 +82,25 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                         if txt_conf['id'] == result[1]:
                             internal_id_text_collection = '.'.join([TEXT, txtcol_id, 'content', txt_id])
                     break
-                
-            print('MainWindowMo.on_text_selected    internal_id_text_collection='
-                  + str(internal_id_text_collection))
+                         
+            log_set_var('MainWindowMo', 'on_text_selected', 'internal_id_text_collection', internal_id_text_collection)
 
             #the configuration of the selected sub element (__selected_sub)
-            sub_conf = self.__conf_of(self.__selected_sub)
-            print('MainWindowMo.on_text_selected    sub_conf=' + str(sub_conf))                 
+            sub_conf = self.__conf_of(self.__selected_sub)             
+            log_set_var('MainWindowMo', 'on_text_selected', 'sub_conf', sub_conf)
             
-            sub_conf[INNER_TEXT] = internal_id_text_collection
-            
-            print('MainWindowMo.on_text_selected    sub_conf=' + str(sub_conf))   
+            sub_conf[INNER_TEXT] = internal_id_text_collection            
+            log_set_var('MainWindowMo', 'on_text_selected', 'sub_conf', sub_conf)
             
             self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
-            
+        
+        log_leave_func('MainWindowMo', 'on_text_selected')   
                
     @overrides
     def set_text(self):
         '''
         '''
-        print('MainWindowMo.set_text')
+        log_enter_func('MainWindowMo', 'set_text')
         text_elements = []
 
         for text,text_conf in self.__loaded_project_dict[TEXT].items():
@@ -109,37 +109,46 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                                       text_frag_conf[INTERNAL_ID], 
                                       text_frag_conf[TEXT]))
                 
+                     
+        log_set_var('MainWindowMo', 'set_text', 'text_elements', text_elements)
         
         SelectText(text_elements, self)
+        
+        log_leave_func('MainWindowMo', 'set_text')   
     
     @overrides
     def is_sub_selected(self) -> bool:
         '''
         Returns True if a sub element is selcted. 
         '''
+        log_enter_func('MainWindowMo', 'is_sub_selected')
+        
         _is = not self.__selected_sub == None
-        print('MainWindowMo.is_sub_selected    ' + str(_is))
+        
+        log_leave_func('MainWindowMo', 'is_sub_selected', '_is',_is) 
+        
         return _is
         
     @overrides
     def delete_property(self, property_id:str):
         '''
         '''
-        print('MainWindowMo.delete_property')
-        print(property_id)
+        log_enter_func('MainWindowMo', 'delete_property', {'property_id':property_id})
+        
+        log_leave_func('MainWindowMo', 'delete_property')   
         
     @overrides
     def on_create_tag_closed(self, result=None):
         '''
         '''
-        print('MainWindowMo.on_create_tag_closed')
+        log_enter_func('MainWindowMo', 'on_create_tag_closed', {'result':result})
         if not result == None:
             
             split_selected_id = self.__selected_id.split('.')
-            print('MainWindowMo.on_create_tag_closed    split_selected_id' + str(split_selected_id))
+            log_set_var('MainWindowMo', 'on_create_tag_closed', 'text_elements', split_selected_id)
             
             selected_page_conf = self.__loaded_project_dict[PAGES][split_selected_id[-1]]
-            print('MainWindowMo.on_create_tag_closed    selected_page_conf' + str(selected_page_conf))
+            log_set_var('MainWindowMo', 'on_create_tag_closed', 'selected_page_conf', selected_page_conf)
 
             parent_iid = ''
 
@@ -151,28 +160,29 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                     messagebox.showerror('Input Error', 'Root element already exists!')
                     return
             
-            print('MainWindowMo.on_create_tag_closed    parent_iid=' + str(parent_iid))
+            log_set_var('MainWindowMo', 'on_create_tag_closed', 'parent_iid', parent_iid)
             
             self.__insert_tag(result, split_selected_id[-1], parent_iid)
             self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
-                    
+         
+        log_leave_func('MainWindowMo', 'on_create_tag_closed')             
     
     def __create_internal_id(self):
         
+        log_enter_func('MainWindowMo', '__create_internal_id')
+        
         internal_id = str(time.time()).replace('.', '_')
-        print('MainWindowMo.__create_internal_id    ' + internal_id)
+        
+        log_leave_func('MainWindowMo', '__create_internal_id','internal_id',internal_id)
         
         return internal_id
                     
     def __insert_tag(self, tag_basic_data, page_id, parent_iid):
         
-        print('MainWindowMo.__insert_tag    tag_basic_data=' 
-              + str(tag_basic_data) + 
-              ' page_id=' + str(page_id) + 
-              ' parent_iid=' + str(parent_iid))
+        log_enter_func('MainWindowMo', '__insert_tag', {'tag_basic_data':tag_basic_data,'page_id':page_id,'parent_iid':parent_iid})
         
         internal_id = self.__create_internal_id()
-        print('MainWindowMo.__insert_tag    internal_id' + str(internal_id))
+        log_set_var('MainWindowMo', '__insert_tag', 'internal_id', internal_id)
         
         tag = {
             'id': tag_basic_data[0],
@@ -180,24 +190,23 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             INTERNAL_ID: internal_id,
             'parent_id': parent_iid
         }
-        print('MainWindowMo.__insert_tag    tag' + str(tag))
+        log_set_var('MainWindowMo', '__insert_tag', 'tag', tag)
         
         page = self.__loaded_project_dict[PAGES][page_id]
-        print('MainWindowMo.__insert_tag    page=' + str(page))
+        log_set_var('MainWindowMo', '__insert_tag', 'page', page)
         
         page['content'][internal_id] = tag
-        print('MainWindowMo.__insert_tag    page=' + str(page))
+        log_set_var('MainWindowMo', '__insert_tag', 'page', page)
         
         self.__update_page_struct(tag_basic_data[2], internal_id, page['struct'], parent_iid)
-    
+        
+        log_leave_func('MainWindowMo', '__insert_tag')  
+        
     def __update_page_struct(self, position, internal_id, struct, parent_iid):
         # logging next
         
-        print('MainWindowMo.__update_page_struct    position=' 
-              + str(position) + 
-              ' internal_id=' + str(internal_id) +
-              ' struct=' + str(struct) +
-              ' parent_iid=' + str(parent_iid))
+        log_enter_func('MainWindowMo', '__update_page_struct', {'position':position,'internal_id':internal_id,
+                                                                'struct':struct, 'parent_iid':parent_iid})
         
         if self.__selected_sub == None:
             #New tag must be root
@@ -210,6 +219,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 children_for_parent_iid = struct[parent_iid].split(',')
             else :
                 children_for_parent_iid = []
+            
+            log_set_var('MainWindowMo', '__update_page_struct', 'children_for_parent_iid', children_for_parent_iid)
                 
             # position must be converted to str
             # and decremented by 1
@@ -217,10 +228,18 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             idx = int(position) - 1
             
             children_for_parent_iid.insert(idx, internal_id)
+            
+            log_set_var('MainWindowMo', '__update_page_struct', 'children_for_parent_iid', children_for_parent_iid)
+            
             struct[parent_iid] = ','.join(children_for_parent_iid)
                     
             # add internal_id to to struct with empty child info
-            struct[internal_id] = ''    
+            struct[internal_id] = ''
+            
+        
+        log_set_var('MainWindowMo', '__update_page_struct', 'struct', struct)
+        
+        log_leave_func('MainWindowMo', '__update_page_struct')  
     
     @overrides
     def create_child(self)-> bool:
@@ -1216,6 +1235,11 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         
         
         print('MainWindowMo.on_create_css_rule_set_closed    leave')
+        
+###################################################################
+###################################################################
+###################################################################
+        
         
         
         
