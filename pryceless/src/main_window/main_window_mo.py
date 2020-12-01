@@ -18,7 +18,7 @@ from overrides.overrides import overrides
 import scripts.configuration_loader as conf_loader
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, askdirectory
-from utils.logger import log_enter_func, log_leave_func, log_set_var
+from utils.logger import log_enter_func, log_leave_func, log_set_var, log_msg
 from controls.treeview_control import TreeViewItem
 
 
@@ -245,7 +245,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     def create_child(self)-> bool:
         '''
         '''
-        print('MainWindowMo.create_child')
+        log_enter_func('MainWindowMo', 'create_child')
         
         if self.__selected_id.startswith(PAGES):
             CreateTagDialog(self)
@@ -254,9 +254,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         elif self.__selected_id.startswith('css_rules'):
             CreateCssRuleSet(self)
     
+        log_leave_func('MainWindowMo', 'create_child', True) 
+        
+        return True
+    
     def __create_new_text_element(self):
         
-        print('MainWindowMo.__create_new_text_element')
+        log_enter_func('MainWindowMo', '__create_new_text_element')
         
         name = ''
         initial_value = name
@@ -266,6 +270,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             name = simpledialog.askstring('New Text ...', 
                                           'Enter the name of the text element:',
                                           initialvalue=initial_value)
+            
+            log_set_var('MainWindowMo', '__create_new_text_element', 'name', name)
         
             content = self.__current_content()
         
@@ -274,18 +280,32 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                                      'Item "%s" already exists.' %(name))
                 initial_value = name
                 name = ''
+                
+                log_msg('MainWindowMo', '__create_new_text_element', 'name exists')
+                
             elif name == None:
+                
+                log_msg('MainWindowMo', '__create_new_text_element', 'user cancelled')
+                
                 return
             else:
                 internal_id = self.__create_internal_id()
+                
+                log_set_var('MainWindowMo', '__create_new_text_element', 'internal_id', internal_id)  
+                
                 new_text = {
                     'id': name,
                     'name': name,
                     INTERNAL_ID: internal_id,
                     TEXT: ''
                 }
+                
+                log_set_var('MainWindowMo', '__create_new_text_element', 'new_text', new_text)  
+                
                 content[internal_id] = new_text
                 self.__notify_observer(ABSMainWindowModelObserver.CONFIGURATION_CHANGE_TYPE)
+        
+        log_leave_func('MainWindowMo', '__create_new_text_element', True) 
                 
     
     def __exists_name(self, name, content):
@@ -293,23 +313,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Returns True if the given name exists
         in the given content, otherwise False.
         '''
-        print('MainWindowMo.__update_page_struct name=' 
-              + str(name) + 
-              ' content=' + str(content))
+        log_enter_func('MainWindowMo', '__exists_name',{'name':name,'content':content})
         
-        return True if name in self.__names_in_content(content) else False
+        exists = True if name in self.__names_in_content(content) else False
+        
+        log_leave_func('MainWindowMo', '__exists_name', exists) 
+        
+        return exists
         
     def __names_in_content(self, content):
         '''
         Returns all names within the given content,
         or an empty array if none is conatined.
         '''
-        print('MainWindowMo.__names_in_content ' +
-              ' content=' + str(content))        
+        log_enter_func('MainWindowMo', '__names_in_content',{'content':content})
+
         names = []
         
         for value in content.values():
             names.append(value['name'])
+        
+        log_leave_func('MainWindowMo', '__names_in_content', names) 
         
         return names
         
@@ -319,17 +343,20 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         which the currently selected id (e.g. selected page)
         points
         '''
-        print('MainWindowMo.__current_conf')
+        log_enter_func('MainWindowMo', '__current_conf')
         
-        return self.__conf_of(self.__selected_id)
+        current_conf = self.__conf_of(self.__selected_id)
+        
+        log_leave_func('MainWindowMo', '__current_conf', current_conf)
+        
+        return current_conf
     
     def __conf_of(self, id_path):
         '''
         Returns the configuration to which
         the given id_path points.
         '''
-        print('MainWindowMo.__conf_of    ' +
-              'id_path=' + str(id_path))
+        log_enter_func('MainWindowMo', '__conf_of',{'id_path':id_path})
         
         conf = None
         
@@ -342,8 +369,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 if _id in conf:
                     conf = conf[_id]
         
-        print('MainWindowMo.__conf_of    ' +
-              'conf=' + str(conf))
+        log_leave_func('MainWindowMo', '__conf_of', conf)
         
         return conf
     
@@ -352,9 +378,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Returns the content of the currently selected page, css rule, ...       
         If nothing is selected None will be returned.
         '''
-        print('MainWindowMo.__current_content')
+        log_enter_func('MainWindowMo', '__current_content')
         
-        return self.__content_of(self.__selected_id)
+        current_content = self.__content_of(self.__selected_id)
+        
+        log_leave_func('MainWindowMo', '__current_content', current_content)
+        
+        return current_content
 
     def __content_of(self, id_path):
         '''
@@ -363,12 +393,16 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         If id_path == None or there is no content element
         None will be returned
         '''
+        log_enter_func('MainWindowMo', '__content_of',{'id_path':id_path})
+        
         content = self.__conf_of(id_path)
         
         if 'content' in content:
             content = content['content']
         else:
             content = None
+        
+        log_leave_func('MainWindowMo', '__content_of', content)
             
         return content
     
@@ -376,31 +410,48 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     def rename(self)->None:
         '''
         '''
+        log_enter_func('MainWindowMo', 'rename')
         
         split_selected_id = self.__selected_id.split('.')
+        
+        log_set_var('MainWindowMo', 'rename', 'split_selected_id', split_selected_id)  
+        
         existing_names = self.__names_in_content(self.__loaded_project_dict[split_selected_id[0]])
+        
+        log_set_var('MainWindowMo', 'rename', 'existing_names', existing_names)  
         
         current_conf = self.__current_conf()
         
         initial_value = current_conf['name']
         
+        log_set_var('MainWindowMo', 'rename', 'initial_value', initial_value)  
+        
         new_name = ''
+        
         while new_name == '':
             
             new_name = simpledialog.askstring('Rename ...', 
                                               'Enter the new name:',
                                               initialvalue=initial_value)
             
+            log_set_var('MainWindowMo', 'rename', 'new_name', new_name) 
+            
             if new_name in existing_names:
                 messagebox.showerror('Name exists',
                                      'Item "%s" already exists.' %(new_name))
                 initial_value = new_name
                 new_name = ''
+                
+                log_msg('MainWindowMo', 'rename', 'name exists') 
         
         if not new_name == None:
             
             current_conf['name'] = new_name
+            
+            log_set_var('MainWindowMo', 'rename', 'current_conf', current_conf) 
+            
             self.__notify_observer(ABSMainWindowModelObserver.OVERVIEW_CHANGE_TYPE)
+        
         
     @overrides
     def is_selected(self)->bool:
