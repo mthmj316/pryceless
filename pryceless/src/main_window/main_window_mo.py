@@ -452,30 +452,50 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             
             self.__notify_observer(ABSMainWindowModelObserver.OVERVIEW_CHANGE_TYPE)
         
+        log_leave_func('MainWindowMo', 'rename')
+        
         
     @overrides
     def is_selected(self)->bool:
         '''
         '''
-        return (not self.__selected_id == None)
+        log_enter_func('MainWindowMo', 'is_selected')
+        
+        is_selected = (not self.__selected_id == None)
+        
+        log_leave_func('MainWindowMo', 'is_selected', is_selected)
+        
+        return is_selected
         
     @overrides
     def create_variable(self) -> None:
         '''
         '''
+        log_enter_func('MainWindowMo', 'create_variable')
+        
         variable_name = ''
         
         existing_variables = self.__loaded_project_dict['variables'].keys()
+        
+        log_set_var('MainWindowMo', 'create_variable', 'existing_variables', existing_variables)
+        
         while variable_name == '':
             
             variable_name = simpledialog.askstring("Create Variable", 
                                                   'Enter the name of the variable:')
             
+            log_set_var('MainWindowMo', 'create_variable', 'variable_name', variable_name)
+            
             if variable_name in existing_variables:
-                messagebox.showerror('Variable exists',
-                                     'Variable "%s" already exists.' %(variable_name))
+                msg = 'Variable "%s" already exists.' %(variable_name)
+                
+                messagebox.showerror('Variable exists',msg)
+                
+                log_msg('MainWindowMo', 'create_variable', msg) 
                 
                 variable_name = ''
+                
+                log_set_var('MainWindowMo', 'create_variable', 'variable_name', variable_name)
             
         if not variable_name == None:
             
@@ -484,26 +504,41 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 'name': variable_name
             }
             
+            log_set_var('MainWindowMo', 'create_variable', 'new_variable', new_variable)
+            
             self.__loaded_project_dict['variables'][variable_name] = new_variable
             self.save()
+        
+        log_leave_func('MainWindowMo', 'create_variable')
             
     @overrides
     def create_text(self) -> None:
         '''
         '''
+        log_enter_func('MainWindowMo', 'create_text')
         text_name = ''
         
         existing_texts = self.__loaded_project_dict[TEXT].keys()
+        
+        log_set_var('MainWindowMo', 'create_text', 'existing_texts', existing_texts)
+        
         while text_name == '':
             
             text_name = simpledialog.askstring("Create Text", 
                                                   'Enter the name of the Text')
             
+            log_set_var('MainWindowMo', 'create_text', 'text_name', text_name)
+            
             if text_name in existing_texts:
-                messagebox.showerror('Text exists',
-                                     'Text "%s" already exists.' %(text_name))
+                msg = 'Text "%s" already exists.' %(text_name)
+                
+                messagebox.showerror('Text exists',msg)
+                
+                log_msg('MainWindowMo', 'create_text', msg) 
                 
                 text_name = ''
+                
+                log_set_var('MainWindowMo', 'create_text', 'text_name', text_name)
             
         if not text_name == None:
             
@@ -512,26 +547,45 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 'name': text_name
             }
             
+            log_set_var('MainWindowMo', 'create_text', 'new_text', new_text)
+            
             self.__loaded_project_dict[TEXT][text_name] = new_text
             self.save()
+        
+        
+        log_leave_func('MainWindowMo', 'create_text')
    
     @overrides
     def create_javascript(self) -> None:
         '''
         '''
+        log_enter_func('MainWindowMo', 'create_javascript')
+        
         script_name = ''
         
         existing_scripts = self.__loaded_project_dict['javascripts'].keys()
+        
+        log_set_var('MainWindowMo', 'create_javascript', 'existing_scripts', existing_scripts)
+        
         while script_name == '':
             
             script_name = simpledialog.askstring("Create JavaScript", 
                                                   'Enter the name of the JS')
             
+            log_set_var('MainWindowMo', 'create_javascript', 'script_name', script_name)
+        
             if script_name in existing_scripts:
-                messagebox.showerror('JavaScript exists',
-                                     'JavaScript "%s" already exists.' %(script_name))
+                
+                msg = 'JavaScript "%s" already exists.' %(script_name)
+                
+                messagebox.showerror('JavaScript exists', msg)
+
+                log_msg('MainWindowMo', 'create_javascript', msg) 
                 
                 script_name = ''
+                
+                log_set_var('MainWindowMo', 'create_javascript', 'script_name', script_name)
+                
             
         if not script_name == None:
             
@@ -540,26 +594,42 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 'name': script_name
             }
             
+            log_set_var('MainWindowMo', 'create_javascript', 'new_script', new_script)
+            
             self.__loaded_project_dict['javascripts'][script_name] = new_script
-            self.save()   
+            self.save()
+        
+        
+        log_leave_func('MainWindowMo', 'create_javascript') 
     
     @overrides
     def create_css_rule(self) -> None:
         '''
         '''
+        log_enter_func('MainWindowMo', 'create_css_rule')
+        
         new_css_rule = ''
         
         existing_rules = self.__loaded_project_dict['css_rules'].keys()
+        
+        log_set_var('MainWindowMo', 'create_css_rule', 'existing_rules', existing_rules)
+        
         while new_css_rule == '':
             
             new_css_rule = simpledialog.askstring("Create CSS Rule", 
                                                   'Enter the name of the rule')
             
+            log_set_var('MainWindowMo', 'create_css_rule', 'new_css_rule', existing_rules)
+            
             if new_css_rule in existing_rules:
-                messagebox.showerror('CSS Rule exists',
-                                     'CSS Rule "%s" already exists.' %(new_css_rule))
+                msg = 'CSS Rule "%s" already exists.' %(new_css_rule)
+                
+                messagebox.showerror('CSS Rule exists',msg)
+                
+                log_msg('MainWindowMo', 'create_css_rule', msg) 
                 
                 new_css_rule = ''
+                log_set_var('MainWindowMo', 'create_css_rule', 'new_css_rule', existing_rules)
             
         if not new_css_rule == None:
             
@@ -568,8 +638,12 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 'name': new_css_rule
             }
             
+            log_set_var('MainWindowMo', 'create_css_rule', 'new_rule', new_rule)
+            
             self.__loaded_project_dict['css_rules'][new_css_rule] = new_rule
-            self.save()    
+            self.save()
+        
+        log_leave_func('MainWindowMo', 'create_css_rule') 
             
     @overrides
     def set_property(self, property_id:str) -> None:
