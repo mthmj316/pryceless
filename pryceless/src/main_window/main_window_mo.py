@@ -18,7 +18,8 @@ from overrides.overrides import overrides
 import scripts.configuration_loader as conf_loader
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, askdirectory
-from utils.logger import log_enter_func, log_leave_func, log_set_var, log_msg
+from utils.logger import log_enter_func, log_leave_func, log_set_var, log_msg,\
+    log_getter, log_setter
 from controls.treeview_control import TreeViewItem
 
 
@@ -651,15 +652,16 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         
         :param property_id:
         '''
-        
-        print('MainWindowMo.set_property    property_id=' + property_id)
+        log_enter_func('MainWindowMo', 'set_property', {'property_id':property_id})
         
         split_property_id = property_id.split('.')
+        
+        log_set_var('MainWindowMo', 'set_property', 'split_property_id', split_property_id)
         
         answer = simpledialog.askstring("Input", ''.join(['Set: ', split_property_id[-1]]),
                                         initialvalue=self.get_property_value(property_id))
         
-        print('MainWindowMo.set_property    answer=' + str(answer))
+        log_set_var('MainWindowMo', 'set_property', 'answer', answer)
             
         if answer == None:
             return
@@ -668,34 +670,41 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         #the reference to configuration item for which
         # the proerty must be set. 
         conf = self.__loaded_project_dict
+        log_set_var('MainWindowMo', 'set_property', 'conf', conf)
         
         #The index when the loop has to be left
         #The loop must be left after the second to last item
         break_idx = len(split_property_id) - 1
-        print('MainWindowMo.set_property    break_idx=' + str(break_idx))
+        log_set_var('MainWindowMo', 'set_property', 'break_idx', break_idx)
         
         current_idx = 0
         
         while current_idx < break_idx:
             conf = conf[split_property_id[current_idx]]            
             current_idx += 1
-
-        print('MainWindowMo.set_property    conf=' + str(conf))
+        
+        log_set_var('MainWindowMo', 'set_property', 'conf', conf)
         
         conf[split_property_id[-1]] = answer
         
-        print('MainWindowMo.set_property    conf=' + str(conf))
+        log_set_var('MainWindowMo', 'set_property', 'conf', conf)
         
         self.__notify_observer(ABSMainWindowModelObserver.PROPERTY_CHANGE_TYPE)
+    
+        log_leave_func('MainWindowMo', 'set_property') 
             
         
     @overrides
     def get_property_value(self, property_id:str) -> str:
         '''
         '''
+        log_enter_func('MainWindowMo', 'get_property_value', {'property_id':property_id})
+        
         split_property_id = property_id.split('.')
+        log_set_var('MainWindowMo', 'get_property_value', 'split_property_id', split_property_id)
         
         value = self.__loaded_project_dict
+        log_set_var('MainWindowMo', 'get_property_value', 'value', value)
         
         for _id in split_property_id:
             if _id in value:
@@ -703,6 +712,9 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             else:
                 value = ''
                 break
+            
+        
+        log_leave_func('MainWindowMo', 'get_property_value', value) 
             
         return value
             
@@ -875,6 +887,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
     def selected_sub(self) -> str:
         '''
         '''
+        log_getter('MainWindowMo', '__selected_sub', self.__selected_sub)
         return self.__selected_sub
     
     @overrides
@@ -883,9 +896,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Sets the selected configuration item in the model.
         '''
         self.__selected_sub = sub_id
+
+        log_setter('MainWindowMo', '__selected_sub', self.__selected_sub)
     
     @overrides
     def __iter__(self):
+        
+        log_enter_func('MainWindowMo', '__iter__') 
         
         if not self.is_project_open():
             raise ValueError('No Project opened!')
@@ -895,16 +912,24 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         self.__iteration_current = 0
         
         selected_split = self.__selected_id.split(sep='.')
+        log_set_var('MainWindowMo', '__iter__', 'selected_split', selected_split)
+        
         content = self.__current_content()
+        log_set_var('MainWindowMo', '__iter__', 'content', content)
         
         #Check if the dict to be iterated has a sub-dict: struct
         if 'struct' in self.__loaded_project_dict[selected_split[0]][selected_split[1]]:
             #Sub-struct -> the structure must be built before iteration can be start.
             for _id in self.__build_struct(selected_split):
                 self.__iterate_this[_id] = content[_id]
+                log_set_var('MainWindowMo', '__iter__', 'self.__iterate_this', self.__iterate_this)
         else:
             #No sub-dict -> there is no structure to be built up
             self.__iterate_this = content
+            log_set_var('MainWindowMo', '__iter__', 'self.__iterate_this', self.__iterate_this)
+        
+        
+        log_leave_func('MainWindowMo', '__iter__', self)
         
         return self
     
