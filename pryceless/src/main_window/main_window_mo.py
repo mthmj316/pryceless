@@ -937,23 +937,34 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         Builds the structure for the iterator
         '''
+        log_enter_func('MainWindowMo', '__build_struct', {'selected_split':selected_split})
+        
         struct_info = self.__loaded_project_dict[selected_split[0]][selected_split[1]]['struct']
         
+        log_set_var('MainWindowMo', '__build_struct', 'struct_info', struct_info)
+        
         if not 'root' in struct_info:
+            log_leave_func('MainWindowMo', '__build_struct', [])
             return []
         
         root_id = struct_info['root']
+        log_set_var('MainWindowMo', '__build_struct', 'root_id', root_id)
         
         root_children = struct_info[root_id]
+        log_set_var('MainWindowMo', '__build_struct', 'root_children', root_children)
         
         if root_children == '':
+            
+            log_leave_func('MainWindowMo', '__build_struct', [root_id])
             return [root_id]
         
         children = root_children.split(',')
         
         struct = [root_id]
+        log_set_var('MainWindowMo', '__build_struct', 'struct', struct)
         
         struct += children
+        log_set_var('MainWindowMo', '__build_struct', 'struct', struct)
         
         while len(children) > 0:
             
@@ -968,22 +979,25 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                         
             children = tmp
             tmp = []
-            
+        
+        
+        log_leave_func('MainWindowMo', '__build_struct', struct)
+           
         return struct
 
     
     @overrides
     def __next__(self):
         
-        print('MainWindowMo.__next__')
+        log_enter_func('MainWindowMo', '__next__')
         
         if self.__iteration_current < len(self.__iterate_this):
             
-            print('MainWindowMo.__next__    __iteration_current=' + str(self.__iteration_current))
+            log_set_var('MainWindowMo', '__next__', '__iteration_current', self.__iteration_current)
             
             _data = list(self.__iterate_this.values())[self.__iteration_current]
             
-            print('MainWindowMo.__next__    _data=' + str(_data))
+            log_set_var('MainWindowMo', '__next__', '_data', _data)
             
             self.__iteration_current += 1
             
@@ -996,6 +1010,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             
             if 'parent_id' in _data and not _data['parent_id'] == '':
                 parent_id = '.'.join([self.__selected_id, 'content', _data['parent_id']])
+                log_set_var('MainWindowMo', '__next__', 'parent_id', parent_id)
                 
             appendix = ''
             
@@ -1003,22 +1018,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
                 appendix = _data[TEXT]
             else:
                 appendix = _data['id']
+                
+            log_set_var('MainWindowMo', '__next__', 'appendix', appendix)
             
             display_name = display_name = ''.join([_data['name'],' (', appendix ,')'])
+                
+            log_set_var('MainWindowMo', '__next__', 'display_name', display_name)
             
             if INNER_TEXT in _data:
-                print('MainWindowMo.__next__    has inner_text')
                 display_name = ''.join([display_name, ' [', 
                                         self.__conf_of(_data[INNER_TEXT])[TEXT], ']'])
             
-            print('MainWindowMo.__next__    internal_id=' + str(internal_id) 
-                  + ' parent_id=' + str(parent_id) + ' display_name=' + display_name)
+            log_set_var('MainWindowMo', '__next__', 'display_name', display_name)
+            
+            log_leave_func('MainWindowMo', '__next__', (internal_id, parent_id, display_name))
             
             return (internal_id, parent_id, display_name)
         
         self.__iterate_this = {}
         
-        print('MainWindowMo.__next__    stop iteration')
+        log_leave_func('MainWindowMo', '__next__')
+        
         raise StopIteration
     
     @overrides
@@ -1027,6 +1047,7 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Returns the id of the selected configuration item.
         If none is selected None will be returned.
         '''
+        log_getter('MainWindowMo', '__selected_id', self.__selected_id)
         return self.__selected_id
            
     @overrides
@@ -1034,8 +1055,13 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         '''
         Sets the selected configuration item in the model.
         '''
+        
+        log_enter_func('MainWindowMo', 'select', {'conf_id':conf_id})
+        
         self.__selected_id = conf_id
         self.__selected_sub = None
+        
+        log_leave_func('MainWindowMo', 'select')
         
     @overrides
     def get_overview_data(self) -> dict:
@@ -1044,8 +1070,9 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         key -> id of the page
         value -> name of the page
         '''
-        overview_data = {}
+        log_enter_func('MainWindowMo', 'get_overview_data')
         
+        overview_data = {}
 
         if self.is_project_open():
             overview_data.update(self.__get_for_overview(PAGES))
@@ -1059,23 +1086,27 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             for page_id in items.keys():
                 overview_data['.'.join([PAGES, page_id])] = page_id
             '''
-            
+         
+        
+        log_leave_func('MainWindowMo', 'get_overview_data',overview_data)
         return overview_data
         
     def __get_for_overview(self, base):
         
-        print('MainWindowMo.__get_for_overview    base=' + str(base))
+        log_enter_func('MainWindowMo', '__get_for_overview', {"base":base})
         
         _data = {}
         
         if base in self.__loaded_project_dict:
             
             items = self.__loaded_project_dict[base]
+            
+            log_set_var('MainWindowMo', '__get_for_overview', 'items', items)
         
             for _id in items.keys():
                 _data['.'.join([base, _id])] = items[_id]['name']
          
-        print('MainWindowMo.__get_for_overview    _data=' + str(_data))   
+        log_leave_func('MainWindowMo', 'get_overview_data',_data)
         return _data
                 
     @overrides
@@ -1084,11 +1115,17 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
         Creates a new HTML page within the selected project.
         Duplicated pages are prevented.
         '''
+        log_enter_func('MainWindowMo', 'create_page')
+        
         page_name = self.__name_page('New Page', 'Please enter page name.')
+        
+        log_set_var('MainWindowMo', 'create_page', 'page_name', page_name)
         
         if not page_name == None:
             
             internal_id = self.__create_internal_id()
+            
+            log_set_var('MainWindowMo', 'create_page', 'internal_id', internal_id)
             
             self.__loaded_project_dict[PAGES][internal_id] = {
                 'name': page_name,
@@ -1099,6 +1136,8 @@ class MainWindowMo(ABSMainWindowMo, ABSHTMLDialogObserver, ABSTextDialogObserver
             self.save()
             
             self.select(page_name)
+            
+        log_leave_func('MainWindowMo', 'create_page')
     
     def __name_page(self, title, msg) -> str:
         
